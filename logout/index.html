@@ -5,6 +5,18 @@
     <title>Burgernotes</title>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <script>
+    if (origin !== "null") {
+        // Get the current URL
+        var currentUrl = window.location.href;
+
+        // Remove '/index.html' from the current URL
+        var newUrl = currentUrl.replace('/index.html', '');
+
+        // Redirect to the new URL
+        window.location.href = newUrl;
+    }
+    </script>
 <head>
 Logging out..
 <script>
