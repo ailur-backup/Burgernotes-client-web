@@ -10,15 +10,12 @@
     <meta content="Burgernotes" property="og:title" />
     <meta content="A simple note-taking app!" property="og:description" />
     <script>
-    if (origin !== "null") {
-        // Get the current URL
-        var currentUrl = window.location.href;
-
-        // Remove '/index.html' from the current URL
-        var newUrl = currentUrl.replace('/index.html', '');
-
-        // Redirect to the new URL
-        window.location.href = newUrl;
+    if (window.location.href.endsWith('/index.html')) {
+        if (window.location.origin !== null) {
+            var currentUrl = window.location.href;
+            var newUrl = currentUrl.replace('/index.html', '');
+            window.location.href = newUrl;
+        }
     }
     </script>
 </head>
