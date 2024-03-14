@@ -565,6 +565,15 @@ body {
     min-height: 100%;
 }
 
+.credit {
+    position: fixed;
+    left: 5px;
+    color: white;
+    z-index: -1;
+    margin: 0;
+    bottom: 5px;
+}
+
 .hidden {
     display: none !important;
 }
