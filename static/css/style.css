@@ -276,7 +276,6 @@ body {
     margin-bottom: 0;
     background-color: var(--note-button);
     color: var(--unselected-note-button-text-color);
-    border: none;
     border-radius: 8px;
 
     border: solid;
@@ -286,6 +285,7 @@ body {
 
     text-align: left;
     cursor: pointer;
+    white-space: nowrap;
     overflow-x: hidden;
 }
 
