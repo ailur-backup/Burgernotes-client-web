@@ -595,12 +595,12 @@ function isFirstTimeVisitor() {
 }
 
 function firstNewVersion() {
-    if (document.cookie.indexOf("version=1.1") !== -1) {
+    if (document.cookie.indexOf("version=1.2") !== -1) {
         return false;
     } else {
         var expirationDate = new Date();
         expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-        document.cookie = "version=1.1; expires=" + expirationDate.toUTCString() + "; path=/; SameSite=strict";
+        document.cookie = "version=1.2; expires=" + expirationDate.toUTCString() + "; path=/; SameSite=strict";
         return true;
     }
 }
@@ -638,5 +638,5 @@ if (isFirstTimeVisitor() && /Android|iPhone|iPod/i.test(navigator.userAgent)) {
 }
 
 if (firstNewVersion()) {
-    displayError("What's new in Burgernotes 1.1?\n\nNote titles are now the first line of a note \(will not break compatibility with older notes\)\nIntroduced improved login screen\nNote titles now scroll correctly")
+    displayError("What's new in Burgernotes 1.2?\n\nNote titles are now the first line of a note \(will not break compatibility with older notes\)\nIntroduced improved login screen\nNote titles now scroll correctly")
 }
