@@ -32,7 +32,12 @@ changeButton.addEventListener("click", (event) => {
                     if (response.status == 200) {
                         localStorage.setItem("homeserverURL", remote)
 
-                        window.location.href = document.referrer;
+                        if (document.referrer !== "") {
+                          window.location.href = document.referrer;
+                        }
+                        else {
+                          window.location.href = "https://notes.hectabit.org/login";
+                        }
                     }
                     else if (response.status == 404) {
                         statusBox.innerText = "Not a valid homeserver!"

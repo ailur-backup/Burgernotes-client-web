@@ -79,7 +79,7 @@
     EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
     SUCH DAMAGES.</p>
     <br>
-    <button onclick="history.back()" style="cursor: pointer; padding: 15px 20px;margin-right: auto;color: white;text-decoration: none;background-color: var(--theme-color);border-radius: 8px;border: medium;font-size: 15px;">Take me back where I was!</button>
+    <button onclick="if (document.referrer !== "") {window.location.href = document.referrer;}else {window.location.href = "https://notes.hectabit.org/login";}" style="cursor: pointer; padding: 15px 20px;margin-right: auto;color: white;text-decoration: none;background-color: var(--theme-color);border-radius: 8px;border: medium;font-size: 15px;">Take me back where I was!</button>
     <br><br>
 </body>
 
