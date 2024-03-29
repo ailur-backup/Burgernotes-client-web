@@ -187,7 +187,7 @@ function updateFont() {
 
 async function waitforedit() {
     while(true) {
-        await fetch("https://notes.canary.hectabit.org/api/waitforedit", {
+        await fetch(remote + "/api/waitforedit", {
             method: "POST",
             body: JSON.stringify({
                 "secretKey": localStorage.getItem("DONOTSHARE-secretkey")
