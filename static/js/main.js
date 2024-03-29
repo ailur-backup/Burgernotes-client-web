@@ -185,7 +185,7 @@ function updateFont() {
     textSizeBox.innerText = currentFontSize + "px"
 }
 
-function async waitforedit() {
+async function waitforedit() {
     while(true) {
         await fetch("https://notes.canary.hectabit.org/api/waitforedit", {
             method: "POST",
