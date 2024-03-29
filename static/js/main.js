@@ -185,6 +185,31 @@ function updateFont() {
     textSizeBox.innerText = currentFontSize + "px"
 }
 
+function async waitforedit() {
+    while(true) {
+        await fetch("https://notes.canary.hectabit.org/api/waitforedit", {
+            method: "POST",
+            body: JSON.stringify({
+                "secretKey": localStorage.getItem("DONOTSHARE-secretkey")
+            }),
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(async (response) => {
+            async function doStuff() {
+                const data = await response.json();
+                // Access the "note" field from the response
+                const note = data.note;
+                if (note == selectedNote) {
+                    selectNote(selectedNote)
+                }
+            }
+            doStuff();
+        })
+    }
+}
+
 if (localStorage.getItem("SETTING-fontsize") === null) {
     localStorage.setItem("SETTING-fontsize", "16")
     updateFont()
@@ -640,3 +665,5 @@ if (isFirstTimeVisitor() && /Android|iPhone|iPod/i.test(navigator.userAgent)) {
 if (firstNewVersion()) {
     displayError("What's new in Burgernotes 1.2?\n\nNote titles are now the first line of a note \(will not break compatibility with older notes\)\nIntroduced improved login screen\nNote titles now scroll correctly")
 }
+
+waitforedit()
