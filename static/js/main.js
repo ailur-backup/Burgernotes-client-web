@@ -663,7 +663,7 @@ if (isFirstTimeVisitor() && /Android|iPhone|iPod/i.test(navigator.userAgent)) {
 }
 
 if (firstNewVersion()) {
-    displayError("What's new in Burgernotes 1.2?\n\nNote titles are now the first line of a note \(will not break compatibility with older notes\)\nIntroduced improved login screen\nNote titles now scroll correctly")
+    displayError("What's new in Burgernotes 1.2-1?\nNotes now support live editing\nFixed various bugs and issues in the client")
 }
 
 waitforedit()
