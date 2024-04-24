@@ -609,23 +609,19 @@ function exportNotes() {
 }
 
 function isFirstTimeVisitor() {
-    if (document.cookie.indexOf("visited=true") !== -1) {
-        return false;
-    } else {
-        var expirationDate = new Date();
-        expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-        document.cookie = "visited=true; expires=" + expirationDate.toUTCString() + "; path=/; SameSite=strict";
+    if (localStorage.getItem("FIRSTVISIT") === null) {
+        localStorage.setItem("FIRSTVISIT", "1")
         return true;
+    } else {
+        return false;
     }
 }
 
 function firstNewVersion() {
-    if (document.cookie.indexOf("version=1.2") !== -1) {
+    if (localStorage.getItem("NEWVERSION") == "1.2") {
         return false;
     } else {
-        var expirationDate = new Date();
-        expirationDate.setFullYear(expirationDate.getFullYear() + 1);
-        document.cookie = "version=1.2; expires=" + expirationDate.toUTCString() + "; path=/; SameSite=strict";
+        localStorage.setItem("NEWVERSION", "1.2")
         return true;
     }
 }
