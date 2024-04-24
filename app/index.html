@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
     <script type="text/javascript" src="../static/js/crypto-js.js"></script>
+    <script type="text/javascript" src="../static/js/marked.js"></script>
     <link rel="icon" href="../static/svg/favicon.svg">
     <script>
     if (window.location.href.endsWith('/index.html')) {
@@ -29,6 +30,7 @@
     <div class="bottomBar">
         <button id="removeBox" class="removeButton"></button>
         <button id="wordCountBox">0 words</button>
+        <button onclick="toggleMarkdown()">Toggle Markdown</button>
         <div class="textManipulator">
             <button id="textMinusBox">-</button>
             <button id="textSizeBox">16px</button>
@@ -78,7 +80,10 @@
         </div>
     </div>
 
-    <textarea id="noteBox" class="noteBox"></textarea>
+    <div class="noteBox">
+        <textarea id="noteBox" class="noteBoxText"></textarea>
+        <iframe src="about:blank" id="markdown" style="display: none;" sandbox="allow-same-origin allow-scripts"></iframe>
+    </div>
 
     <script type="text/javascript" src="../static/js/main.js"></script>
     <script>

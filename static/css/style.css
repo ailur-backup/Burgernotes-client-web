@@ -345,6 +345,20 @@ body {
     width: calc(100% - 180px - 7px - 6px);
     height: calc(100% - 50px - 6px - 8px - 30px);
     font-family: "Inter", sans-serif;
+    display: flex;
+}
+
+.noteBoxText {
+    background-color: var(--editor);
+    color: var(--text-color);
+    border: none;
+    width: 100%;
+}
+
+iframe#markdown {
+    width: 100%;
+    border: none;
+    border-left: solid var(--bar) 1px;
 }
 
 .noteBox:focus {

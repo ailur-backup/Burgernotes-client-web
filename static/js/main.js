@@ -31,6 +31,7 @@ function truncateString(str, num) {
 
 let secretkey = localStorage.getItem("DONOTSHARE-secretkey")
 let password = localStorage.getItem("DONOTSHARE-password")
+let currentFontSize = 16
 
 let usernameBox = document.getElementById("usernameBox")
 let optionsCoverDiv = document.getElementById("optionsCoverDiv")
@@ -58,6 +59,7 @@ let noteBox = document.getElementById("noteBox")
 let loadingStuff = document.getElementById("loadingStuff")
 let burgerButton = document.getElementById("burgerButton")
 let exportNotesButton = document.getElementById("exportNotesButton")
+let markdown = document.getElementById('markdown');
 
 let selectedNote = 0
 let timer
@@ -180,9 +182,11 @@ closeErrorButton.addEventListener("click", (event) => {
 });
 
 function updateFont() {
-    let currentFontSize = localStorage.getItem("SETTING-fontsize")
+    currentFontSize = localStorage.getItem("SETTING-fontsize")
     noteBox.style.fontSize = currentFontSize + "px"
     textSizeBox.innerText = currentFontSize + "px"
+    var style = "<style>body { color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>";
+    markdown.contentWindow.document.head.innerHTML = style;
 }
 
 async function waitforedit() {
@@ -394,6 +398,10 @@ function updateWordCount() {
     wordCountBox.innerText = wordCount + " words"
 }
 
+function renderMarkDown() {
+    markdown.contentWindow.document.body.innerHTML = marked.parse(noteBox.value)
+}
+
 function selectNote(nameithink) {
     document.querySelectorAll(".noteButton").forEach((el) => el.classList.remove("selected"));
     let thingArray = Array.from(document.querySelectorAll(".noteButton")).find(el => el.id == nameithink);
@@ -428,9 +436,11 @@ function selectNote(nameithink) {
 
                 noteBox.value = originalText
                 updateWordCount()
+                renderMarkDown()
 
                 noteBox.addEventListener("input", (event) => {
                     updateWordCount()
+                    renderMarkDown()
                     clearTimeout(timer);
                     timer = setTimeout(() => {
                         let encryptedTitle = "New note"
@@ -490,6 +500,7 @@ function updateNotes() {
                 noteBox.value = ""
                 clearTimeout(timer)
                 updateWordCount()
+                renderMarkDown()
 
                 let responseData = await response.json()
                 for (let i in responseData) {
@@ -626,6 +637,14 @@ function firstNewVersion() {
     }
 }
 
+function toggleMarkdown() {
+    if (markdown.style.display === 'none') {
+        markdown.style.display = 'inherit';
+    } else {
+        markdown.style.display = 'none';
+    }
+}
+
 exportNotesButton.addEventListener("click", (event) => {
     exportNotesButton.innerText = "Downloading..."
     exportNotes()
@@ -654,6 +673,11 @@ removeBox.addEventListener("click", (event) => {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+    var style = "<style>body { color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; }</style>";
+    markdown.contentWindow.document.head.innerHTML = style;
+});
+
 if (isFirstTimeVisitor() && /Android|iPhone|iPod/i.test(navigator.userAgent)) {
     displayError("To use Burgernotes:\n  Swipe Right on a note to open it\n  Swipe left in the text boxes to return to notes\n  Click on a note to highlight it")
 }
@@ -662,4 +686,4 @@ if (firstNewVersion()) {
     displayError("What's new in Burgernotes 1.2-1?\nNotes now support live editing\nFixed various bugs and issues in the client")
 }
 
-waitforedit()
+//waitforedit()
