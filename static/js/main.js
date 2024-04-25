@@ -32,6 +32,7 @@ function truncateString(str, num) {
 let secretkey = localStorage.getItem("DONOTSHARE-secretkey")
 let password = localStorage.getItem("DONOTSHARE-password")
 let currentFontSize = 16
+let markdowntoggle = false
 
 let usernameBox = document.getElementById("usernameBox")
 let optionsCoverDiv = document.getElementById("optionsCoverDiv")
@@ -185,8 +186,10 @@ function updateFont() {
     currentFontSize = localStorage.getItem("SETTING-fontsize")
     noteBox.style.fontSize = currentFontSize + "px"
     textSizeBox.innerText = currentFontSize + "px"
-    var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
-    markdown.srcdoc = targethtml;
+    if markdowntoggle {
+        var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
+        markdown.srcdoc = targethtml;
+    }
 }
 
 async function waitforedit() {
@@ -399,8 +402,10 @@ function updateWordCount() {
 }
 
 function renderMarkDown() {
-    var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
-    markdown.srcdoc = targethtml
+    if markdowntoggle {
+        var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
+        markdown.srcdoc = targethtml
+    }
 }
 
 function selectNote(nameithink) {
@@ -641,8 +646,10 @@ function firstNewVersion() {
 function toggleMarkdown() {
     if (markdown.style.display === 'none') {
         markdown.style.display = 'inherit';
+        markdowntoggle = true
     } else {
         markdown.style.display = 'none';
+        markdowntoggle = false
     }
 }
 
