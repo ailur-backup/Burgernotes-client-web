@@ -185,8 +185,8 @@ function updateFont() {
     currentFontSize = localStorage.getItem("SETTING-fontsize")
     noteBox.style.fontSize = currentFontSize + "px"
     textSizeBox.innerText = currentFontSize + "px"
-    var style = "<style>body { color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>";
-    markdown.contentWindow.document.head.innerHTML = style;
+    var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
+    markdown.srcdoc = targethtml;
 }
 
 async function waitforedit() {
@@ -399,7 +399,8 @@ function updateWordCount() {
 }
 
 function renderMarkDown() {
-    markdown.contentWindow.document.body.innerHTML = marked.parse(noteBox.value)
+    var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
+    markdown.srcdoc = targethtml
 }
 
 function selectNote(nameithink) {
@@ -674,8 +675,8 @@ removeBox.addEventListener("click", (event) => {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    var style = "<style>body { color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; }</style>";
-    markdown.contentWindow.document.head.innerHTML = style;
+    var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
+    markdown.srcdoc = targethtml
 });
 
 if (isFirstTimeVisitor() && /Android|iPhone|iPod/i.test(navigator.userAgent)) {
