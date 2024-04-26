@@ -402,7 +402,7 @@ function updateWordCount() {
 }
 
 function renderMarkDown() {
-    if markdowntoggle {
+    if (markdowntoggle) {
         var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
         markdown.srcdoc = targethtml
     }
