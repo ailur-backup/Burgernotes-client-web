@@ -645,4 +645,4 @@ if (firstNewVersion()) {
     displayError("What's new in Burgernotes 1.2-1?\nNotes now support live editing\nFixed various bugs and issues in the client")
 }
 
-//waitforedit()
+waitforedit()
