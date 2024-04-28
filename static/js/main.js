@@ -1,10 +1,10 @@
 if (localStorage.getItem("DONOTSHARE-secretkey") === null) {
-    window.location.replace("../login/index.html")
+    window.location.replace("/login")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
 }
 if (localStorage.getItem("DONOTSHARE-password") === null) {
-    window.location.replace("../login/index.html")
+    window.location.replace("/login")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
 }
@@ -20,14 +20,6 @@ if (remote == null) {
 }
 
 function formatBytes(a, b = 2) { if (!+a) return "0 Bytes"; const c = 0 > b ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1000)); return `${parseFloat((a / Math.pow(1000, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]}` }
-
-function truncateString(str, num) {
-    if (str.length > num) {
-        return str.slice(0, num) + "...";
-    } else {
-        return str;
-    }
-}
 
 let secretkey = localStorage.getItem("DONOTSHARE-secretkey")
 let password = localStorage.getItem("DONOTSHARE-password")
@@ -47,7 +39,6 @@ let exitSessionsThing = document.getElementById("exitSessionsThing")
 let sessionManagerButton = document.getElementById("sessionManagerButton")
 let sessionManagerDiv = document.getElementById("sessionManagerDiv")
 let sessionDiv = document.getElementById("sessionDiv")
-let mfaDiv = document.getElementById("mfaDiv")
 let deleteMyAccountButton = document.getElementById("deleteMyAccountButton")
 let storageThing = document.getElementById("storageThing")
 let storageProgressThing = document.getElementById("storageProgressThing")
@@ -58,9 +49,13 @@ let notesDiv = document.getElementById("notesDiv")
 let newNote = document.getElementById("newNote")
 let noteBox = document.getElementById("noteBox")
 let loadingStuff = document.getElementById("loadingStuff")
-let burgerButton = document.getElementById("burgerButton")
 let exportNotesButton = document.getElementById("exportNotesButton")
 let markdown = document.getElementById('markdown');
+let textSizeBox = document.getElementById('textSizeBox');
+let textPlusBox = document.getElementById('textPlusBox');
+let textMinusBox = document.getElementById('textMinusBox');
+let wordCountBox = document.getElementById('wordCountBox');
+let removeBox = document.getElementById("removeBox")
 
 let selectedNote = 0
 let timer
@@ -72,6 +67,8 @@ if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
     noteBox.readOnly = true
     noteBox.style.fontSize = "18px"
     noteBox.classList.add("hidden")
+
+    let touchstartX, touchstartY, touchendX, touchendY
 
     notesBar.addEventListener("touchstart", function (event) {
         touchstartX = event.changedTouches[0].screenX;
@@ -99,7 +96,7 @@ if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
         if (touchendX > touchstartX + 75) {
             notesBar.style.width = "calc(100% - 10px)";
             noteBox.style.width = "10px"
-            if (selectedNote != 0) {
+            if (selectedNote !== 0) {
                 noteBox.readOnly = true
             }
             notesDiv.classList.remove("hidden")
@@ -110,7 +107,7 @@ if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
         if (touchendX < touchstartX - 75) {
             noteBox.style.width = "calc(100% - 30px)";
             notesBar.style.width = "10px"
-            if (selectedNote != 0) {
+            if (selectedNote !== 0) {
                 noteBox.readOnly = false
             }
             notesDiv.classList.add("hidden")
@@ -132,50 +129,11 @@ function displayError(message) {
     errorMessageThing.innerHTML = message
 }
 
-closeErrorButton.addEventListener("click", (event) => {
+closeErrorButton.addEventListener("click", () => {
     errorDiv.classList.add("hidden")
     optionsCoverDiv.classList.add("hidden")
 });
-
-function displayPrompt(message, placeholdertext, callback) {
-    errorMessageThing.innerText = message
-    errorInput.value = ""
-    errorInput.placeholder = placeholdertext
-
-    closeErrorButton.addEventListener("click", (event) => {
-        if (callback) {
-            callback(errorInput.value)
-            callback = undefined
-        }
-    });
-    errorInput.addEventListener("keyup", (event) => {
-        if (event.key == "Enter") {
-            callback(errorInput.value)
-            callback = undefined
-
-            errorDiv.classList.add("hidden")
-            optionsCoverDiv.classList.add("hidden")
-            errorInput.classList.add("hidden")
-            cancelErrorButton.classList.add("hidden")
-        }
-    });
-    cancelErrorButton.addEventListener("click", (event) => {
-        callback = undefined
-        errorDiv.classList.add("hidden")
-        optionsCoverDiv.classList.add("hidden")
-        errorInput.classList.add("hidden")
-        cancelErrorButton.classList.add("hidden")
-    });
-
-    errorDiv.classList.remove("hidden")
-    optionsCoverDiv.classList.remove("hidden")
-    errorInput.classList.remove("hidden")
-    cancelErrorButton.classList.remove("hidden")
-
-    errorInput.focus()
-}
-
-closeErrorButton.addEventListener("click", (event) => {
+closeErrorButton.addEventListener("click", () => {
     errorDiv.classList.add("hidden")
     optionsCoverDiv.classList.add("hidden")
     errorInput.classList.add("hidden")
@@ -187,8 +145,7 @@ function updateFont() {
     noteBox.style.fontSize = currentFontSize + "px"
     textSizeBox.innerText = currentFontSize + "px"
     if (markdowntoggle) {
-        var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
-        markdown.srcdoc = targethtml;
+        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
     }
 }
 
@@ -207,13 +164,13 @@ async function waitforedit() {
             async function doStuff() {
                 const data = await response.json();
                 // Access the "note" field from the response
-                const note = data.note;
-                if (note == selectedNote) {
+                const note = data["note"];
+                if (note === selectedNote) {
                     selectNote(selectedNote)
                 }
             }
-            doStuff();
-        })
+            doStuff()
+        });
     }
 }
 
@@ -224,11 +181,11 @@ if (localStorage.getItem("SETTING-fontsize") === null) {
     updateFont()
 }
 
-textPlusBox.addEventListener("click", (event) => {
+textPlusBox.addEventListener("click", () => {
     localStorage.setItem("SETTING-fontsize", String(Number(localStorage.getItem("SETTING-fontsize")) + Number(1)))
     updateFont()
 });
-textMinusBox.addEventListener("click", (event) => {
+textMinusBox.addEventListener("click", () => {
     localStorage.setItem("SETTING-fontsize", String(Number(localStorage.getItem("SETTING-fontsize")) - Number(1)))
     updateFont()
 });
@@ -253,19 +210,19 @@ function updateUserInfo() {
             "Content-Type": "application/json; charset=UTF-8"
         }
     })
-        .catch((error) => {
+        .catch(() => {
             noteBox.readOnly = true
             noteBox.value = ""
             noteBox.placeholder = "Failed to connect to the server.\nPlease check your internet connection."
         })
         .then((response) => {
             async function doStuff() {
-                if (response.status == 500) {
+                if (response.status === 500) {
                     displayError("Something went wrong! Signing you out..")
                     closeErrorButton.classList.add("hidden")
                     usernameBox.innerText = ""
                     setTimeout(function () {
-                        window.location.replace("../logout/index.html")
+                        window.location.replace("/logout")
                     }, 2500);
                 } else {
                     let responseData = await response.json()
@@ -281,20 +238,20 @@ function updateUserInfo() {
             doStuff()
         });
 }
-usernameBox.addEventListener("click", (event) => {
+usernameBox.addEventListener("click", () => {
     optionsCoverDiv.classList.remove("hidden")
     optionsDiv.classList.remove("hidden")
     updateUserInfo()
 });
-logOutButton.addEventListener("click", (event) => {
-    window.location.replace("../logout/index.html")
+logOutButton.addEventListener("click", () => {
+    window.location.replace("/logout")
 });
-exitThing.addEventListener("click", (event) => {
+exitThing.addEventListener("click", () => {
     optionsDiv.classList.add("hidden")
     optionsCoverDiv.classList.add("hidden")
 });
-deleteMyAccountButton.addEventListener("click", (event) => {
-    if (confirm("Are you REALLY sure that you want to delete your account? There's no going back!") == true) {
+deleteMyAccountButton.addEventListener("click", () => {
+    if (confirm("Are you REALLY sure that you want to delete your account? There's no going back!") === true) {
         fetch(remote + "/api/deleteaccount", {
             method: "POST",
             body: JSON.stringify({
@@ -305,15 +262,15 @@ deleteMyAccountButton.addEventListener("click", (event) => {
             }
         })
             .then((response) => {
-                if (response.status == 200) {
-                    window.location.href = "../logout/index.html"
+                if (response.status === 200) {
+                    window.location.href = "/logout"
                 } else {
                     displayError("Failed to delete account (HTTP error code " + response.status + ")")
                 }
             })
     }
 });
-sessionManagerButton.addEventListener("click", (event) => {
+sessionManagerButton.addEventListener("click", () => {
     optionsDiv.classList.add("hidden")
     sessionManagerDiv.classList.remove("hidden")
 
@@ -330,13 +287,14 @@ sessionManagerButton.addEventListener("click", (event) => {
             async function doStuff() {
                 let responseData = await response.json()
                 document.querySelectorAll(".burgerSession").forEach((el) => el.remove());
+                let ua;
                 for (let i in responseData) {
                     let sessionElement = document.createElement("div")
                     let sessionText = document.createElement("p")
                     let sessionImage = document.createElement("img")
                     let sessionRemoveButton = document.createElement("button")
                     sessionText.classList.add("w300")
-                    if (responseData[i]["thisSession"] == true) {
+                    if (responseData[i]["thisSession"] === true) {
                         sessionText.innerText = "(current) " + responseData[i]["device"]
                     } else {
                         sessionText.innerText = responseData[i]["device"]
@@ -351,11 +309,11 @@ sessionManagerButton.addEventListener("click", (event) => {
                     if (ua.includes("NT") || ua.includes("Linux")) {
                         sessionImage.src = "/static/svg/device_computer.svg"
                     }
-                    if (ua.includes("iPhone" || ua.includes("Android") || ua.include("iPod"))) {
+                    if (ua.includes("iPhone" || ua.includes("Android") || ua.includes("iPod"))) {
                         sessionImage.src = "/static/svg/device_smartphone.svg"
                     }
 
-                    sessionRemoveButton.addEventListener("click", (event) => {
+                    sessionRemoveButton.addEventListener("click", () => {
                         fetch(remote + "/api/sessions/remove", {
                             method: "POST",
                             body: JSON.stringify({
@@ -366,9 +324,9 @@ sessionManagerButton.addEventListener("click", (event) => {
                                 "Content-Type": "application/json; charset=UTF-8"
                             }
                         })
-                            .then((response) => {
-                                if (responseData[i]["thisSession"] == true) {
-                                    window.location.replace("../logout/index.html")
+                            .then(() => {
+                                if (responseData[i]["thisSession"] === true) {
+                                    window.location.replace("/logout")
                                 }
                             });
                         sessionElement.remove()
@@ -386,7 +344,7 @@ sessionManagerButton.addEventListener("click", (event) => {
             doStuff()
         });
 });
-exitSessionsThing.addEventListener("click", (event) => {
+exitSessionsThing.addEventListener("click", () => {
     optionsDiv.classList.remove("hidden")
     sessionManagerDiv.classList.add("hidden")
 });
@@ -395,7 +353,7 @@ updateUserInfo()
 
 function updateWordCount() {
     let wordCount = noteBox.value.split(" ").length
-    if (wordCount == 1) {
+    if (wordCount === 1) {
         wordCount = 0
     }
     wordCountBox.innerText = wordCount + " words"
@@ -403,14 +361,13 @@ function updateWordCount() {
 
 function renderMarkDown() {
     if (markdowntoggle) {
-        var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
-        markdown.srcdoc = targethtml
+        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>"
     }
 }
 
 function selectNote(nameithink) {
     document.querySelectorAll(".noteButton").forEach((el) => el.classList.remove("selected"));
-    let thingArray = Array.from(document.querySelectorAll(".noteButton")).find(el => el.id == nameithink);
+    let thingArray = Array.from(document.querySelectorAll(".noteButton")).find(el => String(nameithink) === String(el.id));
     thingArray.classList.add("selected")
 
     fetch(remote + "/api/readnote", {
@@ -423,7 +380,7 @@ function selectNote(nameithink) {
             "Content-Type": "application/json; charset=UTF-8"
         }
     })
-        .catch((error) => {
+        .catch(() => {
             noteBox.readOnly = true
             noteBox.value = ""
             noteBox.placeholder = ""
@@ -438,19 +395,17 @@ function selectNote(nameithink) {
                 let responseData = await response.json()
 
                 let bytes = CryptoJS.AES.decrypt(responseData["content"], password);
-                let originalText = bytes.toString(CryptoJS.enc.Utf8);
-
-                noteBox.value = originalText
+                noteBox.value = bytes.toString(CryptoJS.enc.Utf8)
                 updateWordCount()
                 renderMarkDown()
 
-                noteBox.addEventListener("input", (event) => {
+                noteBox.addEventListener("input", () => {
                     updateWordCount()
                     renderMarkDown()
                     clearTimeout(timer);
                     timer = setTimeout(() => {
                         let encryptedTitle = "New note"
-                        if (noteBox.value.substring(0, noteBox.value.indexOf("\n")) != "") {
+                        if (noteBox.value.substring(0, noteBox.value.indexOf("\n")) !== "") {
                             let firstTitle = noteBox.value.substring(0, noteBox.value.indexOf("\n"));
 
                             document.getElementById(nameithink).innerText = firstTitle
@@ -458,7 +413,7 @@ function selectNote(nameithink) {
                         }
                         let encryptedText = CryptoJS.AES.encrypt(noteBox.value, password).toString();
 
-                        if (selectedNote == nameithink) {
+                        if (selectedNote === nameithink) {
                             fetch(remote + "/api/editnote", {
                                 method: "POST",
                                 body: JSON.stringify({
@@ -472,11 +427,11 @@ function selectNote(nameithink) {
                                 }
                             })
                                 .then((response) => {
-                                    if (response.status == 418) {
+                                    if (response.status === 418) {
                                         displayError("You've ran out of storage... Changes will not be saved until you free up storage!")
                                     }
                                 })
-                                .catch((error) => {
+                                .catch(() => {
                                     displayError("Failed to save changes, please try again later...")
                                 })
                         }
@@ -532,10 +487,10 @@ function updateNotes() {
                                     "Content-Type": "application/json; charset=UTF-8"
                                 }
                             })
-                                .then((response) => {
+                                .then(() => {
                                     updateNotes()
                                 })
-                                .catch((error) => {
+                                .catch(() => {
                                     displayError("Something went wrong! Please try again later...")
                                 })
                         } else {
@@ -551,9 +506,9 @@ function updateNotes() {
 
 updateNotes()
 
-newNote.addEventListener("click", (event) => {
+newNote.addEventListener("click", () => {
     let noteName = "New note"
-    let encryptedName = CryptoJS.AES.encrypt(noteName, password).toString();
+    let encryptedName = CryptoJS.AES.encrypt(noteName, password).toString(CryptoJS.enc.Utf8);
     fetch(remote + "/api/newnote", {
         method: "POST",
         body: JSON.stringify({
@@ -564,7 +519,7 @@ newNote.addEventListener("click", (event) => {
             "Content-Type": "application/json; charset=UTF-8"
         }
     })
-        .catch((error) => {
+        .catch(() => {
             displayError("Failed to create new note, please try again later...")
         })
         .then((response) => {
@@ -577,8 +532,8 @@ newNote.addEventListener("click", (event) => {
         });
 });
 function downloadObjectAsJson(exportObj, exportName) {
-    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
-    var downloadAnchorNode = document.createElement("a");
+    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    let downloadAnchorNode = document.createElement("a");
     downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", exportName + ".json");
     document.body.appendChild(downloadAnchorNode);
@@ -587,7 +542,6 @@ function downloadObjectAsJson(exportObj, exportName) {
 }
 
 function exportNotes() {
-    let noteExport = []
     fetch(remote + "/api/exportnotes", {
         method: "POST",
         body: JSON.stringify({
@@ -604,14 +558,10 @@ function exportNotes() {
                     exportNotes.innerText = "Decrypting " + i + "/" + noteCount
 
                     let bytes = CryptoJS.AES.decrypt(responseData[i]["title"], password);
-                    let originalTitle = bytes.toString(CryptoJS.enc.Utf8);
-
-                    responseData[i]["title"] = originalTitle
+                    responseData[i]["title"] = bytes.toString(CryptoJS.enc.Utf8)
 
                     let bytesd = CryptoJS.AES.decrypt(responseData[i]["content"], password);
-                    let originalContent = bytesd.toString(CryptoJS.enc.Utf8);
-
-                    responseData[i]["content"] = originalContent
+                    responseData[i]["content"] = bytesd.toString(CryptoJS.enc.Utf8)
                 }
                 let jsonString = JSON.parse(JSON.stringify(responseData))
 
@@ -635,7 +585,7 @@ function isFirstTimeVisitor() {
 }
 
 function firstNewVersion() {
-    if (localStorage.getItem("NEWVERSION") == "1.2") {
+    if (localStorage.getItem("NEWVERSION") === "1.2") {
         return false;
     } else {
         localStorage.setItem("NEWVERSION", "1.2")
@@ -647,19 +597,21 @@ function toggleMarkdown() {
     if (markdown.style.display === 'none') {
         markdown.style.display = 'inherit';
         markdowntoggle = true
+        renderMarkDown()
     } else {
         markdown.style.display = 'none';
         markdowntoggle = false
+        markdown.srcdoc = ""
     }
 }
 
-exportNotesButton.addEventListener("click", (event) => {
+exportNotesButton.addEventListener("click", () => {
     exportNotesButton.innerText = "Downloading..."
     exportNotes()
 });
 
-removeBox.addEventListener("click", (event) => {
-    if (selectedNote == 0) {
+removeBox.addEventListener("click", () => {
+    if (selectedNote === 0) {
         displayError("You need to select a note first!")
     } else {
         fetch(remote + "/api/removenote", {
@@ -672,18 +624,17 @@ removeBox.addEventListener("click", (event) => {
                 "Content-Type": "application/json; charset=UTF-8"
             }
         })
-            .then((response) => {
+            .then(() => {
                 updateNotes()
             })
-            .catch((error) => {
+            .catch(() => {
                 displayError("Something went wrong! Please try again later...")
             })
     }
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    var targethtml = "<!DOCTYPE html><html><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
-    markdown.srcdoc = targethtml
+    markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>"
 });
 
 if (isFirstTimeVisitor() && /Android|iPhone|iPod/i.test(navigator.userAgent)) {

@@ -1,10 +1,10 @@
 if (localStorage.getItem("DONOTSHARE-secretkey") !== null) {
-    window.location.replace("../app/index.html")
+    window.location.replace("/app/")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
 }
 if (localStorage.getItem("DONOTSHARE-password") !== null) {
-    window.location.replace("../app/index.html")
+    window.location.replace("/app/")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
 }
@@ -37,12 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById("homeserver").innerText = "Your homeserver is: " + remote + ". "
 });
 
-signupButton.addEventListener("click", (event) => {
+signupButton.addEventListener("click", () => {
     async function doStuff() {
         let username = usernameBox.value
         let password = passwordBox.value
 
-        if (username == "") {
+        if (username === "") {
             statusBox.innerText = "A username is required!"
             return
         }
@@ -50,7 +50,7 @@ signupButton.addEventListener("click", (event) => {
             statusBox.innerText = "Username cannot be more than 20 characters!"
             return
         }
-        if (password == "") {
+        if (password === "") {
             statusBox.innerText = "A password is required!"
             return
         }
@@ -68,7 +68,7 @@ signupButton.addEventListener("click", (event) => {
                 key = await hashwasm.sha3(key)
             }
             return key
-        };
+        }
 
 
         fetch(remote + "/api/signup", {
@@ -86,14 +86,14 @@ signupButton.addEventListener("click", (event) => {
                 async function doStuff() {
                     let responseData = await response.json()
 
-                    if (response.status == 200) {
-                        statusBox.innerText == "redirecting.."
+                    if (response.status === 200) {
+                        statusBox.innerText = "Redirecting...."
                         localStorage.setItem("DONOTSHARE-secretkey", responseData["key"])
                         localStorage.setItem("DONOTSHARE-password", await hashwasm.sha512(password))
 
-                        window.location.href = "../app/index.html"
+                        window.location.href = "/app/"
                     }
-                    else if (response.status == 409) {
+                    else if (response.status === 409) {
                         statusBox.innerText = "Username already taken!"
                         showElements(true)
                     }

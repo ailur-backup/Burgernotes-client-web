@@ -1,22 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <title>Burgernotes Privacy &amp; Terms</title>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="../static/css/style.css" />
-    <link rel="icon" href="../static/svg/favicon.svg">
-    <script>
-    if (window.location.href.endsWith('/index.html')) {
-        if (window.location.origin !== null) {
-            var currentUrl = window.location.href;
-            var newUrl = currentUrl.replace('/index.html', '');
-            window.location.href = newUrl;
-        }
-    }
-    </script>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    <link rel="icon" href="/static/svg/favicon.svg">
 </head>
 
 <body>
@@ -39,21 +30,21 @@
         <li>Web browser "User agent"</li>
     </ul>
     <h2 class="w300">Information we collect while using our services</h2>
-    <p>When you create an note, we collect and use this information:</p>
+    <p>When you create a note, we collect and use this information:</p>
     <ul>
         <li>Encrypted note content and title</li>
         <li>Note creator</li>
         <li>Note creation date</li>
         <li>Note last edited date</li>
     </ul>
-    <p>When you edit an note, we collect and use this information:</p>
+    <p>When you edit a note, we collect and use this information:</p>
     <ul>
         <li>Encrypted note content and title</li>
         <li>Note last edited date</li>
     </ul>
     <h2 class="w300">How we use your data</h2>
     <p>We use your data to make our services work. We don't share your information with third-parties.</p>
-    <h2 class="w300">We can't see notes you create's content and title</h2>
+    <h2 class="w300">We can't see the content and title of the notes you create</h2>
     <p>Your notes are <a href="https://en.wikipedia.org/wiki/End-to-end_encryption">encrypted end-to-end</a> using AES
         (Advanced Encryption Standard) 256-bit encryption.</p>
     <p>We can only see:</p>
@@ -79,7 +70,7 @@
     EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
     SUCH DAMAGES.</p>
     <br>
-    <button onclick="if(document.referrer!==' '){if(document.referrer!==''){window.location.href=document.referrer;}else{window.location.href='../index.html';}window.location.href=document.referrer; }else{window.location.href='../index.html';}" style="cursor: pointer; padding: 15px 20px;margin-right: auto;color: white;text-decoration: none;background-color: var(--theme-color);border-radius: 8px;border: medium;font-size: 15px;">Take me back where I was!</button>
+    <button onclick="if(document.referrer!==' '){if(document.referrer!==''){window.location.href=document.referrer;}else{window.location.href='/';}window.location.href=document.referrer; }else{window.location.href='../index.html';}" style="cursor: pointer; padding: 15px 20px;margin-right: auto;color: white;text-decoration: none;background-color: var(--theme-color);border-radius: 8px;border: medium;font-size: 15px;">Take me back where I was!</button>
     <br><br>
 </body>
 
