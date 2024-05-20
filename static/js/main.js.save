@@ -67,11 +67,8 @@ let selectedNote = 0
 let timer
 let waitTime = 400
 let indiv = false
-let mobile = false
 
 if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
-    mobile = true
-    noteBoxDiv.classList.add("mobile");
     noteBoxDiv.style.width = "0px";
     notesBar.style.width = "calc(100% + 7.5px)"
     noteBoxDiv.readOnly = true
@@ -88,9 +85,7 @@ if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
     notesBar.addEventListener("touchend", function (event) {
         touchendX = event.changedTouches[0].screenX;
         touchendY = event.changedTouches[0].screenY;
-        if (touchendX < touchstartX - 75) {
-            handleGesture();
-        }
+        handleGesture();
     }, false);
 
     noteBox.addEventListener("touchstart", function (event) {
@@ -101,26 +96,7 @@ if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
     noteBox.addEventListener("touchend", function (event) {
         touchendX = event.changedTouches[0].screenX;
         touchendY = event.changedTouches[0].screenY;
-        if (touchendX > touchstartX + 75) {
-            handleGesture();
-        } else if (touchendX < touchstartX - 75) {
-            enableMarkdown();
-        }
-    }, false);
-
-    markdown.addEventListener("touchstart", function (event) {
-        touchstartX = event.changedTouches[0].screenX;
-        touchstartY = event.changedTouches[0].screenY;
-    }, false);
-
-    markdown.addEventListener("touchend", function (event) {
-        touchendX = event.changedTouches[0].screenX;
-        touchendY = event.changedTouches[0].screenY;
-        if (touchendX > touchstartX + 75) {
-            disableMarkdown();
-        } else if (touchendX < touchstartX - 75) {
-            disableMarkdown();
-        }
+        handleGesture();
     }, false);
 }
 
@@ -180,7 +156,7 @@ function updateFont() {
     noteBox.style.fontSize = currentFontSize + "px"
     textSizeBox.innerText = currentFontSize + "px"
     if (markdowntoggle) {
-        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
+        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
     }
 }
 
@@ -404,7 +380,7 @@ function updateWordCount() {
 
 function renderMarkDown() {
     if (markdowntoggle) {
-        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>"
+        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>"
     }
 }
 
@@ -431,7 +407,7 @@ function selectNote(nameithink) {
         })
         .then((response) => {
             selectedNote = nameithink
-            if (mobile) {
+            if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
                 handleGesture()
             }
             noteBox.readOnly = false
@@ -631,6 +607,15 @@ function importNotes(plaintextNotes) {
     return JSON.stringify(plaintextNotes);
 }
 
+function isFirstTimeVisitor() {
+    if (localStorage.getItem("FIRSTVISIT") === null) {
+        localStorage.setItem("FIRSTVISIT", "1")
+        return true;
+    } else {
+        return false;
+    }
+}
+
 function firstNewVersion() {
     if (localStorage.getItem("NEWVERSION") === "1.2") {
         return false;
@@ -642,22 +627,14 @@ function firstNewVersion() {
 
 function toggleMarkdown() {
     if (markdown.style.display === 'none') {
-        enableMarkdown()
+        markdown.style.display = 'inherit';
+        markdowntoggle = true
+        renderMarkDown()
     } else {
-        disableMarkdown()
+        markdown.style.display = 'none';
+        markdowntoggle = false
+        markdown.srcdoc = ""
     }
-}
-
-function enableMarkdown() {
-    markdown.style.display = 'inherit';
-    markdowntoggle = true
-    renderMarkDown()
-}
-
-function disableMarkdown() {
-    markdown.style.display = 'none';
-    markdowntoggle = false
-    markdown.srcdoc = ""
 }
 
 exportNotesButton.addEventListener("click", () => {
@@ -704,8 +681,12 @@ removeBox.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>"
+    markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } body { font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>"
 });
+
+if (isFirstTimeVisitor() && /Android|iPhone|iPod/i.test(navigator.userAgent)) {
+    displayError("To use Burgernotes:\n  Swipe Right on a note to open it\n  Swipe left in the text boxes to return to notes\n  Click on a note to highlight it")
+}
 
 if (firstNewVersion()) {
     displayError("What's new in Burgernotes 1.2-1?\nNotes now support live editing\nFixed various bugs and issues in the client")

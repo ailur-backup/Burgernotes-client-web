@@ -151,6 +151,7 @@ body {
     border-color: var(--border-color);
     border-width: 0px;
     border-bottom-width: 1px;
+    display: flex;
 }
 
 .bottomBar {
@@ -166,6 +167,8 @@ body {
     border-width: 0px;
     border-top-width: 1px;
     display: flex;
+    text-wrap: nowrap;
+    overflow-x: scroll;
 }
 
 .bottomBar button {
@@ -176,6 +179,16 @@ body {
     font-size: 14px;
     padding-left: 7.5px;
     padding-right: 7.5px;
+}
+
+.bottomBar .markdownButton {
+    filter: invert(var(--invertdm));
+    padding-left: 17.5px;
+    padding-right: 17.5px;
+    background-image: url("../../static/svg/markdown.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 55%;
 }
 
 .bottomBar .removeButton {
@@ -238,14 +251,19 @@ body {
 }
 
 .topBar .logo {
-    padding-left: 12px;
+    margin-left: 12px;
+    background-color: transparent;
+    border: none;
+    color: var(--text-color);
+    white-space: break-spaces;
+    display: flex;
 }
 
 .topBar .usernameBox {
     text-align: right;
-    position: absolute;
+    margin-left: auto;
+    margin-right: 16px;
     cursor: pointer;
-    right: 12px;
 }
 
 .notesBar {
@@ -297,14 +315,14 @@ body {
     radial-gradient(38px circle at 19px 19px, #eee 50%, transparent 51%),
     linear-gradient(var(--contrast), var(--contrast));
     background-repeat: no-repeat;
-    background-size: 315px 250px, 315px 180px, 100px 100px, 225px 30px;
-    background-position: -315px 0, 0 0, 0px 190px, 50px 195px;
+    background-size: 200% 200%, 100% 200%, 50% 50%, 140% 12%;
+    background-position: -200% 0, 0 0, 0 76%, 16% 78%;
     animation: loading 1.5s infinite;
 }
 
 @keyframes loading {
     to {
-        background-position: 315px 0, 0 0, 0 190px, 50px 195px;
+        background-position: 200% 0, 0 0, 0 76%, 16% 78%;
     }
 }
 
@@ -333,31 +351,38 @@ body {
 }
 
 .noteBox {
-    resize: none;
     position: fixed;
     right: 0;
-    top: 55px;
-    padding: 4px;
+    top: 50px;
     border: none;
     font-size: 16px;
     color: var(--text-color);
     background-color: var(--editor);
-    width: calc(100% - 180px - 7px - 6px);
-    height: calc(100% - 50px - 6px - 8px - 30px);
+    width: calc(100% - 180px);
+    height: calc(100% - 50px - 30px);
     font-family: "Inter", sans-serif;
     display: flex;
+    flex-direction: row;
+    z-index: -1;
+}
+
+.noteBox.mobile {
+    flex-direction: column-reverse;
 }
 
 .noteBoxText {
+    resize: none;
     background-color: var(--editor);
     color: var(--text-color);
     border: none;
     width: 100%;
+    height: 100%;
     font-family: "Inter", sans-serif;
 }
 
 iframe#markdown {
     width: 100%;
+    height: 100%;
     border: none;
     border-left: solid var(--bar) 1px;
 }
@@ -384,26 +409,26 @@ iframe#markdown {
     padding: 10px;
     color: var(--text-color);
     border-radius: 8px;
-    min-width: 300px;
+    width: 300px;
     z-index: 3;
-
+    display: flex;
+    flex-direction: column;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: scroll;
 }
 
 .optionsDiv button {
     width: 100%;
     padding: 10px;
-    padding-bottom: 13px;
-    margin-right: 5px;
     margin-bottom: 7px;
-    padding-left: 15px;
-    padding-right: 15px;
     color: var(--theme-text-color);
     border: none;
     text-decoration: none;
     background-color: var(--theme-color);
     border-radius: 8px;
     cursor: pointer;
-
+    font-size: 15px;
 }
 
 .optionsDiv .normalButton {
@@ -481,7 +506,10 @@ iframe#markdown {
     height: 18px;
     padding-right: 5px;
     filter: invert(var(--invert));
-    transform: translateY(3.25px);
+    position: absolute;
+    left: 20px;
+    scale: 1.3;
+    transform: translateY(1px);
 }
 
 .optionsDiv .section {
@@ -504,19 +532,23 @@ iframe#markdown {
     margin-bottom: 5px;
     padding: 10px;
     height: 35px;
+    display: flex;
+    overflow-y: scroll;
 }
 
 .sessionDiv div p {
     display: inline;
-    position: absolute;
-    transform: translateY(-7.5px);
+    transform: translateY(-20px);
+    overflow-wrap: anywhere;
+    margin-left: 10px;
 }
 
 .sessionDiv div button {
-    position: absolute;
+    position: static;
     border-radius: 99px;
-    right: 15px;
-    width: 40px;
+    max-width: 40px;
+    min-width: 40px;
+    margin-left: auto;
     height: 40px;
     font-size: 16px;
     transform: translateY(-2px);
@@ -526,6 +558,7 @@ iframe#markdown {
     display: inline;
     filter: none;
     height: 100%;
+    position: static;
 }
 
 /* Sign up/log in div */
