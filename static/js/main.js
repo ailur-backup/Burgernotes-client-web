@@ -641,8 +641,12 @@ function importNotes(plaintextNotes) {
     .then((response) => {
         async function doStuff() {
             if (response.status === 500) {
+                optionsDiv.classList.add("hidden")
+                importNotesDiv.classList.add("hidden")
                 displayError("Something went wrong! Perhaps your note file was invalid?")
             } else {
+                optionsDiv.classList.add("hidden")
+                importNotesDiv.classList.add("hidden")
                 displayError("Notes uploaded!")
                 updateNotes()
             }
