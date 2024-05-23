@@ -628,7 +628,27 @@ function importNotes(plaintextNotes) {
         let encryptedContent = CryptoJS.AES.encrypt(originalContent, password).toString();
         plaintextNotes[i]["content"] = encryptedContent;
     }
-    return JSON.stringify(plaintextNotes);
+    fetch(remote + "/api/importnotes", {
+        method: "POST",
+        body: JSON.stringify({
+            "secretKey": localStorage.getItem("DONOTSHARE-secretkey"),
+            "notes": JSON.stringify(plaintextNotes)
+        }),
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8"
+        }
+    })
+    .then((response) => {
+        async function doStuff() {
+            if (response.status === 500) {
+                displayError("Something went wrong! Perhaps your note file was invalid?")
+            } else {
+                displayError("Notes uploaded!")
+                updateNotes()
+            }
+        }
+        doStuff()
+    })
 }
 
 function firstNewVersion() {
@@ -670,9 +690,7 @@ importFile.addEventListener('change', function(e) {
         "load",
         () => {
             let decrypted = JSON.parse(fileread.result)
-            console.log(decrypted)
-            let encrypted = importNotes(decrypted)
-            console.log(encrypted)
+            importNotes(decrypted)
         },
         false,
     );
