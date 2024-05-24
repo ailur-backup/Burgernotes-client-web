@@ -31,8 +31,10 @@
     </div>
 
     <div id="notesBar" class="notesBar">
-        <button id="newNote" class="newNote"><img id="newNoteImage" draggable="false" alt=""
-                src="/static/svg/add.svg">New note</button>
+        <button id="newNote" class="newNote">
+            <div class="vcenter"><img id="newNoteImage" draggable="false" alt="" src="/static/svg/add.svg"></div>
+            <div class="vcenter">New note</div>
+        </button>
         <div id="notesDiv" class="notesDiv">
             <button class="loadingStuff" id="loadingStuff"></button>
         </div>
@@ -42,17 +44,17 @@
         <div id="optionsDiv" class="optionsDiv hidden">
             <button class="exit" id="exitThing">X</button>
             <h3 class="w300">Your account</h3>
-            <p id="usernameThing"></p>
+            <p id="usernameThing">Cannot connect to the server</p>
             <div class="section"></div>
             <p>Storage</p>
             <progress id="storageProgressThing" value="0" max="100"></progress><br>
-            <p id="storageThing"></p>
+            <p id="storageThing">Cannot connect to the server</p>
             <div class="section"></div>
             <p>Account managment</p>
-            <button id="deleteMyAccountButton"><img src="/static/svg/delete_forever.svg" alt="">Delete my account</button>
+            <button id="deleteMyAccountButton"><img src="/static/svg/delete_forever.svg" alt="">Delete account</button>
             <button id="exportNotesButton"><img src="/static/svg/download.svg" alt="">Export notes</button>
             <button id="importNotesButton"><img src="/static/svg/upload.svg" alt="">Import notes</button>
-            <button id="sessionManagerButton"><img src="/static/svg/list.svg" alt="">Session manager</button>
+            <button id="sessionManagerButton"><img src="/static/svg/list.svg" alt="">View sessions</button>
             <button class="lastButton" id="logOutButton"><img src="/static/svg/logout.svg" alt="">Log out</button>
         </div>
         <div id="sessionManagerDiv" class="optionsDiv hidden">

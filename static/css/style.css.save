@@ -339,21 +339,19 @@ body {
 .notesBar .newNote {
     height: 41px;
     line-height: 41px;
+    width: 100%;
     text-align: left;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
     font-size: 16px;
+    margin-bottom: 5px;
     cursor: pointer;
-    display: flex;
-    margin-top: 5px;
-    background: var(--note-button);
-    border-radius: 8px;
-    border: var(--border-color) solid 1px;
-    width: calc(100% - 7px - 7px - 3.5px);
-    margin-left: 5px;
 }
 
 .notesBar .newNote img {
     height: 32px;
     padding-right: 5px;
+    transform: translateY(30%);
 }
 
 .noteBox {
@@ -520,7 +518,8 @@ iframe#markdown {
 
 .optionsDiv .section {
     width: 100%;
-    border-top: var(--border-color) solid 1px;
+    height: 1px;
+    background-color: var(--border-color);
     margin-top: 2px;
     margin-bottom: 10px;
 }
@@ -531,19 +530,21 @@ iframe#markdown {
 }
 
 .sessionDiv div {
+    position: relative;
     background-color: var(--session-color);
     border-radius: 8px;
     margin-bottom: 5px;
     padding: 10px;
-    padding-bottom: 0px;
     display: flex;
+    overflow-y: scroll;
 }
 
 .sessionDiv div p {
     display: inline;
+    transform: translateY(-20px);
     overflow-wrap: anywhere;
-    margin: 10px;
-    margin-top: 0px;
+    margin-left: 10px;
+    margin-right: 10o
 }
 
 .sessionDiv div button {
@@ -560,9 +561,8 @@ iframe#markdown {
 .sessionDiv img {
     display: inline;
     filter: none;
-    height: 35px;
+    height: 100%;
     position: static;
-    margin-right: 5px;
 }
 
 /* Sign up/log in div */
@@ -628,12 +628,6 @@ iframe#markdown {
 
 .hidden {
     display: none !important;
-}
-
-.vcenter {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
 }
 
 .w100 {

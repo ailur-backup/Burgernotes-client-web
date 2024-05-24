@@ -184,6 +184,42 @@ function updateFont() {
     }
 }
 
+async function checknetwork() {
+    fetch(remote + "/api/loggedin", {
+        method: "POST",
+        body: JSON.stringify({
+            secretKey: localStorage.getItem("DONOTSHARE-secretkey"),
+        }),
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8"
+        }
+    })
+    .catch(() => {
+        noteBox.readOnly = true
+        noteBox.value = ""
+        noteBox.placeholder = "You are currently offline."
+        displayError("Failed to connect to the server.\nPlease check your internet connection.")
+    })
+    .then((response) => response)
+    .then((response) => {
+        if (response.status == 400) {
+            displayError("Something went wrong! Signing you out...")
+            closeErrorButton.classList.add("hidden")
+            usernameBox.innerText = ""
+            setTimeout(function () {
+                window.location.replace("/logout")
+            }, 2500);
+        } else if (response.status == 200) {
+            updateUserInfo()
+        } else {
+            noteBox.readOnly = true
+            noteBox.value = ""
+            noteBox.placeholder = "You are currently offline."
+            displayError("Failed to connect to the server.\nPlease check your internet connection.")
+        }
+    });
+}
+
 async function waitforedit() {
     while(true) {
         await fetch(remote + "/api/waitforedit", {
@@ -245,15 +281,10 @@ function updateUserInfo() {
             "Content-Type": "application/json; charset=UTF-8"
         }
     })
-        .catch(() => {
-            noteBox.readOnly = true
-            noteBox.value = ""
-            noteBox.placeholder = "Failed to connect to the server.\nPlease check your internet connection."
-        })
         .then((response) => {
             async function doStuff() {
                 if (response.status === 500) {
-                    displayError("Something went wrong! Signing you out..")
+                    displayError("Something went wrong! Signing you out...")
                     closeErrorButton.classList.add("hidden")
                     usernameBox.innerText = ""
                     setTimeout(function () {
@@ -391,8 +422,6 @@ exitSessionsThing.addEventListener("click", () => {
     optionsDiv.classList.remove("hidden")
     sessionManagerDiv.classList.add("hidden")
 });
-
-updateUserInfo()
 
 function updateWordCount() {
     let wordCount = noteBox.value.split(" ").length
@@ -730,7 +759,8 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 if (firstNewVersion()) {
-    displayError("What's new in Burgernotes 1.2-1?\nNotes now support live editing\nFixed various bugs and issues in the client")
+    displayError("What's new in Burgernotes 2.0?\nRestyled client\nAdded changing passwords\nMigrated to OAuth2\nAdded importing notes")
 }
 
-//waitforedit()
+checknetwork()
+waitforedit()
