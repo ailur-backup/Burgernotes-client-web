@@ -220,31 +220,6 @@ async function checknetwork() {
     });
 }
 
-async function waitforedit() {
-    while(true) {
-        await fetch(remote + "/api/waitforedit", {
-            method: "POST",
-            body: JSON.stringify({
-                "secretKey": localStorage.getItem("DONOTSHARE-secretkey")
-            }),
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8"
-            }
-        })
-        .then(async (response) => {
-            async function doStuff() {
-                const data = await response.json();
-                // Access the "note" field from the response
-                const note = data["note"];
-                if (note === selectedNote) {
-                    selectNote(selectedNote)
-                }
-            }
-            doStuff()
-        });
-    }
-}
-
 if (localStorage.getItem("SETTING-fontsize") === null) {
     localStorage.setItem("SETTING-fontsize", "16")
     updateFont()
@@ -763,4 +738,3 @@ if (firstNewVersion()) {
 }
 
 checknetwork()
-waitforedit()
