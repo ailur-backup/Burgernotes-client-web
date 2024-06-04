@@ -745,11 +745,9 @@ iframe#markdown {
 }
 
 .mainDiv .black, .mainDiv .black p {
-    background-color: #000000;
-    color: #fff;
+    background-color: #f8f8f8;
 }
 .mainDiv .feature h1 {
-    color: #fff;
     margin: 0;
     margin-top: 10px;
     font-family: "Space Grotesk", sans-serif;
