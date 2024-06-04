@@ -1,4 +1,5 @@
-@import url("../fonts/inter.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
 
 :root {
     --contrast: #eee;
@@ -689,15 +690,17 @@ iframe#markdown {
 }
 
 .startDiv {
-    text-align: left;
-    margin-top: 8vh;
-    margin-left: 7vh;
-    display: flex;
-    flex-direction: column;
+    
 }
 
 .startDiv h1 {
-    margin: 0;
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-size: 48px;
+}
+
+.startDiv p {
+    font-size: 18px;
 }
 
 .mainDiv a {
@@ -707,22 +710,25 @@ iframe#markdown {
     margin-right: auto;
     color: white;
     text-decoration: none;
-    background-color: var(--theme-color);
-    border-radius: 8px;
+    background-color: #592ACB;
+    border-radius: 12px;
+}
+
+.mainDiv .burgerText {
+    width: 75%;
+    margin-left: 12.5%;
 }
 
 .mainDiv .feature {
-    width: calc(100% - 7vh - 7vh - 3.5vh);
+    width: calc(100% - 12vh - 12vh - 3.5vh);
     margin-bottom: 10px;
-    margin-left: 7vh;
-    margin-right: 7vh;
+    margin-left: 12vh;
+    margin-right: 12vh;
     padding-left: 10px;
     padding-right: 10px;
 
-    border: solid;
-    border-radius: 8px;
-    border-width: 1px;
-    border-color: var(--border-color);
+    border: none;
+    border-radius: 12px;
 
     padding-top: 15px;
     padding-bottom: 15px;
@@ -736,6 +742,24 @@ iframe#markdown {
 
 .mainDiv .yellow {
     background-color: #ffffeb;
+}
+
+.mainDiv .black, .mainDiv .black p {
+    background-color: #000000;
+    color: #fff;
+}
+.mainDiv .feature h1 {
+    color: #fff;
+    margin: 0;
+    margin-top: 10px;
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
+    font-size: 22px;
+}
+.mainDiv .feature p {
+    width: 70%;
+    padding-left: 15%;
+    margin-bottom: 0;
 }
 
 .links {
