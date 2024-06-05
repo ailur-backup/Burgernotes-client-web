@@ -9,7 +9,7 @@
     --editor: #ffffff;
     --text-color: #000000;
     --border-color: #dadada;
-    --theme-color: #157efb;
+    --theme-color: #592acb;
     --theme-text-color: #ffffff;
     --exit-color: #e9e9e9;
     --session-color: #f4f4f4;
@@ -32,7 +32,7 @@
         --editor: #202124;
         --text-color: #ffffff;
         --border-color: #393b3d;
-        --theme-color: #157efb;
+        --theme-color: #592acb;
         --theme-text-color: #ffffff;
         --exit-color: #454649;
         --session-color: #2d2f31;
@@ -574,6 +574,11 @@ iframe#markdown {
     padding: 30px;
     border: solid 1px var(--border-color);
     background-color: var(--bar);
+}
+
+.inoutdiv h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-optical-sizing: auto;
 }
 
 .inoutdiv input {
