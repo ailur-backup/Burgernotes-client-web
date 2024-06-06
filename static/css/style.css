@@ -4,7 +4,6 @@
 :root {
     --contrast: #eee;
     --contrast2: #fff;
-    --invertdm: 0%;
     --bar: #f4f4f4;
     --editor: #ffffff;
     --text-color: #000000;
@@ -18,6 +17,7 @@
     --unselected-note-button-text-color: #000000;
     --option-background: #ffffff;
     --invert: 100%;
+    --sessioninvert: 100%;
     --bottomBarHover: #e4e4e4;
 }
 
@@ -25,7 +25,6 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-	--invertdm: 100%;
         --contrast: #2d2f21;
         --contrast2: #2d2f21;
         --bar: #2d2f31;
@@ -41,6 +40,7 @@
         --unselected-note-button-text-color: #ffffff;
         --option-background: #202124;
         --invert: 100%;
+        --sessioninvert: 0%;
         --bottomBarHover: #e4e4e4;
     }
 
@@ -54,10 +54,6 @@
 
     .newNote {
         color: white !important;
-    }
-
-    .newNote img {
-        filter: invert(100%);
     }
 
     #errorDiv p {
@@ -102,10 +98,10 @@
     }
 
     .mainDiv .black {
-        background-color: #000000 !important;
+        background-color: var(--bar) !important;
     }
     .mainDiv .black p {
-        background-color: #000000 !important;
+        background-color: var(--bar) !important;
     }
 
     .mainDiv .yellow {
@@ -180,7 +176,7 @@ body {
     border-top-width: 1px;
     display: flex;
     text-wrap: nowrap;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .bottomBar button {
@@ -194,7 +190,6 @@ body {
 }
 
 .bottomBar .markdownButton {
-    filter: invert(var(--invertdm));
     padding-left: 17.5px;
     padding-right: 17.5px;
     background-image: url("../../static/svg/markdown.svg");
@@ -204,7 +199,6 @@ body {
 }
 
 .bottomBar .removeButton {
-    filter: invert(var(--invertdm));
     padding-left: 17.5px;
     padding-right: 17.5px;
     background-image: url("../../static/svg/delete.svg");
@@ -234,7 +228,6 @@ body {
     height: 90px;
 
     background-color: var(--bar);
-
     border: solid;
     border-color: var(--border-color);
     border-width: 1px;
@@ -279,7 +272,6 @@ body {
 
 .topBar img {
     scale: 0.5;
-    filter: invert(var(--invertdm));
 }
 
 .notesBar {
@@ -298,7 +290,7 @@ body {
 
 .notesDiv {
     height: calc(100% - 50px);
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .notesBar .noteButton, .notesBar .loadingStuff {
@@ -433,7 +425,7 @@ iframe#markdown {
     flex-direction: column;
     max-width: 90%;
     max-height: 90%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .optionsDiv button {
@@ -523,11 +515,11 @@ iframe#markdown {
 .optionsDiv img {
     height: 18px;
     padding-right: 5px;
-    filter: invert(var(--invert));
     position: absolute;
     left: 20px;
     scale: 1.3;
     transform: translateY(1px);
+    filter: invert(var(--sessioninvert)) !important;
 }
 
 .optionsDiv .section {
@@ -571,7 +563,7 @@ iframe#markdown {
 
 .sessionDiv img {
     display: inline;
-    filter: none;
+    filter: none !important;
     height: 35px;
     position: static;
     margin-right: 5px;
@@ -651,6 +643,7 @@ iframe#markdown {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    height: 100%;
 }
 
 .w100 {
@@ -717,6 +710,20 @@ iframe#markdown {
 
 .startDiv p {
     font-size: 18px;
+}
+
+.downloadDiv {
+    justify-content: center;
+    display: flex;
+}
+
+.downloadDiv p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.downloadDiv a {
+    margin: 0 !important;
 }
 
 .mainDiv a {
@@ -801,7 +808,6 @@ iframe#markdown {
 .links a img {
     transform: translateY(5px);
     padding-right: 10px;
-    filter: invert(var(--invertdm));
 }
 
 .links a:hover {
