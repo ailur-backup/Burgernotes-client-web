@@ -97,6 +97,17 @@
         background-color: rgba(0, 0, 0, 0) !important;
         color: var(--text-color);
     }
+    .mainDiv {
+        color: white !important;
+    }
+
+    .mainDiv .black {
+        background-color: #000000 !important;
+    }
+    .mainDiv .black p {
+        background-color: #000000 !important;
+    }
+
     .mainDiv .yellow {
         border-color: #e9e98d !important;
     }
