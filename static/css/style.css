@@ -1,5 +1,5 @@
-@import url("/static/fonts/inter.css");
-@import url("/static/fonts/space-grotesk.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap");
 
 :root {
     --contrast: #eee;
@@ -8,7 +8,7 @@
     --editor: #ffffff;
     --text-color: #000000;
     --border-color: #dadada;
-    --theme-color: #1c71d8;
+    --theme-color: #592acb;
     --theme-text-color: #ffffff;
     --exit-color: #e9e9e9;
     --session-color: #f4f4f4;
@@ -31,7 +31,7 @@
         --editor: #202124;
         --text-color: #ffffff;
         --border-color: #393b3d;
-        --theme-color: #3584e4;
+        --theme-color: #592acb;
         --theme-text-color: #ffffff;
         --exit-color: #454649;
         --session-color: #2d2f31;
@@ -140,7 +140,7 @@ body {
 }
 
 .hiddenButton {
-    right: 0px;
+    right: 0;
     position: fixed;
     background-color: var(--editor);
     color: var(--editor);
@@ -157,7 +157,7 @@ body {
 
     border: solid;
     border-color: var(--border-color);
-    border-width: 0px;
+    border-width: 0;
     border-bottom-width: 1px;
     display: flex;
 }
@@ -172,7 +172,7 @@ body {
 
     border: solid;
     border-color: var(--border-color);
-    border-width: 0px;
+    border-width: 0;
     border-top-width: 1px;
     display: flex;
     text-wrap: nowrap;
@@ -283,7 +283,7 @@ body {
     background-color: var(--bar);
     border: solid;
     border-color: var(--border-color);
-    border-width: 0px;
+    border-width: 0;
     border-right-width: 1px;
     border-top-width: 1px;
 }
@@ -296,7 +296,7 @@ body {
 .notesBar .noteButton, .notesBar .loadingStuff {
     width: calc(100% - 7px - 7px - 3.5px);
     height: 35px;
-    line-height: 0px;
+    line-height: 0;
     padding: 10px;
     margin: 5px;
     margin-bottom: 0;
@@ -436,18 +436,18 @@ iframe#markdown {
     border: none;
     text-decoration: none;
     background-color: var(--theme-color);
-    border-radius: 10px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 15px;
 }
 
 .optionsDiv .normalButton {
     width: auto;
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .optionsDiv .lastButton {
-    margin-bottom: 0px;
+    margin-bottom: 0;
 }
 
 .optionsDiv input {
@@ -460,7 +460,7 @@ iframe#markdown {
     border: solid;
     border-color: var(--border-color);
     border-width: 1px;
-    border-radius: 25px;
+    border-radius: 8px;
 }
 
 .optionsDiv .mfacheckbox {
@@ -539,7 +539,7 @@ iframe#markdown {
     border-radius: 8px;
     margin-bottom: 5px;
     padding: 10px;
-    padding-bottom: 0px;
+    padding-bottom: 0;
     display: flex;
 }
 
@@ -547,7 +547,7 @@ iframe#markdown {
     display: inline;
     overflow-wrap: anywhere;
     margin: 10px;
-    margin-top: 0px;
+    margin-top: 0;
 }
 
 .sessionDiv div button {
@@ -594,7 +594,8 @@ iframe#markdown {
     border: solid;
     border-color: var(--border-color);
     border-width: 1px;
-    border-radius: 25px;
+    border-radius: 8px;
+
 }
 
 .inoutdiv button {
@@ -606,7 +607,7 @@ iframe#markdown {
     padding-right: 20px;
 
     border: none;
-    border-radius: 25px;
+    border-radius: 8px;
 
     font-size: 14px;
 
@@ -712,15 +713,9 @@ iframe#markdown {
     font-size: 18px;
 }
 
-.hAlign {
+.downloadDiv {
     justify-content: center;
     display: flex;
-}
-
-.vAlign {
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
 }
 
 .downloadDiv p {
@@ -739,8 +734,8 @@ iframe#markdown {
     margin-right: auto;
     color: white;
     text-decoration: none;
-    background-color: var(--theme-color);
-    border-radius: 25px;
+    background-color: #592ACB;
+    border-radius: 12px;
 }
 
 .mainDiv .burgerText {
@@ -760,7 +755,6 @@ iframe#markdown {
     border-radius: 12px;
 
     padding-top: 15px;
-    padding-bottom: 15px;
     font-size: 17px;
     padding-bottom: 30px;
 }
