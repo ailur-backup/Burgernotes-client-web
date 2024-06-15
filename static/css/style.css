@@ -16,17 +16,15 @@
     --note-button-text-color: #ffffff;
     --unselected-note-button-text-color: #000000;
     --option-background: #ffffff;
-    --invert: 100%;
-    --sessioninvert: 100%;
-    --bottomBarHover: #e4e4e4;
+    --invertdm: 0%;
 }
 
 /* dark mode */
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --contrast: #2d2f21;
-        --contrast2: #2d2f21;
+        --contrast: #323436;
+        --contrast2: #202124;
         --bar: #2d2f31;
         --editor: #202124;
         --text-color: #ffffff;
@@ -39,9 +37,7 @@
         --note-button-text-color: #ffffff;
         --unselected-note-button-text-color: #ffffff;
         --option-background: #202124;
-        --invert: 100%;
-        --sessioninvert: 0%;
-        --bottomBarHover: #e4e4e4;
+        --invertdm: 100%;
     }
 
     .startDiv p {
@@ -180,8 +176,9 @@ body {
 }
 
 .bottomBar button {
+    filter: invert(var(--invertdm));
     background-color: rgba(0, 0, 0, 0);
-    color: var(--text-color);
+    color: #000000;
     height: 100%;
     border: none;
     font-size: 14px;
@@ -212,7 +209,7 @@ body {
 }
 
 .bottomBar button:hover {
-    background-color: var(--bottomBarHover);
+    background-color: var(--note-button);
 }
 
 .bottomBar .right {
@@ -268,6 +265,7 @@ body {
     text-align: right;
     margin-left: auto;
     cursor: pointer;
+    filter: invert(var(--invertdm));
 }
 
 .topBar img {
@@ -358,6 +356,7 @@ body {
 .notesBar .newNote img {
     height: 32px;
     padding-right: 5px;
+    filter: invert(var(--invertdm));
 }
 
 .noteBox {
@@ -497,7 +496,7 @@ iframe#markdown {
     background: var(--theme-color);
 }
 
-.optionsDiv progresss::-webkit-progress-value {
+.optionsDiv progress::-webkit-progress-value {
     background: var(--theme-color);
 }
 
@@ -519,7 +518,7 @@ iframe#markdown {
     left: 20px;
     scale: 1.3;
     transform: translateY(1px);
-    filter: invert(var(--sessioninvert)) !important;
+    filter: invert(100%);
 }
 
 .optionsDiv .section {
@@ -563,7 +562,7 @@ iframe#markdown {
 
 .sessionDiv img {
     display: inline;
-    filter: none !important;
+    filter: invert(var(--invertdm));
     height: 35px;
     position: static;
     margin-right: 5px;
@@ -813,6 +812,7 @@ iframe#markdown {
 .links a img {
     transform: translateY(5px);
     padding-right: 10px;
+    filter: invert(var(--invertdm));
 }
 
 .links a:hover {
