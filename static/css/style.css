@@ -8,7 +8,7 @@
     --editor: #ffffff;
     --text-color: #000000;
     --border-color: #dadada;
-    --theme-color: #592acb;
+    --theme-color: #1c71d8;
     --theme-text-color: #ffffff;
     --exit-color: #e9e9e9;
     --session-color: #f4f4f4;
@@ -31,7 +31,7 @@
         --editor: #202124;
         --text-color: #ffffff;
         --border-color: #393b3d;
-        --theme-color: #592acb;
+        --theme-color: #3584e4;
         --theme-text-color: #ffffff;
         --exit-color: #454649;
         --session-color: #2d2f31;
@@ -436,7 +436,7 @@ iframe#markdown {
     border: none;
     text-decoration: none;
     background-color: var(--theme-color);
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 15px;
 }
@@ -460,7 +460,7 @@ iframe#markdown {
     border: solid;
     border-color: var(--border-color);
     border-width: 1px;
-    border-radius: 8px;
+    border-radius: 10px;
 }
 
 .optionsDiv .mfacheckbox {
@@ -594,8 +594,7 @@ iframe#markdown {
     border: solid;
     border-color: var(--border-color);
     border-width: 1px;
-    border-radius: 8px;
-
+    border-radius: 25px;
 }
 
 .inoutdiv button {
@@ -607,7 +606,7 @@ iframe#markdown {
     padding-right: 20px;
 
     border: none;
-    border-radius: 8px;
+    border-radius: 25px;
 
     font-size: 14px;
 
@@ -713,9 +712,15 @@ iframe#markdown {
     font-size: 18px;
 }
 
-.downloadDiv {
+.hAlign {
     justify-content: center;
     display: flex;
+}
+
+.vAlign {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
 }
 
 .downloadDiv p {
@@ -734,8 +739,8 @@ iframe#markdown {
     margin-right: auto;
     color: white;
     text-decoration: none;
-    background-color: #592ACB;
-    border-radius: 12px;
+    background-color: var(--theme-color);
+    border-radius: 25px;
 }
 
 .mainDiv .burgerText {
