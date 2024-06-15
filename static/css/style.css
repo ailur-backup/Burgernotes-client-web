@@ -594,6 +594,7 @@ iframe#markdown {
     border-color: var(--border-color);
     border-width: 1px;
     border-radius: 25px;
+    min-width: 20px;
 }
 
 .inoutdiv button {
@@ -722,9 +723,12 @@ iframe#markdown {
     flex-direction: column;
 }
 
+.downloadDiv {
+    flex-wrap: wrap;
+}
+
 .downloadDiv p {
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 0px;
 }
 
 .downloadDiv a {
