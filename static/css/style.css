@@ -66,6 +66,7 @@
 
     .burgerSession img {
         filter: invert(100%) !important;
+        -webkit-filter: invert(100%) !important;
     }
 
     .links a {
@@ -87,6 +88,7 @@
 
     .flathubLogo {
         filter: invert(100%);
+        -webkit-filter: invert(100%);
     }
 
     .feature {
@@ -525,6 +527,7 @@ iframe#markdown {
     scale: 1.3;
     transform: translateY(1px);
     filter: invert(var(--sessioninvert)) !important;
+    -webkit-filter: invert(var(--sessioninvert)) !important;
 }
 
 .optionsDiv .section {
@@ -569,6 +572,7 @@ iframe#markdown {
 .sessionDiv img {
     display: inline;
     filter: none !important;
+    -webkit-filter: none !important;
     height: 35px;
     position: static;
     margin-right: 5px;
