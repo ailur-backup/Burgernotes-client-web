@@ -752,7 +752,7 @@ iframe#markdown {
 }
 
 .mainDiv .feature {
-    width: calc(100% - 12vh - 12vh - 3.5vh);
+    max-width: calc(100% - 12vh - 12vh - 3.5vh);
     margin-bottom: 10px;
     margin-left: 12vh;
     margin-right: 12vh;
@@ -765,6 +765,7 @@ iframe#markdown {
     padding-top: 15px;
     font-size: 17px;
     padding-bottom: 30px;
+    overflow-x: auto;
 }
 
 .mainDiv .green {
