@@ -19,22 +19,29 @@ let usernameBox = document.getElementById("usernameBox")
 let passwordBox = document.getElementById("passwordBox")
 let statusBox = document.getElementById("statusBox")
 let signupButton = document.getElementById("signupButton")
+let opButton = document.getElementById("opButton")
 
 function showElements(yesorno) {
     if (!yesorno) {
         usernameBox.classList.add("hidden")
         passwordBox.classList.add("hidden")
         signupButton.classList.add("hidden")
+        opButton.classList.add("hidden")
     }
     else {
         usernameBox.classList.remove("hidden")
         passwordBox.classList.remove("hidden")
         signupButton.classList.remove("hidden")
+        opButton.classList.remove("hidden")
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("homeserver").innerText = "Your homeserver is: " + remote + ". "
+});
+
+opButton.addEventListener("click", () => {
+    window.location.href = "/login"
 });
 
 signupButton.addEventListener("click", () => {
@@ -43,19 +50,19 @@ signupButton.addEventListener("click", () => {
         let password = passwordBox.value
 
         if (username === "") {
-            statusBox.innerText = "A username is required!"
+            statusBox.innerText = "Username required ⚠️"
             return
         }
         if ((username).length > 20) {
-            statusBox.innerText = "Username cannot be more than 20 characters!"
+            statusBox.innerText = "Username cannot be more than 20 characters ⚠️"
             return
         }
         if (password === "") {
-            statusBox.innerText = "A password is required!"
+            statusBox.innerText = "Password required ⚠️"
             return
         }
         if ((password).length < 8) {
-            statusBox.innerText = "8 or more characters are required!"
+            statusBox.innerText = "Password must be at least 8 characters ⚠️"
             return
         }
 
@@ -98,7 +105,7 @@ signupButton.addEventListener("click", () => {
                         showElements(true)
                     }
                     else {
-                        statusBox.innerText = "Something went wrong!"
+                        statusBox.innerText = "Something went wrong! (error code: " + response.status + ")"
                         showElements(true)
                     }
                 }

@@ -21,6 +21,7 @@ let statusBox = document.getElementById("statusBox")
 let signupButton = document.getElementById("signupButton")
 let inputNameBox = document.getElementById("inputNameBox")
 let backButton = document.getElementById("backButton")
+let opButton = document.getElementById("opButton")
 
 usernameBox.classList.remove("hidden")
 inputNameBox.innerText = "Username:"
@@ -32,13 +33,15 @@ function showInput(inputType) {
         usernameBox.classList.remove("hidden")
         passwordBox.classList.add("hidden")
         backButton.classList.add("hidden")
+        opButton.classList.remove("hidden")
         inputNameBox.innerText = "Username:"
-        statusBox.innerText = "Login to your Burgernotes account!"
+        statusBox.innerText = "Use your Burgernotes account"
         currentInputType = 0
     } else if (inputType === 1) {
         usernameBox.classList.add("hidden")
         passwordBox.classList.remove("hidden")
         backButton.classList.remove("hidden")
+        opButton.classList.add("hidden")
         inputNameBox.innerText = "Password:"
         currentInputType = 1
     } else if (inputType === 2) {
@@ -47,6 +50,7 @@ function showInput(inputType) {
         signupButton.classList.add("hidden")
         backButton.classList.add("hidden")
         inputNameBox.classList.add("hidden")
+        opButton.classList.add("hidden")
         inputNameBox.innerText = "Password:"
         currentInputType = 2
     }
@@ -71,14 +75,18 @@ function showElements(yesorno) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("homeserver").innerText = "Your homeserver is: " + remote + ". "
+});
+
+opButton.addEventListener("click", () => {
+    window.location.href = "/signup"
 });
 
 signupButton.addEventListener("click", () => {
     if (passwordBox.classList.contains("hidden")) {
         if (usernameBox.value === "") {
-            statusBox.innerText = "A username is required!"
+            statusBox.innerText = "Username required!"
             return
         } else {
             statusBox.innerText = "Welcome back, " + usernameBox.value + "!"

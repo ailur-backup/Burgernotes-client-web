@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Login - Burgernotes</title>
+    <title>Sign in - Burgernotes</title>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -15,17 +15,16 @@
     <p class="credit"></p>
     <img src="/static/img/background.jpg" class="background" alt="">
     <div class="inoutdiv">
-        <h2>Login</h2>
+        <h2>Sign in</h2>
         <p id="statusBox"></p>
         <span id="inputNameBox" style="margin-right: 10px;color: var(--text-color);"></span>
         <input id="usernameBox" class="hidden" type="text" placeholder="Enter your username">
         <input id="passwordBox" class="hidden" type="password" placeholder="Enter your password">
         <button id="signupButton">Next</button>
-        <button id="backButton" class="hidden">Back</button>
-        <br>
-        <br>
-        <p>Don't have an account? If so, <a href="/signup/">Create one here!</a></p>
-        <div style="display: flex;"><p id="homeserver">Your homeserver is loading... </p><div style="display: flex;flex-direction: column;justify-content: center;"><a href="/homeserver">Change</a></div></div>
+        <button id="backButton" class="hidden nonimportant">Back</button>
+        <button id="opButton" class="nonimportant">Create account</button>
+        <br><br><br><br>
+        <div style="display: flex;"><p class="hidden" id="homeserver">Your homeserver is loading... </p><div style="display: flex;flex-direction: column;justify-content: center;"><a class="hidden" href="/homeserver">Change</a></div></div>
         <a href="/privacy/">Privacy &amp; Terms</a>
     </div>
 

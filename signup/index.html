@@ -15,15 +15,15 @@
     <p class="credit">Image by perga (@pergagreen on discord)</p>
     <img src="/static/img/background.jpg" class="background" alt="">
     <div class="inoutdiv">
-        <h2 class="w300">Signup</h2>
-        <p>Signup for a Burgernotes account</p>
-        <p id="statusBox"></p>
+        <h2>Create a Burgernotes Account</h2>
+        <p>Get started by picking a username and password</p>
+        <p style="color: #b3261e; font-size: 14px; margin-bottom: 2px; margin-top: 1px;" id="statusBox"></p>
+        <span id="inputNameBox" style="margin-right: 10px;color: var(--text-color);">Username:</span>
         <input id="usernameBox" type="text" placeholder="Username">
+        <span id="inputNameBox" style="margin-right: 13px;color: var(--text-color);">Password: </span>
         <input id="passwordBox" type="password" placeholder="Password"><br>
-        <button id="signupButton">Signup</button><br><br>
-        <p>Already have an account? If so, <a href="/login/">Login</a> instead!</p>
-        <p>Please note that it's impossible to reset your password, do not forget it!</p>
-        <div style="display: flex;"><p id="homeserver">Your homeserver is loading... </p><div style="display: flex;flex-direction: column;justify-content: center;"><a href="/homeserver">Change</a></div></div>
+        <button id="signupButton">Create account</button><button id="opButton" class="nonimportant">Already have an account</button><br><br>
+        <div style="display: flex;"><p class="hidden" id="homeserver">Your homeserver is loading... </p><div style="display: flex;flex-direction: column;justify-content: center;"><a class="hidden" href="/homeserver">Change</a></div></div>
         <a href="/privacy/">Privacy &amp; Terms</a>
     </div>
     <script type="text/javascript" src="/static/js/signup.js"></script>
