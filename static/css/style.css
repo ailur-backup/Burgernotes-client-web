@@ -306,7 +306,7 @@ body {
 }
 
 .notesBar .noteButton, .notesBar .loadingStuff {
-    width: calc(100% - 7px - 7px - 3.5px);
+    width: calc(100% - 7px - 3px);
     height: 35px;
     line-height: 0;
     padding: 10px;
@@ -393,11 +393,13 @@ body {
     font-size: 16px;
     color: var(--text-color);
     background-color: var(--editor);
-    width: calc(100% - 180px);
+    width: calc(100% - 200px);
     height: calc(100% - 50px - 30px);
     font-family: "Inter", sans-serif;
     display: flex;
     flex-direction: row;
+    margin: 10px;
+    outline: none;
     z-index: -1;
 }
 
