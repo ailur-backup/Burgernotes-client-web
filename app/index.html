@@ -20,7 +20,6 @@
     </div>
 
     <div class="bottomBar">
-        <button id="removeBox" class="removeButton"></button>
         <button onclick="toggleMarkdown()" class="markdownButton"></button>
         <button id="wordCountBox">0 words</button>
         <div class="textManipulator">
@@ -31,9 +30,14 @@
     </div>
 
     <div id="notesBar" class="notesBar">
-        <button id="newNote" class="newNote">
+        <button id="newNote" class="newNote" style="margin-left: 5px;">
             <div class="vcenter"><img id="newNoteImage" draggable="false" alt="" src="/static/svg/add.svg"></div>
-            <div class="vcenter">New note</div>
+        </button>
+        <button class="newNote" style="margin-left: 37.5px; background-color: var(--bar) !important;">
+    
+        </button>
+        <button id="removeBox" class="newNote">
+            <div class="vcenter"><img id="newNoteImage" draggable="false" alt="" src="/static/svg/delete.svg"></div>
         </button>
         <div id="notesDiv" class="notesDiv">
             <button class="loadingStuff" id="loadingStuff"></button>
