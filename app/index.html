@@ -1,66 +1,64 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
+<html lang="en"><head>
     <title>Burgernotes</title>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css" media="">
     <script type="text/javascript" src="/static/js/crypto-js.js"></script>
     <script type="text/javascript" src="/static/js/marked.js"></script>
     <link rel="icon" href="/static/svg/favicon.svg">
 </head>
 
-<noscript>
+<body><noscript>
     <head>
         <meta http-equiv="refresh" content="0; url=/login"/>
     </head>
 </noscript>
 
-<body>
+
     <div class="topBar">
         <p tabindex="0" class="logo" id="burgerButton"></p>
         <button tabindex="0" class="logo hidden" style="font-size: 17px;margin-left: 0;" onclick="handleGesture()" id="backButton"><img src="/static/svg/arrow-back.svg"></button>
         <div class="modernToolbar">
-            <button class="count" id="wordCountBox">0 words</button>
+            <button class="count" id="wordCountBox">6 words</button>
             <button onclick="toggleMarkdown()" class="usernameBox"><div class="vcenter"><img src="/static/svg/markdown.svg"></div></button>
-            <button id="usernameBox" class="usernameBox"><div class="vcenter"><img src="/static/svg/acct-settings.svg"></div></button>
+            <button id="usernameBox" class="usernameBox settings"><div class="vcenter"><img src="/static/svg/acct-settings.svg"></div></button>
         </div>
     </div>
 
     <div id="notesBar" class="notesBar">
-        <button id="newNote" class="newNote" style="margin-left: 5px;">
+    <div class="toolBar">
+        <button id="newNote" class="newNote" style="">
             <div class="vcenter"><img id="newNoteImage" draggable="false" alt="" src="/static/svg/add.svg"></div>
         </button>
-        <button class="newNote" style="margin-left: 37.5px; background-color: var(--bar) !important;">
-    
-        </button>
-        <button id="removeBox" class="newNote">
+        <button id="removeBox" class="newNote deleteNote
+                           ">
             <div class="vcenter"><img id="newNoteImage" draggable="false" alt="" src="/static/svg/delete.svg"></div>
         </button>
+    </div>
         <div id="notesDiv" class="notesDiv">
-            <button class="loadingStuff" id="loadingStuff"></button>
-        </div>
+            
+        <button class="noteButton selected" id="273">The bloody mass..</button><button class="noteButton" id="275">Deadline June 2..</button><button class="noteButton" id="274">Making a point</button><button class="noteButton" id="229">&lt;link rel="styl..</button><button class="noteButton" id="271">Results</button><button class="noteButton" id="22">SSH Keys</button><button class="noteButton" id="249">import os</button><button class="noteButton" id="268">Reminders </button><button class="noteButton" id="224"># Hello</button><button class="noteButton" id="243">Script:</button><button class="noteButton" id="239">; Zonefile for ..</button><button class="noteButton" id="234">Element thing</button><button class="noteButton" id="228">Hoi!!!</button><button class="noteButton" id="217">monero key</button><button class="noteButton" id="203">hi</button><button class="noteButton" id="199">Mirrorbot</button><button class="noteButton" id="183">SuperList</button><button class="noteButton" id="126">NewLine</button><button class="noteButton" id="13">Bank details</button></div>
     </div>
 
-    <div id="optionsCoverDiv" class="optionsCoverDiv hidden">
-        <div id="optionsDiv" class="optionsDiv hidden">
+    <div id="optionsCoverDiv" class="optionsCoverDiv">
+        <div id="optionsDiv" class="optionsDiv">
             <button class="exit" id="exitThing">X</button>
             <h3 class="w300">Your account</h3>
-            <p id="usernameThing">Cannot connect to the server</p>
+            <p id="usernameThing">Username: arzumify</p>
             <div class="section"></div>
             <p>Device settings</p>
             <div class="fontManipulator">
-                <span>Font size</span>
-                <button class="textMinusBox" id="textMinusBox">-</button>
-                <button class="textSizeBox" style="background-color: var(--nonimporant-theme-color) !important;" id="textSizeBox">16px</button>
-                <button class="textPlusBox" id="textPlusBox">+</button>
+  <div class="vAlign"><text>Font size</text></div>
+                <div class="vAlign textMinusBox"><button id="textMinusBox">-</button></div>
+                <div class="vAlign"><text class="textSizeBox" style="" id="textSizeBox">16px</text></div>
+                <div class="vAlign"><button class="textPlusBox" id="textPlusBox">+</button></div>
             </div>
             <div class="section"></div>
             <p>Storage</p>
-            <progress id="storageProgressThing" value="0" max="100"></progress><br>
-            <p id="storageThing">Cannot connect to the server</p>
+            <progress id="storageProgressThing" value="44652" max="25000000"></progress><br>
+            <p id="storageThing">You've used 44.65 KB out of 25 MB</p>
             <div class="section"></div>
             <p>Account managment</p>
             <button id="deleteMyAccountButton"><img src="/static/svg/delete_forever.svg" alt="">Delete account</button>
@@ -85,7 +83,11 @@
             <form><input type="file" id="importFile" style="border: 0;"></form>
         </div>
         <div id="errorDiv" class="optionsDiv hidden">
-            <p id="errorMessageThing"></p>
+            <p id="errorMessageThing">What's new in Burgernotes 2.0?
+Restyled client
+Added changing passwords
+Migrated to OAuth2
+Added importing notes</p>
             <input class="hidden" id="errorInput" type="text" placeholder=""><br>
             <button class="normalButton" id="closeErrorButton">Ok</button>
             <button class="normalButton hidden" id="cancelErrorButton">Cancel</button>
@@ -93,8 +95,8 @@
     </div>
 
     <div class="noteBox" id="noteBoxDiv">
-        <textarea id="noteBox" class="noteBoxText"></textarea>
-        <iframe id="markdown" style="display: none;" sandbox="allow-scripts"></iframe>
+        <textarea id="noteBox" class="noteBoxText" style="font-size: 16px;" placeholder="Type something!"></textarea>
+        <iframe id="markdown" style="display: none;" sandbox="allow-scripts" srcdoc="<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: #000000; font-size: 16px; }</style></html>"></iframe>
     </div>
 
     <script type="text/javascript" src="/static/js/main.js"></script>
@@ -104,6 +106,7 @@
         }
         loadingStuff.remove()
     </script>
-</body>
 
-</html>
+
+
+</body><style type="text/css"></style><style type="text/css"></style></html>

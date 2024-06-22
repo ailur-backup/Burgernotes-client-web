@@ -221,8 +221,8 @@ body {
 }
 
 .topBar .modernToolbar {
-    margin-left: auto;
-    margin-right: 5px;
+    display: flex;
+    width: 100%
 }
 
 .topBar .modernToolbar .count {
@@ -230,7 +230,10 @@ body {
     background-color: rgba(0, 0, 0, 0);
     border: none;
     font-size: 15px;
-    transform: translateY(-5px);
+}
+
+.topBar .modernToolbar .settings {
+    margin-left: auto;
 }
 
 .topBar .modernToolbar .textmod {
@@ -291,10 +294,12 @@ body {
     border-color: var(--border-color);
     border-width: 0;
     border-right-width: 1px;
+    display: flex;
+    flex-direction: column-reverse;
 }
 
 .notesDiv {
-    height: calc(100% - 50px);
+    height: 100%;
     overflow-y: auto;
 }
 
@@ -309,7 +314,7 @@ body {
     color: var(--unselected-note-button-text-color);
     border-radius: 8px;
 
-    border: none;
+    border: dashed;
     border-color: var(--border-color);
     border-width: 1px;
     font-size: 15px;
@@ -347,12 +352,17 @@ body {
 
 .notesBar .selected {
     background-color: var(--note-theme-color) !important;
-    border: none;
+    border-style: solid;
     color: var(--note-button-text-color);
 }
 
 .notesBar .selected:hover {
     background-color: var(--note-theme-color) !important;
+}
+
+.notesBar .toolBar {
+    display: flex;
+    border-top: 1px var(--border-color) solid;
 }
 
 .notesBar .newNote {
@@ -362,11 +372,14 @@ body {
     text-align: left;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 5px;
     background-color: var(--bar);
     border-radius: 8px;
     border: none;
     transition: 0.125s;
+}
+
+.notesBar .deleteNote {
+    margin-left: auto;
 }
 
 .notesBar .newNote:hover {
@@ -387,7 +400,7 @@ body {
     color: var(--text-color);
     background-color: rgba(0, 0, 0, 0);
     width: calc(100% - 200px);
-    height: calc(100% - 50px - 30px);
+    height: calc(100% - 50px);
     font-family: "Inter", sans-serif;
     display: flex;
     flex-direction: row;
@@ -555,11 +568,17 @@ iframe#markdown {
     margin-bottom: 10px;
 }
 
+.optionsDiv .fontManipulator {
+    display: flex;
+}
+
 .optionsDiv .fontManipulator button {
     width: 43.5px;
+    height: 43.5px;
     background-color: var(--nonimporant-theme-color);
     color: var(--nonimportant-text-color);
     transition: 0.125s;
+    margin: 0;
 }
 
 .optionsDiv .fontManipulator button:hover {
@@ -567,7 +586,12 @@ iframe#markdown {
 }
 
 .optionsDiv .fontManipulator .textMinusBox {
-    margin-left: 83.5px
+    margin-left: auto;
+}
+
+.optionsDiv .fontManipulator .textSizeBox {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .sessionDiv {
