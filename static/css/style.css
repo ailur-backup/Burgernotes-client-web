@@ -175,64 +175,6 @@ body {
     display: flex;
 }
 
-.bottomBar {
-    position: fixed;
-    width: 100%;
-    height: 29px;
-    bottom: 0;
-
-    background-color: var(--bar);
-
-    border: solid;
-    border-color: var(--border-color);
-    border-width: 0;
-    border-top-width: 1px;
-    display: flex;
-    text-wrap: nowrap;
-    overflow-x: auto;
-}
-
-.bottomBar button {
-    filter: invert(var(--invertdm));
-    background-color: rgba(0, 0, 0, 0);
-    color: #000000;
-    height: 100%;
-    border: none;
-    font-size: 14px;
-    padding-left: 7.5px;
-    padding-right: 7.5px;
-}
-
-.bottomBar .markdownButton {
-    padding-left: 17.5px;
-    padding-right: 17.5px;
-    background-image: url("../../static/svg/markdown.svg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 55%;
-}
-
-.bottomBar .removeButton {
-    padding-left: 17.5px;
-    padding-right: 17.5px;
-    background-image: url("../../static/svg/delete.svg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 55%;
-}
-
-.bottomBar .textManipulator {
-    margin-left: auto;
-}
-
-.bottomBar button:hover {
-    background-color: var(--note-button);
-}
-
-.bottomBar .right {
-    float: right;
-}
-
 .burgerDropdown {
     position: fixed;
     z-index: 2;
