@@ -448,6 +448,7 @@ function selectNote(nameithink) {
 
                 let bytes = CryptoJS.AES.decrypt(responseData["content"], password);
                 noteBox.value = bytes.toString(CryptoJS.enc.Utf8)
+
                 updateWordCount()
                 renderMarkDown()
 

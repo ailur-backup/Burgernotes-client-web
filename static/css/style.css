@@ -162,12 +162,13 @@ body {
 /* Web app */
 .topBar {
     position: fixed;
-    width: 100%;
+    right: 0;
+    width: calc(100% - 181px);
     height: 50px;
 
-    background-color: var(--bar);
+    background-color: rgba(0, 0, 0, 0);
 
-    border: solid;
+    border: none;
     border-color: var(--border-color);
     border-width: 0;
     border-bottom-width: 1px;
@@ -289,7 +290,7 @@ body {
     font-size: 16px;
     cursor: pointer;
     margin-top: 5px;
-    background-color: var(--bar);
+    background-color: rgba(0, 0, 0, 0);
     border-radius: 8px;
     border: none;
     transition: 0.125s;
@@ -403,11 +404,11 @@ body {
 .noteBox {
     position: fixed;
     right: 0;
-    top: 50px;
+    top: 35px;
     border: none;
     font-size: 16px;
     color: var(--text-color);
-    background-color: var(--editor);
+    background-color: rgba(0, 0, 0, 0);
     width: calc(100% - 200px);
     height: calc(100% - 50px - 30px);
     font-family: "Inter", sans-serif;
