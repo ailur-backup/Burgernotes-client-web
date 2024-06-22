@@ -1,3 +1,5 @@
+// @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
+
 /**
  * beautified version of:
  * marked v12.0.2 - a markdown parser
@@ -1295,3 +1297,5 @@
         (e.use = ue),
         (e.walkTokens = ke);
 });
+
+// @license-end
