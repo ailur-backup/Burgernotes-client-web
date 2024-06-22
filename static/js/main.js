@@ -10,7 +10,7 @@ if (localStorage.getItem("DONOTSHARE-password") === null) {
 }
 
 if (localStorage.getItem("CACHE-username") !== null) {
-    document.getElementById("usernameBox").innerText = localStorage.getItem("CACHE-username")
+    //document.getElementById("usernameBox").innerText = localStorage.getItem("CACHE-username")
 }
 
 let remote = localStorage.getItem("homeserverURL")
@@ -205,7 +205,7 @@ async function checknetwork() {
         if (response.status == 400) {
             displayError("Something went wrong! Signing you out...")
             closeErrorButton.classList.add("hidden")
-            usernameBox.innerText = ""
+            //usernameBox.innerText = ""
             setTimeout(function () {
                 window.location.replace("/logout")
             }, 2500);
@@ -261,13 +261,13 @@ function updateUserInfo() {
                 if (response.status === 500) {
                     displayError("Something went wrong! Signing you out...")
                     closeErrorButton.classList.add("hidden")
-                    usernameBox.innerText = ""
+                    //usernameBox.innerText = ""
                     setTimeout(function () {
                         window.location.replace("/logout")
                     }, 2500);
                 } else {
                     let responseData = await response.json()
-                    usernameBox.innerText = responseData["username"]
+                    //usernameBox.innerText = responseData["username"]
                     usernameThing.innerText = "Username: " + responseData["username"]
                     storageThing.innerText = "You've used " + formatBytes(responseData["storageused"]) + " out of " + formatBytes(responseData["storagemax"])
                     storageProgressThing.value = responseData["storageused"]

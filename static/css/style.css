@@ -278,16 +278,31 @@ body {
 }
 
 .topBar .usernameBox {
-    text-align: right;
     margin-left: auto;
     cursor: pointer;
     filter: invert(var(--invertdm));
+    margin-right: 5px;
+    height: 41px;
+    width: 41px;
+    line-height: 41px;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 5px;
+    background-color: var(--bar);
+    border-radius: 8px;
+    border: none;
+    transition: 0.125s;
 }
 
-.topBar img {
-    scale: 0.5;
+.topBar .usernameBox:hover {
+    background-color: var(--icon-button-hover);
 }
 
+.topBar .usernameBox img {
+    height: 22px;
+    filter: invert(var(--invertdm));
+}
 .notesBar {
     position: fixed;
     width: 180px;
