@@ -33,8 +33,8 @@
     :root {
         --contrast: #323436;
         --contrast2: #202124;
-        --bar: #2d2f31;
-        --editor: #202124;
+        --bar: #242424;
+        --editor: #1E1E1E;
         --text-color: #ffffff;
         --border-color: #393b3d;
         --theme-color: #3584e4;
@@ -51,7 +51,7 @@
         --note-button-hover: #2a2c2f;
         --note-button-text-color: #ffffff;
         --unselected-note-button-text-color: #ffffff;
-        --option-background: #202124;
+        --option-background: #242424;
         --icon-button-hover: #333333;
         --invertdm: 100%;
     }
@@ -226,6 +226,7 @@ body {
 }
 
 .topBar .modernToolbar .count {
+    color: var(--text-color);
     background-color: rgba(0, 0, 0, 0);
     border: none;
     font-size: 15px;
@@ -279,7 +280,6 @@ body {
 
 .topBar .usernameBox img {
     height: 22px;
-    filter: invert(var(--invertdm));
 }
 .notesBar {
     position: fixed;
@@ -555,9 +555,8 @@ iframe#markdown {
     margin-bottom: 10px;
 }
 
-
 .optionsDiv .fontManipulator button {
-    width: 45px;
+    width: 43.5px;
     background-color: var(--nonimporant-theme-color);
     color: var(--nonimportant-text-color);
     transition: 0.125s;
