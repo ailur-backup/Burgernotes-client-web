@@ -206,3 +206,5 @@ backButton.addEventListener("click", () => {
 });
 
 showInput(0)
+
+// @license-end
