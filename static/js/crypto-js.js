@@ -1,3 +1,5 @@
+// @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
+
 /*
 Beautified version of crypto-js, to maintain compatibility with uMatrix
 Beautified from https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
@@ -1824,3 +1826,5 @@ Beautified from https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js
             ivSize: 2
         }), M.RabbitLegacy = F._createHelper(P), U
 });
+
+// @license-end
