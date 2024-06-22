@@ -225,6 +225,38 @@ body {
     margin-right: 5px;
 }
 
+.topBar .modernToolbar .count {
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    font-size: 15px;
+    transform: translateY(-5px);
+}
+
+.topBar .modernToolbar .textmod {
+    cursor: pointer;
+    filter: invert(var(--invertdm));
+    height: 41px;
+    width: 41px;
+    line-height: 41px;
+    text-align: left;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 5px;
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 99px;
+    border: none;
+    transition: 0.125s;
+}
+
+.topBar .textmod img {
+    height: 22px;
+    filter: invert(var(--invertdm));
+}
+
+.topBar .textmod:hover {
+    background-color: var(--icon-button-hover);
+}
+
 .topBar .usernameBox {
     cursor: pointer;
     filter: invert(var(--invertdm));
@@ -421,13 +453,18 @@ iframe#markdown {
     width: 100%;
     padding: 10px;
     margin-bottom: 7px;
-    color: var(--theme-text-color);
+    background-color: var(--nonimporant-theme-color);
     border: none;
     text-decoration: none;
-    background-color: var(--theme-color);
+    color: var(--nonimportant-text-color);
     border-radius: 10px;
     cursor: pointer;
     font-size: 15px;
+    transition: 0.125s;
+}
+
+.optionsDiv button:hover {
+    background-color: var(--hover-nonimportant-theme-color);
 }
 
 .optionsDiv .normalButton {
@@ -508,7 +545,7 @@ iframe#markdown {
     left: 20px;
     scale: 1.3;
     transform: translateY(1px);
-    filter: invert(100%);
+    filter: invert(var(--invertdm))
 }
 
 .optionsDiv .section {
@@ -516,6 +553,22 @@ iframe#markdown {
     border-top: var(--border-color) solid 1px;
     margin-top: 2px;
     margin-bottom: 10px;
+}
+
+
+.optionsDiv .fontManipulator button {
+    width: 45px;
+    background-color: var(--nonimporant-theme-color);
+    color: var(--nonimportant-text-color);
+    transition: 0.125s;
+}
+
+.optionsDiv .fontManipulator button:hover {
+    background-color: var(--hover-nonimportant-theme-color);
+}
+
+.optionsDiv .fontManipulator .textMinusBox {
+    margin-left: 83.5px
 }
 
 .sessionDiv {

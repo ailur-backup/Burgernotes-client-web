@@ -23,10 +23,7 @@
         <p tabindex="0" class="logo" id="burgerButton"></p>
         <button tabindex="0" class="logo hidden" style="font-size: 17px;margin-left: 0;" onclick="handleGesture()" id="backButton"><img src="/static/svg/arrow-back.svg"></button>
         <div class="modernToolbar">
-            <button id="textMinusBox">-</button>
-            <button id="textSizeBox">16px</button>
-            <button id="textPlusBox">+</button>
-            <button id="wordCountBox">0 words</button>
+            <button class="count" id="wordCountBox">0 words</button>
             <button onclick="toggleMarkdown()" class="usernameBox"><div class="vcenter"><img src="/static/svg/markdown.svg"></div></button>
             <button id="usernameBox" class="usernameBox"><div class="vcenter"><img src="/static/svg/acct-settings.svg"></div></button>
         </div>
@@ -52,6 +49,14 @@
             <button class="exit" id="exitThing">X</button>
             <h3 class="w300">Your account</h3>
             <p id="usernameThing">Cannot connect to the server</p>
+            <div class="section"></div>
+            <p>Device settings</p>
+            <div class="fontManipulator">
+                <span>Font size</span>
+                <button class="textMinusBox" id="textMinusBox">-</button>
+                <button class="textSizeBox" style="background-color: var(--nonimporant-theme-color) !important;" id="textSizeBox">16px</button>
+                <button class="textPlusBox" id="textPlusBox">+</button>
+            </div>
             <div class="section"></div>
             <p>Storage</p>
             <progress id="storageProgressThing" value="0" max="100"></progress><br>
