@@ -76,10 +76,11 @@ if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
     mobile = true
     noteBoxDiv.classList.add("mobile");
     noteBoxDiv.style.width = "0px";
-    notesBar.style.width = "calc(100% + 7.5px)"
+    notesBar.style.width = "85%"
     noteBoxDiv.readOnly = true
     noteBox.style.fontSize = "18px"
     noteBoxDiv.classList.add("hidden")
+
 
     let touchstartX, touchstartY, touchendX, touchendY
 
@@ -130,7 +131,7 @@ if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
 function handleGesture() {
     if (indiv) {
         indiv = false
-        notesBar.style.width = "calc(100% + 7.5px)";
+        notesBar.style.width = "85%"
         noteBoxDiv.style.width = "0px"
         if (selectedNote !== 0) {
             noteBoxDiv.readOnly = true

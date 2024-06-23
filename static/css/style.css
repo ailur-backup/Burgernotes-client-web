@@ -372,6 +372,11 @@ body {
     transition: 0.125s;
 }
 
+.notesBar .remove {
+    position: absolute;
+    right: 5px;
+}
+
 .notesBar .newNote:hover {
     background-color: var(--icon-button-hover);
 }
