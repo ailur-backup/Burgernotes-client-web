@@ -300,14 +300,10 @@ body {
     overflow-y: auto;
 }
 
-.notesDiv #r113 {
-    background-color: pink !important;
-    order: -1
-}
-
 .notesBar .noteButton, .notesBar .loadingStuff {
     width: calc(100% - 7px - 3px);
     height: 35px;
+    min-height: 35px;
     line-height: 0;
     padding: 10px;
     margin: 5px;
