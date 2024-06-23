@@ -70,6 +70,7 @@ let timer
 let waitTime = 400
 let indiv = false
 let mobile = false
+let selectLatestNote = false
 
 if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
     mobile = true
@@ -457,14 +458,20 @@ function selectNote(nameithink) {
                     renderMarkDown()
                     clearTimeout(timer);
                     timer = setTimeout(() => {
-                        let encryptedTitle = "New note"
-                        if (noteBox.value.substring(0, noteBox.value.indexOf("\n")) !== "") {
-                            let firstTitle = noteBox.value.substring(0, noteBox.value.indexOf("\n"));
+                        let preEncryptedTitle = noteBox.value
 
-                            document.getElementById(nameithink).innerText = firstTitle
-                            encryptedTitle = CryptoJS.AES.encrypt(firstTitle, password).toString();
+                        if (noteBox.value.substring(0, noteBox.value.indexOf("\n")) !== "") {
+                            preEncryptedTitle = noteBox.value.substring(0, noteBox.value.indexOf("\n"));
                         }
+
+                        preEncryptedTitle = truncateString(preEncryptedTitle, 15)
+                        document.getElementById(nameithink).innerText = preEncryptedTitle
+
                         let encryptedText = CryptoJS.AES.encrypt(noteBox.value, password).toString();
+                        let encryptedTitle = CryptoJS.AES.encrypt(preEncryptedTitle, password).toString();
+
+                        console.log(encryptedTitle)
+                        console.log(encryptedText)
 
                         if (selectedNote === nameithink) {
                             fetch(remote + "/api/editnote", {
@@ -496,6 +503,7 @@ function selectNote(nameithink) {
 }
 
 function updateNotes() {
+    console.log("notes updated")
     fetch(remote + "/api/listnotes", {
         method: "POST",
         body: JSON.stringify({
@@ -507,26 +515,57 @@ function updateNotes() {
     })
         .then((response) => {
             async function doStuff() {
-                document.querySelectorAll(".noteButton").forEach((el) => el.remove());
                 noteBox.readOnly = true
                 selectedNote = 0
+                if (selectLatestNote == false) {
                 noteBox.placeholder = ""
+                }
                 noteBox.value = ""
                 clearTimeout(timer)
                 updateWordCount()
                 renderMarkDown()
 
                 let responseData = await response.json()
+
+                let decryptedResponseData = []
+
+                let highestID = 0
+                
+                // First decrypt note data, then render
                 for (let i in responseData) {
+                    noteData = responseData[i]
+
+                    let bytes = CryptoJS.AES.decrypt(noteData["title"], password);
+                    let decryptedTitle = bytes.toString(CryptoJS.enc.Utf8);
+
+                    noteData["title"] = decryptedTitle
+
+                    if (noteData["id"] > highestID) {
+                        highestID = noteData["id"]
+                    }
+                    
+                    decryptedResponseData.push(noteData)
+                    console.log(noteData)
+                }
+
+                document.querySelectorAll(".noteButton").forEach((el) => el.remove());
+                for (let i in decryptedResponseData) {
+                    let noteData = decryptedResponseData[i]
+
                     let noteButton = document.createElement("button");
                     noteButton.classList.add("noteButton")
                     notesDiv.append(noteButton)
 
-                    let bytes = CryptoJS.AES.decrypt(responseData[i]["title"], password);
-                    let originalTitle = bytes.toString(CryptoJS.enc.Utf8);
+                    console.log(noteData["title"])
 
-                    noteButton.id = responseData[i]["id"]
-                    noteButton.innerText = truncateString(originalTitle, 15)
+                    if (noteData["title"] == "") {
+                        console.log(noteData["title"])
+                        console.log("case")
+                        noteData["title"] = "New note"
+                    }
+
+                    noteButton.id = noteData["id"]
+                    noteButton.innerText = truncateString(noteData["title"], 15)
 
                     noteButton.addEventListener("click", (event) => {
                         if (event.ctrlKey) {
@@ -534,7 +573,7 @@ function updateNotes() {
                                 method: "POST",
                                 body: JSON.stringify({
                                     secretKey: secretkey,
-                                    noteId: responseData[i]["id"]
+                                    noteId: noteData["id"]
                                 }),
                                 headers: {
                                     "Content-Type": "application/json; charset=UTF-8"
@@ -547,11 +586,16 @@ function updateNotes() {
                                     displayError("Something went wrong! Please try again later...")
                                 })
                         } else {
-                            selectNote(responseData[i]["id"])
+                            selectNote(noteData["id"])
                         }
                     });
                 }
                 document.querySelectorAll(".loadingStuff").forEach((el) => el.remove());
+
+                if (selectLatestNote == true) {
+                    selectNote(highestID)
+                    selectLatestNote = false
+                }
             }
             doStuff()
         });
@@ -561,7 +605,22 @@ updateNotes()
 
 newNote.addEventListener("click", () => {
     let noteName = "New note"
+    selectLatestNote = true
+    console.log(selectLatestNote)
+
+    // create fake item
+
+    document.querySelectorAll(".noteButton").forEach((el) => el.classList.remove("selected"));
+    let noteButton = document.createElement("button");
+    noteButton.classList.add("noteButton")
+    notesDiv.append(noteButton)
+    noteButton.innerText = "New note"
+    noteButton.style.order = -1
+    noteButton.classList.add("selected")
+    noteBox.placeholder = "Type something!"
+
     let encryptedName = CryptoJS.AES.encrypt(noteName, password).toString(CryptoJS.enc.Utf8);
+
     fetch(remote + "/api/newnote", {
         method: "POST",
         body: JSON.stringify({
@@ -713,6 +772,7 @@ removeBox.addEventListener("click", () => {
     if (selectedNote === 0) {
         displayError("You need to select a note first!")
     } else {
+        selectLatestNote = true
         fetch(remote + "/api/removenote", {
             method: "POST",
             body: JSON.stringify({

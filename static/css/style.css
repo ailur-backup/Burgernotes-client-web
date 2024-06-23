@@ -294,8 +294,15 @@ body {
 }
 
 .notesDiv {
+    display: flex;
+    flex-direction: column;
     height: calc(100% - 50px);
     overflow-y: auto;
+}
+
+.notesDiv #r113 {
+    background-color: pink !important;
+    order: -1
 }
 
 .notesBar .noteButton, .notesBar .loadingStuff {
