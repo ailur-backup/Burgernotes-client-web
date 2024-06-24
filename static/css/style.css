@@ -696,6 +696,30 @@ iframe#markdown {
     text-align: center;
 }
 
+@media only screen and (max-width: 850px) {
+    .inoutdiv {
+        min-width: 450px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .inoutdiv {
+        min-width: 100%;
+        margin-left: 25px;
+        margin-right: 100px;
+        border-radius: 0;
+    }
+    .inoutdiv input {
+        width: calc(100% - 165px)
+    }
+    .inoutdiv p {
+        font-size: 14px;
+    }
+    .inoutdiv h2 {
+        font-size: 21px;
+    }
+}
+
 .background {
     position: fixed;
     z-index: -2;
