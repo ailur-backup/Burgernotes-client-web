@@ -166,7 +166,7 @@ body {
     width: calc(100% - 181px);
     height: 50px;
 
-    background-color: rgba(0, 0, 0, 0);
+    background-color: var(--editor);
 
     border: none;
     border-color: var(--border-color);
@@ -211,18 +211,12 @@ body {
     display: inline-block;
 }
 
-.topBar .logo {
-    margin-left: 12px;
-    background-color: transparent;
-    border: none;
-    color: var(--text-color);
-    white-space: break-spaces;
-    display: flex;
-}
-
 .topBar .modernToolbar {
     margin-left: auto;
     margin-right: 5px;
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
 }
 
 .topBar .modernToolbar .count {
@@ -230,7 +224,7 @@ body {
     background-color: rgba(0, 0, 0, 0);
     border: none;
     font-size: 15px;
-    transform: translateY(-5px);
+    margin-left: auto;
 }
 
 .topBar .modernToolbar .textmod {
@@ -406,6 +400,9 @@ body {
 
 .noteBox.mobile {
     flex-direction: column-reverse;
+    margin: 0;
+    margin-top: 15px;
+    height: calc(100% - 50px);
 }
 
 .noteBoxText {
@@ -563,6 +560,14 @@ iframe#markdown {
     margin-bottom: 10px;
 }
 
+.optionsDiv .fontManipulator {
+    display: flex;
+}
+
+.optionsDiv .fontManipulator .vcenter {
+    height: auto;
+}
+
 .optionsDiv .fontManipulator button {
     width: 43.5px;
     background-color: var(--nonimporant-theme-color);
@@ -575,12 +580,18 @@ iframe#markdown {
 }
 
 .optionsDiv .fontManipulator .textMinusBox {
-    margin-left: 83.5px
+    margin-left: auto;
+}
+
+.optionsDiv .fontManipulator .textSizeBox {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .sessionDiv {
     max-height: 255px;
     overflow-y: auto;
+    min-height: 20px;
 }
 
 .sessionDiv div {
@@ -696,21 +707,19 @@ iframe#markdown {
     text-align: center;
 }
 
-@media only screen and (max-width: 850px) {
-    .inoutdiv {
-        min-width: 450px;
-    }
-}
-
 @media only screen and (max-width: 600px) {
     .inoutdiv {
-        min-width: 100%;
-        margin-left: 25px;
-        margin-right: 100px;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
         border-radius: 0;
-    }
-    .inoutdiv input {
-        width: calc(100% - 165px)
+        min-width: calc(100% - 10px);
+        min-height: 100%;
+        transform: none;
+        padding: 5px;
+        overflow-y: scroll;
     }
     .inoutdiv p {
         font-size: 14px;

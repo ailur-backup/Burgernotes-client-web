@@ -19,10 +19,9 @@
 </noscript>
 
 <body>
-    <div class="topBar">
-        <p tabindex="0" class="logo" id="burgerButton"></p>
-        <button tabindex="0" class="logo hidden" style="font-size: 17px;margin-left: 0;" onclick="handleGesture()" id="backButton"><img src="/static/svg/arrow-back.svg"></button>
+    <div class="topBar" id="topBar">
         <div class="modernToolbar">
+            <button class="usernameBox hidden" onclick="handleGesture()" id="backButton"><div class="vcenter"><img src="/static/svg/arrow-back.svg"></div></button>
             <button class="count" id="wordCountBox">0 words</button>
             <button onclick="toggleMarkdown()" class="usernameBox"><div class="vcenter"><img src="/static/svg/markdown.svg"></div></button>
             <button id="usernameBox" class="usernameBox"><div class="vcenter"><img src="/static/svg/acct-settings.svg"></div></button>
@@ -51,10 +50,10 @@
             <div class="section"></div>
             <p>Device settings</p>
             <div class="fontManipulator">
-                <span>Font size</span>
-                <button class="textMinusBox" id="textMinusBox">-</button>
-                <button class="textSizeBox" style="background-color: rgba(0, 0, 0, 0) !important; transform: translateX(-3.5px)" id="textSizeBox">16px</button>
-                <button class="textPlusBox" id="textPlusBox">+</button>
+                <div class="vcenter"><text>Font size</text></div>
+                <div class="vcenter textMinusBox"><button id="textMinusBox">-</button></div>
+                <div class="vcenter textSizeBox"><text style="background-color: rgba(0, 0, 0, 0) !important; transform: translateX(-3.5px)" id="textSizeBox">16px</text></div>
+                <div class="vcenter"><button id="textPlusBox">+</button></div>
             </div>
             <div class="section"></div>
             <p>Storage</p>

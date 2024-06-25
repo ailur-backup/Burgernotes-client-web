@@ -11,10 +11,6 @@ if (localStorage.getItem("DONOTSHARE-password") === null) {
     throw new Error();
 }
 
-if (localStorage.getItem("CACHE-username") !== null) {
-    //document.getElementById("usernameBox").innerText = localStorage.getItem("CACHE-username")
-}
-
 let remote = localStorage.getItem("homeserverURL")
 if (remote == null) {
     localStorage.setItem("homeserverURL", "https://notes.hectabit.org")
@@ -28,7 +24,6 @@ let password = localStorage.getItem("DONOTSHARE-password")
 let currentFontSize = 16
 let markdowntoggle = false
 
-let burgerButton = document.getElementById("burgerButton")
 let backButton = document.getElementById("backButton")
 let usernameBox = document.getElementById("usernameBox")
 let optionsCoverDiv = document.getElementById("optionsCoverDiv")
@@ -51,6 +46,7 @@ let storageProgressThing = document.getElementById("storageProgressThing")
 let usernameThing = document.getElementById("usernameThing")
 let logOutButton = document.getElementById("logOutButton")
 let notesBar = document.getElementById("notesBar")
+let topBar = document.getElementById("topBar")
 let notesDiv = document.getElementById("notesDiv")
 let newNote = document.getElementById("newNote")
 let noteBox = document.getElementById("noteBox")
@@ -71,6 +67,102 @@ let waitTime = 400
 let indiv = false
 let mobile = false
 let selectLatestNote = false
+
+if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
+    mobile = true
+    noteBoxDiv.classList.add("mobile");
+    noteBoxDiv.style.width = "0px";
+    notesBar.style.width = "100%"
+    topBar.style.width = "100%"
+    noteBoxDiv.readOnly = true
+    noteBoxDiv.classList.add("hidden")
+
+    let touchstartX, touchstartY, touchendX, touchendY
+
+    notesBar.addEventListener("touchstart", function (event) {
+        touchstartX = event.changedTouches[0].screenX;
+        touchstartY = event.changedTouches[0].screenY;
+    }, false);
+
+    notesBar.addEventListener("touchend", function (event) {
+        touchendX = event.changedTouches[0].screenX;
+        touchendY = event.changedTouches[0].screenY;
+        if (touchendX < touchstartX - 75) {
+            handleGesture();
+	}
+    }, false);
+
+    noteBox.addEventListener("touchstart", function (event) {
+        touchstartX = event.changedTouches[0].screenX;
+        touchstartY = event.changedTouches[0].screenY;
+    }, false);
+
+    noteBox.addEventListener("touchend", function (event) {
+        touchendX = event.changedTouches[0].screenX;
+        touchendY = event.changedTouches[0].screenY;
+        if (touchendX > touchstartX + 75) {
+            handleGesture();
+        } else if (touchendX < touchstartX - 75) {
+            enableMarkdown();
+        }
+    }, false);
+
+    markdown.addEventListener("touchstart", function (event) {
+        touchstartX = event.changedTouches[0].screenX;
+        touchstartY = event.changedTouches[0].screenY;
+    }, false);
+
+    noteBox.addEventListener("touchend", function (event) {
+        touchendX = event.changedTouches[0].screenX;
+        touchendY = event.changedTouches[0].screenY;
+        if (touchendX > touchstartX + 75) {
+            handleGesture();
+        } else if (touchendX < touchstartX - 75) {
+            enableMarkdown();
+        }
+    }, false);
+
+    markdown.addEventListener("touchstart", function (event) {
+        touchstartX = event.changedTouches[0].screenX;
+        touchstartY = event.changedTouches[0].screenY;
+    }, false);
+
+    markdown.addEventListener("touchend", function (event) {
+        touchendX = event.changedTouches[0].screenX;
+        touchendY = event.changedTouches[0].screenY;
+        if (touchendX > touchstartX + 75) {
+            disableMarkdown();
+        } else if (touchendX < touchstartX - 75) {
+            disableMarkdown();
+        }
+    }, false);
+}
+
+function handleGesture() {
+    if (indiv) {
+        indiv = false
+        notesBar.style.width = "100%";
+        noteBoxDiv.style.width = "0px"
+        if (selectedNote !== 0) {
+            noteBoxDiv.readOnly = true
+        }
+        notesDiv.classList.remove("hidden")
+        noteBoxDiv.classList.add("hidden")
+        backButton.classList.add("hidden")
+        newNote.classList.remove("hidden")
+    } else {
+        indiv = true
+        noteBoxDiv.style.width = "100%";
+        notesBar.style.width = "0px"
+        if (selectedNote !== 0) {
+            noteBoxDiv.readOnly = false
+        }
+        notesDiv.classList.add("hidden")
+        noteBoxDiv.classList.remove("hidden")
+        backButton.classList.remove("hidden")
+        newNote.classList.add("hidden")
+    }
+}
 
 noteBox.value = ""
 noteBox.readOnly = true
@@ -181,19 +273,16 @@ function updateUserInfo() {
                 if (response.status === 500) {
                     displayError("Something went wrong! Signing you out...")
                     closeErrorButton.classList.add("hidden")
-                    //usernameBox.innerText = ""
                     setTimeout(function () {
                         window.location.replace("/logout")
                     }, 2500);
                 } else {
                     let responseData = await response.json()
-                    //usernameBox.innerText = responseData["username"]
                     usernameThing.innerText = "Username: " + responseData["username"]
                     storageThing.innerText = "You've used " + formatBytes(responseData["storageused"]) + " out of " + formatBytes(responseData["storagemax"])
                     storageProgressThing.value = responseData["storageused"]
                     storageProgressThing.max = responseData["storagemax"]
                     noteCount = responseData["notecount"]
-                    localStorage.setItem("CACHE-username", responseData["username"])
                 }
             }
             doStuff()

@@ -4,6 +4,17 @@ let homeserverBox = document.getElementById("homeserverBox")
 let statusBox = document.getElementById("statusBox")
 let changeButton = document.getElementById("changeButton")
 
+let remote = localStorage.getItem("homeserverURL")
+if (remote == null) {
+    localStorage.setItem("homeserverURL", "https://notes.hectabit.org")
+    remote = "https://notes.hectabit.org"
+}
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    statusBox.innerText = "You are currently connected to: " + remote + ". "
+});
+
 function showElements(yesorno) {
     if (!yesorno) {
         homeserverBox.classList.add("hidden")
@@ -38,7 +49,7 @@ changeButton.addEventListener("click", (event) => {
                           window.location.href = document.referrer;
                         }
                         else {
-                          window.location.href = "https://notes.hectabit.org/login";
+                          window.location.href = "/login";
                         }
                     }
                     else if (response.status == 404) {
