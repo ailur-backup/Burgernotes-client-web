@@ -707,6 +707,26 @@ iframe#markdown {
     text-align: center;
 }
 
+.inoutdiv .iconbutton {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    width: 41px;
+    height: 41px;
+    border: none;
+    border-radius: 99px;
+    transition: 0.125s;
+}
+
+.inoutdiv .iconbutton img {
+    height: 20px;
+    transform: translateY(10px);
+}
+
+.inoutdiv .iconbutton:hover {
+    background-color: var(--hover-nonimportant-theme-color);
+}
+
 @media only screen and (max-width: 600px) {
     .inoutdiv {
         position: absolute;

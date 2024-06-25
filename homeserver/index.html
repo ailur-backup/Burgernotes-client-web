@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Signup - Burgernotes</title>
+    <title>Homeserver - Burgernotes</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -14,12 +14,13 @@
 <body>
     <img src="/static/img/background.jpg" class="background" alt="">
     <div class="inoutdiv">
-        <h2>Homeserver</h2>
-        <p>Change your Burgernotes homeserver</p>
-        <p id="statusBox">Loading...</p>
+        <h2>Alternative servers</h2>
+        <p>Enter your custom homeserver URL <a href="/">What does this mean?</a></p>
 
-        <input type="text" value="https://" id="homeserverBox"><br>
-        <button id="changeButton">Change</button><br><br>
+        <span id="inputNameBox" style="margin-right: 5px;color: var(--text-color);">Server URL:</span><input type="text" placeholder="https://example.org" id="homeserverBox"><br>
+        <button id="changeButton">Change</button><button class="nonimportant" id="backButton">Cancel</button><br><br>
+
+        <p id="statusBox">Loading...</p>
         <p>Please put in the URL in standard format; https://, http://, etc.</p>
     </div>
 

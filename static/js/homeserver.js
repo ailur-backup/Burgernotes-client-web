@@ -3,13 +3,13 @@
 let homeserverBox = document.getElementById("homeserverBox")
 let statusBox = document.getElementById("statusBox")
 let changeButton = document.getElementById("changeButton")
+let backButton = document.getElementById("backButton")
 
 let remote = localStorage.getItem("homeserverURL")
 if (remote == null) {
     localStorage.setItem("homeserverURL", "https://notes.hectabit.org")
     remote = "https://notes.hectabit.org"
 }
-
 
 document.addEventListener("DOMContentLoaded", function() {
     statusBox.innerText = "You are currently connected to: " + remote + ". "
@@ -64,6 +64,10 @@ changeButton.addEventListener("click", (event) => {
             });
     }
     doStuff()
+});
+
+backButton.addEventListener("click", (event) => {
+    history.back()
 });
 
 // @license-end
