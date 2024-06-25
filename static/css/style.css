@@ -376,7 +376,7 @@ body {
 }
 
 .notesBar .newNote img {
-    height: 20px;
+    scale: 0.7;
     filter: invert(var(--invertdm));
 }
 
