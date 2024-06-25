@@ -192,7 +192,7 @@ function updateFont() {
     noteBox.style.fontSize = currentFontSize + "px"
     textSizeBox.innerText = currentFontSize + "px"
     if (markdowntoggle) {
-        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>";
+        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(DOMPurify.sanitize(noteBox.value)) + "</html>";
     }
 }
 
@@ -417,7 +417,7 @@ function updateWordCount() {
 
 function renderMarkDown() {
     if (markdowntoggle) {
-        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>"
+        markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(DOMPurify.sanitize(noteBox.value)) + "</html>"
     }
 }
 
@@ -650,7 +650,7 @@ newNote.addEventListener("click", () => {
         });
 });
 function downloadObjectAsJson(exportObj, exportName) {
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj));
+    let dataStr = "data:text/json;charset=utf-8," + DOMPurify.sanitize(JSON.stringify(exportObj));
     let downloadAnchorNode = document.createElement("a");
     downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", exportName + ".json");
@@ -799,7 +799,7 @@ removeBox.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(noteBox.value) + "</html>"
+    markdown.srcdoc = "<!DOCTYPE html><html lang='en'><style>html { height: 100% } pre { white-space: pre-wrap; overflow-wrap: break-word; } body { white-space: pre-wrap; overflow-wrap: break-word; font-family: 'Inter', sans-serif; height: 100%; color: " + getComputedStyle(document.documentElement).getPropertyValue('--text-color') + "; font-size: " + currentFontSize + "px; }</style>" + marked.parse(DOMPurify.sanitize(noteBox.value)) + "</html>"
 });
 
 if (firstNewVersion()) {
