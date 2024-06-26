@@ -174,6 +174,7 @@ signupButton.addEventListener("click", () => {
                 if (loginOld.status === 401) {
                     statusBox.innerText = "Username or password incorrect!"
                     showInput(1)
+                    showElements(true)
                 } else if (loginOld.status === 200) {
                     localStorage.setItem("DONOTSHARE-secretkey", loginDataOld["key"])
                     localStorage.setItem("DONOTSHARE-password", await hashwasm.sha512(password))
@@ -185,6 +186,7 @@ signupButton.addEventListener("click", () => {
                 } else {
                     statusBox.innerText = loginDataOld["error"]
                     showInput(1)
+                    showElements(true)
                 }
             } else if (login.status === 200) {
                 localStorage.setItem("DONOTSHARE-secretkey", loginData["key"])
@@ -196,6 +198,7 @@ signupButton.addEventListener("click", () => {
             } else {
                 statusBox.innerText = loginData["error"]
                 showInput(1)
+                showElements(true)
             }
         }
         doStuff()
