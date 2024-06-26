@@ -1,11 +1,6 @@
 // @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-3.0
 
-if (localStorage.getItem("DONOTSHARE-secretkey") !== null) {
-    window.location.replace("/app/")
-    document.body.innerHTML = "Redirecting..."
-    throw new Error();
-}
-if (localStorage.getItem("DONOTSHARE-password") !== null) {
+if (localStorage.getItem("DONOTSHARE-secretkey") !== null || localStorage.getItem("DONOTSHARE-password") !== null) {
     window.location.replace("/app/")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
@@ -22,6 +17,26 @@ let passwordBox = document.getElementById("passwordBox")
 let statusBox = document.getElementById("statusBox")
 let signupButton = document.getElementById("signupButton")
 let opButton = document.getElementById("opButton")
+
+async function hashpassold(pass) {
+    return await hashwasm.argon2id({
+        password: pass,
+        salt: await hashwasm.sha512(pass),
+        parallelism: 1,
+        iterations: 256,
+        memorySize: 512,
+        hashLength: 32,
+        outputType: "encoded"
+    })
+}
+
+async function hashpass(pass) {
+    let key = pass
+    for (let i = 0; i < 128; i++) {
+        key = await hashwasm.sha3(key)
+    }
+    return key
+}
 
 function showElements(yesorno) {
     if (!yesorno) {
@@ -71,23 +86,16 @@ signupButton.addEventListener("click", () => {
         showElements(false)
         statusBox.innerText = "Creating account, please hold on..."
 
-        async function hashpass(pass) {
-            let key = pass
-            for (let i = 0; i < 128; i++) {
-                key = await hashwasm.sha3(key)
-            }
-            return key
-        }
-
-
         fetch(remote + "/api/signup", {
             method: "POST",
             body: JSON.stringify({
                 username: username,
-                password: await hashpass(password)
+                password: await hashpass(password),
+                legacyPassword: await hashpass(await hashpassold(password))
             }),
             headers: {
-                "Content-Type": "application/json; charset=UTF-8"
+                "Content-Type": "application/json; charset=UTF-8",
+                "X-Burgernotes-Version": "200"
             }
         })
             .then((response) => response)

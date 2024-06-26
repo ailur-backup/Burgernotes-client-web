@@ -139,10 +139,7 @@ h6 {
 h7 {
     display: block;
     font-size: 20px;
-    margin-top: 0.67em;
-    margin-bottom: 0.67em;
-    margin-left: 0;
-    margin-right: 0;
+    margin: 0.67em 0;
 }
 
 body {
@@ -235,7 +232,6 @@ body {
     line-height: 41px;
     text-align: left;
     font-size: 16px;
-    cursor: pointer;
     margin-top: 5px;
     background-color: rgba(0, 0, 0, 0);
     border-radius: 99px;
@@ -260,7 +256,6 @@ body {
     line-height: 41px;
     text-align: left;
     font-size: 16px;
-    cursor: pointer;
     margin-top: 5px;
     background-color: rgba(0, 0, 0, 0);
     border-radius: 8px;
@@ -300,8 +295,7 @@ body {
     min-height: 35px;
     line-height: 0;
     padding: 10px;
-    margin: 5px;
-    margin-bottom: 0;
+    margin: 5px 5px 0;
     background-color: var(--bar);
     color: var(--unselected-note-button-text-color);
     border-radius: 8px;
@@ -400,8 +394,7 @@ body {
 
 .noteBox.mobile {
     flex-direction: column-reverse;
-    margin: 0;
-    margin-top: 15px;
+    margin: 15px 0 0;
     height: calc(100% - 50px);
 }
 
@@ -496,9 +489,7 @@ iframe#markdown {
 
 .optionsDiv .mfacheckbox {
     display: inline;
-    margin: 0;
-    margin-left: 5px;
-    margin-bottom: 12px;
+    margin: 0 0 12px 5px;
     padding: 0;
     height: 17px;
     width: 17px;
@@ -569,7 +560,7 @@ iframe#markdown {
 }
 
 .optionsDiv .fontManipulator button {
-    width: 43.5px;
+    width: 44px;
     background-color: var(--nonimporant-theme-color);
     color: var(--nonimportant-text-color);
     transition: 0.125s;
@@ -598,16 +589,14 @@ iframe#markdown {
     background-color: var(--session-color);
     border-radius: 8px;
     margin-bottom: 5px;
-    padding: 10px;
-    padding-bottom: 0;
+    padding: 10px 10px 0;
     display: flex;
 }
 
 .sessionDiv div p {
     display: inline;
     overflow-wrap: anywhere;
-    margin: 10px;
-    margin-top: 0;
+    margin: 0 10px 10px;
 }
 
 .sessionDiv div button {
@@ -660,8 +649,6 @@ iframe#markdown {
     border-color: var(--border-color);
     border-width: 1px;
     border-radius: 6px;
-
-    outline: 0.125s
 }
 
 .inoutdiv input:focus {
@@ -672,10 +659,8 @@ iframe#markdown {
 .inoutdiv button {
     background-color: var(--theme-color);
     color: white;
-    padding: 10px;
     margin-right: 5px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 10px 20px;
 
     border: none;
     border-radius: 25px;
@@ -866,7 +851,7 @@ iframe#markdown {
 }
 
 .downloadDiv p {
-    margin: 0px;
+    margin: 0;
 }
 
 .downloadDiv a {
@@ -874,9 +859,7 @@ iframe#markdown {
 }
 
 .mainDiv a {
-    padding: 15px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding: 15px 20px;
     margin-right: auto;
     color: white;
     text-decoration: none;
@@ -906,15 +889,11 @@ iframe#markdown {
     margin-bottom: 10px;
     margin-left: 12vh;
     margin-right: 12vh;
-    padding-left: 10px;
-    padding-right: 10px;
-
     border: none;
     border-radius: 12px;
 
-    padding-top: 15px;
     font-size: 17px;
-    padding-bottom: 30px;
+    padding: 15px 10px 30px;
     overflow-x: auto;
 }
 
@@ -944,8 +923,7 @@ iframe#markdown {
     background-color: #f8f8f8;
 }
 .mainDiv .feature h1 {
-    margin: 0;
-    margin-top: 10px;
+    margin: 10px 0 0;
     font-family: "Space Grotesk", sans-serif;
     font-optical-sizing: auto;
     font-size: 22px;
@@ -966,8 +944,7 @@ iframe#markdown {
     text-decoration: none;
     background-color: var(--bar);
     color: var(--text-color);
-    padding: 10px;
-    padding-top: 2.5px;
+    padding: 3px 10px 10px;
     margin-bottom: 10px;
     border-radius: 10px;
     transition: background-color .2s;
