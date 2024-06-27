@@ -34,6 +34,7 @@ let closeErrorButton = document.getElementById("closeErrorButton")
 let cancelErrorButton = document.getElementById("cancelErrorButton")
 let errorInput = document.getElementById("errorInput")
 let exitThing = document.getElementById("exitThing")
+let exitImportThing = document.getElementById("exitImportThing")
 let exitSessionsThing = document.getElementById("exitSessionsThing")
 let sessionManagerButton = document.getElementById("sessionManagerButton")
 let importNotesButton = document.getElementById("importNotesButton")
@@ -41,6 +42,7 @@ let sessionManagerDiv = document.getElementById("sessionManagerDiv")
 let importNotesDiv = document.getElementById("importDiv")
 let sessionDiv = document.getElementById("sessionDiv")
 let deleteMyAccountButton = document.getElementById("deleteMyAccountButton")
+let changePasswordButton = document.getElementById("changePasswordButton")
 let storageThing = document.getElementById("storageThing")
 let storageProgressThing = document.getElementById("storageProgressThing")
 let usernameThing = document.getElementById("usernameThing")
@@ -110,16 +112,6 @@ if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
     markdown.addEventListener("touchstart", function (event) {
         touchstartX = event.changedTouches[0].screenX;
         touchstartY = event.changedTouches[0].screenY;
-    }, false);
-
-    noteBox.addEventListener("touchend", function (event) {
-        touchendX = event.changedTouches[0].screenX;
-        touchendY = event.changedTouches[0].screenY;
-        if (touchendX > touchstartX + 75) {
-            handleGesture();
-        } else if (touchendX < touchstartX - 75) {
-            enableMarkdown();
-        }
     }, false);
 
     markdown.addEventListener("touchstart", function (event) {
@@ -214,14 +206,14 @@ async function checknetwork() {
     })
     .then((response) => response)
     .then((response) => {
-        if (response.status == 400) {
+        if (response.status === 400) {
             displayError("Something went wrong! Signing you out...")
             closeErrorButton.classList.add("hidden")
             //usernameBox.innerText = ""
             setTimeout(function () {
                 window.location.replace("/logout")
             }, 2500);
-        } else if (response.status == 200) {
+        } else if (response.status === 200) {
             updateUserInfo()
         } else {
             noteBox.readOnly = true
@@ -320,6 +312,129 @@ deleteMyAccountButton.addEventListener("click", () => {
             })
     }
 });
+async function waitForConfirm() {
+    let resolvePromise;
+    const promise = new Promise(resolve => resolvePromise = resolve);
+    closeErrorButton.addEventListener("click", () => {
+        resolvePromise();
+    });
+    await promise;
+}
+
+async function hashpass(pass) {
+    let key = pass
+    for (let i = 0; i < 128; i++) {
+        key = await hashwasm.sha3(key)
+    }
+    return key
+}
+
+changePasswordButton.addEventListener("click", () => {
+    optionsDiv.classList.add("hidden")
+    async function doStuff() {
+        async function fatalError(notes, passwordBackup) {
+            displayError("Something went wrong! Your password change has failed. Attempting to revert changes...")
+            password = passwordBackup
+            localStorage.setItem("DONOTSHARE-password", password)
+            let changePasswordBackResponse = await fetch(remote + "/api/changepassword", {
+                method: "POST",
+                body: JSON.stringify({
+                    secretKey: secretkey,
+                    newPassword: await hashpass(oldPass)
+                }),
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "X-Burgernotes-Version": "200"
+                }
+            })
+            if (changePasswordBackResponse.status === 200) {
+                let responseStatus = await importNotes(notes)
+                if (responseStatus === 500) {
+                    closeErrorButton.classList.remove("hidden")
+                    displayError("Failed to revert changes. Please delete this user account and sign-up again, then re-import the notes. Click Ok to download the notes to import later.")
+                    await waitForConfirm()
+                    downloadObjectAsJson(notes, "data")
+                } else {
+                    closeErrorButton.classList.remove("hidden")
+                    displayError("Password change failed! Changes have been reverted.")
+                    updateNotes()
+                }
+            } else {
+                displayError("Failed to revert changes. Please delete this user account and sign-up again, then re-import the notes. Click Ok to download the notes to import later.")
+                downloadObjectAsJson(notes, "data")
+            }
+        }
+        displayError("Confirm your current password to change it")
+        errorInput.type = "password"
+        errorInput.classList.remove("hidden")
+        await waitForConfirm()
+        const oldPass = errorInput.value
+        errorInput.classList.add("hidden")
+        if (await hashwasm.sha512(oldPass) !== password) {
+            displayError("Incorrect password!")
+        } else {
+            errorInput.value = ""
+            displayError("Enter your new password")
+            errorInput.classList.remove("hidden")
+            await waitForConfirm()
+            errorInput.classList.add("hidden")
+            const newPass = errorInput.value
+            errorInput.type = "text"
+            errorInput.value = ""
+            if (newPass.length < 8) {
+                displayError("Password must be at least 8 characters!")
+            } else {
+                displayError("Changing your password. This process may take up to 5 minutes. Do NOT close the tab!")
+                closeErrorButton.classList.add("hidden")
+                const response = await fetch(remote + "/api/changepassword", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        secretKey: secretkey,
+                        newPassword: await hashpass(newPass)
+                    }),
+                    headers: {
+                        "Content-Type": "application/json; charset=UTF-8",
+                        "X-Burgernotes-Version": "200"
+                    }
+                })
+                if (response.status === 200) {
+                    let notes = await exportNotes()
+                    let passwordBackup = password
+                    password = await hashwasm.sha512(newPass)
+                    localStorage.setItem("DONOTSHARE-password", password)
+                    let purgeNotes = await fetch(remote + "/api/purgenotes", {
+                        method: "POST",
+                        body: JSON.stringify({
+                            secretKey: secretkey
+                        }),
+                        headers: {
+                            "Content-Type": "application/json; charset=UTF-8"
+                        }
+                    })
+                    if (purgeNotes.status !== 200) {
+                        fatalError(notes, passwordBackup)
+                    } else {
+                        let responseStatus = await importNotes(notes)
+                        errorDiv.classList.add("hidden")
+                        if (responseStatus !== 200) {
+                            fatalError(notes, passwordBackup)
+                        } else {
+                            closeErrorButton.classList.remove("hidden")
+                            displayError("Password changed!")
+                            updateNotes()
+                        }
+                    }
+                } else {
+                    closeErrorButton.classList.remove("hidden")
+                    const data = await response.json()
+                    console.log(data)
+                    displayError(data["error"])
+                }
+            }
+        }
+    }
+    doStuff()
+})
 importNotesButton.addEventListener("click", () => {
     optionsDiv.classList.add("hidden")
     importNotesDiv.classList.remove("hidden")
@@ -523,7 +638,7 @@ function updateNotes() {
             async function doStuff() {
                 noteBox.readOnly = true
                 selectedNote = 0
-                if (selectLatestNote == false) {
+                if (selectLatestNote === false) {
                 noteBox.placeholder = ""
                 }
                 noteBox.value = ""
@@ -538,18 +653,17 @@ function updateNotes() {
                 let highestID = 0
                 
                 // First decrypt note data, then render
+                let noteData;
                 for (let i in responseData) {
                     noteData = responseData[i]
 
                     let bytes = CryptoJS.AES.decrypt(noteData["title"], password);
-                    let decryptedTitle = bytes.toString(CryptoJS.enc.Utf8);
-
-                    noteData["title"] = decryptedTitle
+                    noteData["title"] = bytes.toString(CryptoJS.enc.Utf8)
 
                     if (noteData["id"] > highestID) {
                         highestID = noteData["id"]
                     }
-                    
+
                     decryptedResponseData.push(noteData)
                     console.log(noteData)
                 }
@@ -564,7 +678,7 @@ function updateNotes() {
 
                     console.log(noteData["title"])
 
-                    if (noteData["title"] == "") {
+                    if (noteData["title"] === "") {
                         console.log(noteData["title"])
                         console.log("case")
                         noteData["title"] = "New note"
@@ -598,7 +712,7 @@ function updateNotes() {
                 }
                 document.querySelectorAll(".loadingStuff").forEach((el) => el.remove());
 
-                if (selectLatestNote == true) {
+                if (selectLatestNote === true) {
                     selectNote(highestID)
                     selectLatestNote = false
                 }
@@ -621,7 +735,7 @@ newNote.addEventListener("click", () => {
     noteButton.classList.add("noteButton")
     notesDiv.append(noteButton)
     noteButton.innerText = "New note"
-    noteButton.style.order = -1
+    noteButton.style.order = "-1"
     noteButton.classList.add("selected")
     noteBox.placeholder = "Type something!"
 
@@ -650,7 +764,7 @@ newNote.addEventListener("click", () => {
         });
 });
 function downloadObjectAsJson(exportObj, exportName) {
-    let dataStr = "data:text/json;charset=utf-8," + DOMPurify.sanitize(JSON.stringify(exportObj));
+    let dataStr = "data:text/json;charset=utf-8," + JSON.stringify(exportObj);
     let downloadAnchorNode = document.createElement("a");
     downloadAnchorNode.setAttribute("href", dataStr);
     downloadAnchorNode.setAttribute("download", exportName + ".json");
@@ -659,8 +773,8 @@ function downloadObjectAsJson(exportObj, exportName) {
     downloadAnchorNode.remove();
 }
 
-function exportNotes() {
-    fetch(remote + "/api/exportnotes", {
+async function exportNotes() {
+    let exportNotesFetch = await fetch(remote + "/api/exportnotes", {
         method: "POST",
         body: JSON.stringify({
             secretKey: secretkey
@@ -669,38 +783,28 @@ function exportNotes() {
             "Content-Type": "application/json; charset=UTF-8"
         }
     })
-        .then((response) => {
-            async function doStuff() {
-                let responseData = await response.json()
-                for (let i in responseData) {
-                    exportNotes.innerText = "Decrypting " + i + "/" + noteCount
+    let responseData = await exportNotesFetch.json()
+    for (let i in responseData) {
+        exportNotes.innerText = "Decrypting " + i + "/" + noteCount
 
-                    let bytes = CryptoJS.AES.decrypt(responseData[i]["title"], password);
-                    responseData[i]["title"] = bytes.toString(CryptoJS.enc.Utf8)
+        let bytes = CryptoJS.AES.decrypt(responseData[i]["title"], password);
+        responseData[i]["title"] = bytes.toString(CryptoJS.enc.Utf8)
 
-                    let bytesd = CryptoJS.AES.decrypt(responseData[i]["content"], password);
-                    responseData[i]["content"] = bytesd.toString(CryptoJS.enc.Utf8)
-                }
-                let jsonString = JSON.parse(JSON.stringify(responseData))
-                downloadObjectAsJson(jsonString, "data")
-                optionsDiv.classList.add("hidden")
-                displayError("Exported notes!")
-            }
-            doStuff()
-        })
+        let bytesd = CryptoJS.AES.decrypt(responseData[i]["content"], password);
+        responseData[i]["content"] = bytesd.toString(CryptoJS.enc.Utf8)
+    }
+    return responseData
 }
 
-function importNotes(plaintextNotes) {
+async function importNotes(plaintextNotes) {
     for (let i in plaintextNotes) {
         let originalTitle = plaintextNotes[i]["title"];
-        let encryptedTitle = CryptoJS.AES.encrypt(originalTitle, password).toString();
-        plaintextNotes[i]["title"] = encryptedTitle;
+        plaintextNotes[i]["title"] = CryptoJS.AES.encrypt(originalTitle, password).toString();
 
         let originalContent = plaintextNotes[i]["content"];
-        let encryptedContent = CryptoJS.AES.encrypt(originalContent, password).toString();
-        plaintextNotes[i]["content"] = encryptedContent;
+        plaintextNotes[i]["content"] = CryptoJS.AES.encrypt(originalContent, password).toString();
     }
-    fetch(remote + "/api/importnotes", {
+    let importNotesFetch = await fetch(remote + "/api/importnotes", {
         method: "POST",
         body: JSON.stringify({
             "secretKey": localStorage.getItem("DONOTSHARE-secretkey"),
@@ -710,21 +814,7 @@ function importNotes(plaintextNotes) {
             "Content-Type": "application/json; charset=UTF-8"
         }
     })
-    .then((response) => {
-        async function doStuff() {
-            if (response.status === 500) {
-                optionsDiv.classList.add("hidden")
-                importNotesDiv.classList.add("hidden")
-                displayError("Something went wrong! Perhaps your note file was invalid?")
-            } else {
-                optionsDiv.classList.add("hidden")
-                importNotesDiv.classList.add("hidden")
-                displayError("Notes uploaded!")
-                updateNotes()
-            }
-        }
-        doStuff()
-    })
+    return importNotesFetch.status
 }
 
 function firstNewVersion() {
@@ -757,16 +847,31 @@ function disableMarkdown() {
 }
 
 exportNotesButton.addEventListener("click", () => {
-    exportNotes()
+    let responseData = exportNotes()
+    downloadObjectAsJson(responseData, "data")
+    optionsDiv.classList.add("hidden")
+    displayError("Exported notes!")
 });
 
-importFile.addEventListener('change', function(e) {
+importFile.addEventListener('change', function() {
     let fileread = new FileReader()
     fileread.addEventListener(
         "load",
         () => {
-            let decrypted = JSON.parse(fileread.result)
+            let decrypted = JSON.parse(fileread.result.toString())
             importNotes(decrypted)
+                .then((responseStatus) => {
+                    if (responseStatus === 500) {
+                        optionsDiv.classList.add("hidden")
+                        importNotesDiv.classList.add("hidden")
+                        displayError("Something went wrong! Perhaps your note file was invalid?")
+                    } else {
+                        optionsDiv.classList.add("hidden")
+                        importNotesDiv.classList.add("hidden")
+                        displayError("Notes uploaded!")
+                        updateNotes()
+                    }
+                })
         },
         false,
     );

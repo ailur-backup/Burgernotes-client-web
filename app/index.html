@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
+    <script type="text/javascript" src="/static/js/hash-wasm.js"></script>
     <script type="text/javascript" src="/static/js/crypto-js.js"></script>
     <script type="text/javascript" src="/static/js/marked.js"></script>
     <script type="text/javascript" src="/static/js/purify.js"></script>
@@ -14,18 +15,16 @@
 </head>
 
 <noscript>
-    <head>
-        <meta http-equiv="refresh" content="0; url=/login"/>
-    </head>
+    <meta http-equiv="refresh" content="0; url=/login"/>
 </noscript>
 
 <body>
     <div class="topBar" id="topBar">
         <div class="modernToolbar">
-            <button class="usernameBox hidden" onclick="handleGesture()" id="backButton"><div class="vcenter"><img src="/static/svg/arrow-back.svg"></div></button>
+            <button class="usernameBox hidden" onclick="handleGesture()" id="backButton"><div class="vcenter"><img alt="Back arrow" src="/static/svg/arrow-back.svg"></div></button>
             <button class="count" id="wordCountBox">0 words</button>
-            <button onclick="toggleMarkdown()" class="usernameBox"><div class="vcenter"><img src="/static/svg/markdown.svg"></div></button>
-            <button id="usernameBox" class="usernameBox"><div class="vcenter"><img src="/static/svg/acct-settings.svg"></div></button>
+            <button onclick="toggleMarkdown()" class="usernameBox"><div class="vcenter"><img alt="Enable markdown" src="/static/svg/markdown.svg"></div></button>
+            <button id="usernameBox" class="usernameBox"><div class="vcenter"><img alt="Account settings" src="/static/svg/acct-settings.svg"></div></button>
         </div>
     </div>
 
@@ -33,10 +32,8 @@
         <button id="newNote" class="newNote" style="margin-left: 5px;">
             <div class="vcenter"><img id="newNoteImage" draggable="false" alt="" src="/static/svg/add.svg"></div>
         </button>
-        <!--<button class="newNote" style="margin-left: 37.5px; background-color: var(--bar) !important;">-->
-        </button>
         <button id="removeBox" class="newNote remove">
-            <div class="vcenter"><img id="newNoteImage" draggable="false" alt="" src="/static/svg/delete.svg"></div>
+            <div class="vcenter"><img id="deleteNoteImage" draggable="false" alt="" src="/static/svg/delete.svg"></div>
         </button>
         <div id="notesDiv" class="notesDiv">
             <button class="loadingStuff" id="loadingStuff">Meow :3</button>
@@ -61,8 +58,9 @@
             <progress id="storageProgressThing" value="0" max="100"></progress><br>
             <p id="storageThing">Cannot connect to the server</p>
             <div class="section"></div>
-            <p>Account managment</p>
+            <p>Account management</p>
             <button id="deleteMyAccountButton"><img src="/static/svg/delete_forever.svg" alt="">Delete account</button>
+            <button id="changePasswordButton"><img src="/static/svg/password.svg" alt="">Change password</button>
             <button id="exportNotesButton"><img src="/static/svg/download.svg" alt="">Export notes</button>
             <button id="importNotesButton"><img src="/static/svg/upload.svg" alt="">Import notes</button>
             <button id="sessionManagerButton"><img src="/static/svg/list.svg" alt="">View sessions</button>
