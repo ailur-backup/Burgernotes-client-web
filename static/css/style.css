@@ -385,21 +385,17 @@ body {
     width: calc(100% - 200px);
     height: calc(100% - 50px - 30px);
     font-family: "Inter", sans-serif;
-    display: flex;
-    flex-direction: row;
     margin: 10px;
     outline: none;
     z-index: -1;
 }
 
 .noteBox.mobile {
-    flex-direction: column-reverse;
     margin: 15px 0 0;
     height: calc(100% - 50px);
 }
 
 .noteBoxText {
-    resize: none;
     background-color: var(--editor);
     color: var(--text-color);
     border: none;
@@ -407,13 +403,29 @@ body {
     height: 100%;
     font-family: "Inter", sans-serif;
     outline: none;
+    margin-top: 5px;
 }
 
-iframe#markdown {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-left: solid var(--bar) 1px;
+.pell-content {
+  width: 100%;
+  height: calc(100% - 20px);
+  overflow-y: scroll;
+}
+
+.pell-button {
+  background-color: var(--button);
+  border: 1px var(--border-color) solid;
+  width: 35px;
+  height: 35px;
+  margin-left: 1px;
+  margin-right: 1px;
+  border-radius: 10px;
+}
+
+.pell-actionbar {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 5px;
 }
 
 .noteBox:focus {

@@ -1,9 +1,11 @@
 // @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&dn=expat.txt Expat
 
 /*
-Beautified version of crypto-js, to maintain compatibility with uMatrix
-Beautified from https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js
-*/
+ * Beautified version of:
+ * crypto-js (https://www.npmjs.com/package/crypto-js)
+ * (c) Crypto-JS
+ * @license MIT
+ */
 
 ! function(t, e) {
     "object" == typeof exports ? module.exports = exports = e() : "function" == typeof define && define.amd ? define([], e) : t.CryptoJS = e()

@@ -20,18 +20,41 @@ let inputNameBox = document.getElementById("inputNameBox")
 let backButton = document.getElementById("backButton")
 let opButton = document.getElementById("opButton")
 
-async function loginFetch(username, password) {
-    return await fetch(remote + "/api/login", {
-        method: "POST",
-        body: JSON.stringify({
-            username: username,
-            password: password,
-        }),
-        headers: {
-            "Content-Type": "application/json; charset=UTF-8",
-            "X-Burgernotes-Version": "200"
+async function loginFetch(username, password, changePass, newPass) {
+    if (localStorage.getItem("legacy") !== true) {
+        return await fetch(remote + "/api/login", {
+            method: "POST",
+            body: JSON.stringify({
+                username: username,
+                password: password,
+            }),
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8",
+                "X-Burgernotes-Version": "200"
+            }
+        })
+    } else {
+        let passwordChange, newPassChecked
+        if (changePass) {
+            passwordChange = "yes"
+            newPassChecked = newPass
+        } else {
+            passwordChange = "no"
+            newPassChecked = password
         }
-    })
+        return await fetch(remote + "/api/login", {
+            method: "POST",
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                passwordchange: passwordChange,
+                newpass: newPassChecked
+            }),
+            headers: {
+                "Content-Type": "application/json; charset=UTF-8",
+            }
+        })
+    }
 }
 
 async function addLegacyPassword(secretKey, password) {
@@ -165,11 +188,12 @@ signupButton.addEventListener("click", () => {
             showElements(true)
             statusBox.innerText = "Signing in..."
 
-            const login = await loginFetch(username, await hashpass(password))
+            const hashedPass = await hashpass(password)
+            const login = await loginFetch(username, hashedPass, false, "")
             const loginData = await login.json()
             if (login.status === 401) {
                 // Trying hashpassold
-                const loginOld = await loginFetch(username, await hashpassold(password))
+                const loginOld = await loginFetch(username, await hashpassold(password), true, hashedPass)
                 const loginDataOld = await loginOld.json()
                 if (loginOld.status === 401) {
                     statusBox.innerText = "Username or password incorrect!"
@@ -181,7 +205,7 @@ signupButton.addEventListener("click", () => {
                     if (loginDataOld["legacyPasswordNeeded"] === true) {
                         await addLegacyPassword(username, await hashpass(await hashpassold(password)))
                     }
-                    await migrateLegacyPassword(loginDataOld["key"], await hashpass(password))
+                    await migrateLegacyPassword(loginDataOld["key"], hashedPass)
                     window.location.replace("/app/")
                 } else {
                     statusBox.innerText = loginDataOld["error"]
@@ -211,4 +235,4 @@ backButton.addEventListener("click", () => {
 
 showInput(0)
 
-// @license-endc
+// @license-end

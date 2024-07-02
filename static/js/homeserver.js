@@ -26,11 +26,11 @@ function showElements(yesorno) {
     }
 }
 
-changeButton.addEventListener("click", (event) => {
+changeButton.addEventListener("click", () => {
     async function doStuff() {
         let remote = homeserverBox.value
 
-        if (remote == "") {
+        if (remote === "") {
             statusBox.innerText = "A homeserver is required!"
             return
         }
@@ -38,11 +38,16 @@ changeButton.addEventListener("click", (event) => {
         showElements(false)
         statusBox.innerText = "Connecting to homeserver..."
 
-        fetch(remote + "/api/version")
+        fetch(remote + "/api/versionjson")
             .then((response) => response)
             .then((response) => {
                 async function doStuff() {
-                    if (response.status == 200) {
+                    if (response.status === 200) {
+                        let version = await response.json()
+                        let fetchClientVersion = await (await fetch("/static/version.txt")).text()
+                        if (parseInt(version["versionnum"]) < parseInt(fetchClientVersion)) {
+                            localStorage.setItem("legacy", "true")
+                        }
                         localStorage.setItem("homeserverURL", remote)
 
                         if (document.referrer !== "") {
@@ -51,12 +56,44 @@ changeButton.addEventListener("click", (event) => {
                         else {
                           window.location.href = "/login";
                         }
-                    }
-                    else if (response.status == 404) {
-                        statusBox.innerText = "Not a valid homeserver!"
+                    } else if (response.status === 404) {
+                        let legacyHomeserverCheck = await fetch(remote + "/api/version")
+                        if (legacyHomeserverCheck.status === 200) {
+                            let homeserverText = await legacyHomeserverCheck.text()
+                            let homeserverFloat = homeserverText.split(" ")[2]
+                            let homeserverNameCheck = homeserverText.split(" ")[0]
+                            if (homeserverNameCheck !== "Burgernotes") {
+                                statusBox.innerText = "This homeserver is not compatible with Burgernotes!"
+                                showElements(true)
+                                return
+                            }
+                            let homeserverInt = parseFloat(homeserverFloat) * 100
+                            if (homeserverInt < 200) {
+                                localStorage.setItem("legacy", "true")
+                                localStorage.setItem("homeserverURL", remote)
+                                if (document.referrer !== "") {
+                                    window.location.href = document.referrer;
+                                }
+                                else {
+                                    window.location.href = "/login";
+                                }
+                            } else if (homeserverInt > 200) {
+                                localStorage.setItem("legacy", "false")
+                                localStorage.setItem("homeserverURL", remote)
+                                if (document.referrer !== "") {
+                                    window.location.href = document.referrer;
+                                }
+                                else {
+                                    window.location.href = "/login";
+                                }
+                            } else {
+                                statusBox.innerText = "This homeserver is not compatible with Burgernotes!"
+                                showElements(true)
+                            }
+                        }
                     }
                     else {
-                        statusBox.innerText = "Something went wrong!"
+                        statusBox.innerText = "This homeserver is not compatible with Burgernotes!"
                         showElements(true)
                     }
                 }
@@ -66,7 +103,7 @@ changeButton.addEventListener("click", (event) => {
     doStuff()
 });
 
-backButton.addEventListener("click", (event) => {
+backButton.addEventListener("click", () => {
     history.back()
 });
 
