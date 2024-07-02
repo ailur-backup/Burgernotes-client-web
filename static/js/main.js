@@ -84,6 +84,32 @@ document.addEventListener("DOMContentLoaded", function() {
     })
     let noteBox = document.getElementsByClassName("pell-content")[0]
 
+    function handleGesture() {
+        if (indiv) {
+            indiv = false
+            notesBar.style.width = "100%";
+            noteBoxDiv.style.width = "0px"
+            if (selectedNote !== 0) {
+                noteBoxDiv.readOnly = true
+            }
+            notesDiv.classList.remove("hidden")
+            noteBoxDiv.classList.add("hidden")
+            backButton.classList.add("hidden")
+            newNote.classList.remove("hidden")
+        } else {
+            indiv = true
+            noteBoxDiv.style.width = "100%";
+            notesBar.style.width = "0px"
+            if (selectedNote !== 0) {
+                noteBoxDiv.readOnly = false
+            }
+            notesDiv.classList.add("hidden")
+            noteBoxDiv.classList.remove("hidden")
+            backButton.classList.remove("hidden")
+            newNote.classList.add("hidden")
+        }
+    }
+
     if (/Android|iPhone|iPod/i.test(navigator.userAgent)) {
         mobile = true
         noteBoxDiv.classList.add("mobile")
@@ -120,32 +146,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 handleGesture();
             }
         }, false);
-    }
-
-    function handleGesture() {
-        if (indiv) {
-            indiv = false
-            notesBar.style.width = "100%";
-            noteBoxDiv.style.width = "0px"
-            if (selectedNote !== 0) {
-                noteBoxDiv.readOnly = true
-            }
-            notesDiv.classList.remove("hidden")
-            noteBoxDiv.classList.add("hidden")
-            backButton.classList.add("hidden")
-            newNote.classList.remove("hidden")
-        } else {
-            indiv = true
-            noteBoxDiv.style.width = "100%";
-            notesBar.style.width = "0px"
-            if (selectedNote !== 0) {
-                noteBoxDiv.readOnly = false
-            }
-            notesDiv.classList.add("hidden")
-            noteBoxDiv.classList.remove("hidden")
-            backButton.classList.remove("hidden")
-            newNote.classList.add("hidden")
-        }
     }
 
     noteBox.innerText = ""
