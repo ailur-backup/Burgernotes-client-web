@@ -563,7 +563,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     let responseData = await response.json()
 
                     let bytes = CryptoJS.AES.decrypt(responseData["content"], password);
-                    let cleanedHTML = bytes.toString(CryptoJS.enc.Utf8).replace(/<(?!\/?(h1|h2|br)\b)[^>]*>/gi, '')
+                    let cleanedHTML = bytes.toString(CryptoJS.enc.Utf8).replace(/<(?!\/?(h1|h2|br|img|blockquote|ol|li|b|i|u|strike|p|pre|ul|hr|a)\b)[^>]*>/gi, '')
                     noteBox.innerHTML = cleanedHTML.replace("\n", "<br>")
 
                     updateWordCount()
