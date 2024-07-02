@@ -415,7 +415,8 @@ body {
 .pell-button {
   background-color: var(--button);
   border: 1px var(--border-color) solid;
-  width: 35px;
+  min-width: 35px;
+  max-width: 35px;
   height: 35px;
   margin-left: 1px;
   margin-right: 1px;
@@ -425,6 +426,7 @@ body {
 .pell-actionbar {
   display: flex;
   margin-bottom: 5px;
+  overflow-x: auto;
 }
 
 .noteBox:focus {
