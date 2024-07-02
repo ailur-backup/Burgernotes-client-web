@@ -107,7 +107,46 @@ document.addEventListener("DOMContentLoaded", function() {
             button: 'pell-button',
             content: 'pell-content',
             selected: 'pell-button-selected'
-        }
+        },
+        actions: [
+            "bold",
+            "italic",
+            "underline",
+            "strikethrough",
+            "heading1",
+            "heading2",
+            "paragraph",
+            "quote",
+            "olist",
+            "ulist",
+            "code",
+            "line",
+            "link",
+            {
+                name: 'uploadimage',
+                icon: '📁',
+                title: 'Upload image',
+                result: function result() {
+                    async function doStuff() {
+                        errorInput.classList.remove("hidden")
+                        errorInput.type = "file"
+                        errorInput.value = ""
+                        displayError("Select an image to upload:")
+                        await waitForConfirm()
+                        let file = errorInput.files[0]
+                        if (file) {
+                            let reader = new FileReader()
+                            reader.readAsDataURL(file)
+                            reader.onload = function () {
+                                pell.exec('insertImage', reader.result);
+                            }
+                        }
+                    }
+                    doStuff();
+                }
+            },
+            "image",
+        ],
     })
     let noteBox = document.getElementsByClassName("pell-content")[0]
 
