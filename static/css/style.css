@@ -163,13 +163,14 @@ body {
     width: calc(100% - 181px);
     height: 50px;
 
-    background-color: var(--editor);
 
     border: none;
     border-color: var(--border-color);
     border-width: 0;
     border-bottom-width: 1px;
     display: flex;
+    background-color: var(--editor);
+    z-index: -1;
 }
 
 .burgerDropdown {
@@ -427,6 +428,14 @@ body {
   display: flex;
   margin-bottom: 5px;
   overflow-x: auto;
+  position: fixed;
+  top: 8px;
+}
+
+@media only screen and (max-width: 860px) {
+    .pell-actionbar {
+        position: inherit;
+    }
 }
 
 .noteBox:focus {

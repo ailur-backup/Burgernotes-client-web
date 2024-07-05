@@ -76,11 +76,13 @@
             <h3 class="w300">Import manager</h3>
             <p>Import your notes from your device</p>
             <div class="section"></div>
-            <form><input type="file" id="importFile" style="border: 0;"></form>
+            <button onclick="uploadThing.click()" id="importFile">Browse</button>
+            <button id="importFileConfirm">Upload</button>
         </div>
         <div id="errorDiv" class="optionsDiv hidden">
             <p id="errorMessageThing"></p>
             <input class="hidden" id="errorInput" type="text" placeholder=""><br>
+            <button style="margin-bottom: 5px;" class="normalButton hidden" id="browseButton" onclick="uploadThing.click()">Browse</button>
             <button class="normalButton" id="closeErrorButton">Ok</button>
             <button class="normalButton hidden" id="cancelErrorButton">Cancel</button>
         </div>
@@ -89,6 +91,7 @@
     <div class="noteBox" id="noteBoxDiv">
         <div id="noteBox" class="noteBoxText"></div>
     </div>
+    <input type="file" id="uploadThing" class="hidden"> <!-- This is only ever .click()'d so it doesn't need to be styled -->
 
     <script>
         for (let i = 0; i < 40; i++) {
@@ -96,7 +99,7 @@
         }
         loadingStuff.remove()
     </script>
-    <script src="https://unpkg.com/pell"></script>
+    <script src="/static/js/pell.js"></script>
     <script type="text/javascript" src="/static/js/main.js"></script>
 </body>
 

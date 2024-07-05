@@ -28,6 +28,8 @@ let usernameBox = document.getElementById("usernameBox")
 let optionsCoverDiv = document.getElementById("optionsCoverDiv")
 let optionsDiv = document.getElementById("optionsDiv")
 let errorDiv = document.getElementById("errorDiv")
+let uploadThing = document.getElementById("uploadThing")
+let browseButton = document.getElementById("browseButton")
 let errorMessageThing = document.getElementById("errorMessageThing")
 let closeErrorButton = document.getElementById("closeErrorButton")
 let cancelErrorButton = document.getElementById("cancelErrorButton")
@@ -60,6 +62,7 @@ let textMinusBox = document.getElementById('textMinusBox');
 let wordCountBox = document.getElementById('wordCountBox');
 let removeBox = document.getElementById("removeBox")
 let importFile = document.getElementById("importFile")
+let importFileConfirm = document.getElementById("importFileConfirm")
 
 let selectedNote = 0
 let timer
@@ -128,15 +131,15 @@ document.addEventListener("DOMContentLoaded", function() {
                 title: 'Upload image',
                 result: function result() {
                     async function doStuff() {
-                        errorInput.classList.remove("hidden")
-                        errorInput.type = "file"
-                        errorInput.value = ""
+                        browseButton.classList.remove("hidden")
                         displayError("Select an image to upload:")
                         await waitForConfirm()
-                        let file = errorInput.files[0]
+                        browseButton.classList.add("hidden")
+                        let file = uploadThing.files[0]
                         if (file) {
                             let reader = new FileReader()
                             reader.readAsDataURL(file)
+                            uploadThing.files = null
                             reader.onload = function () {
                                 pell.exec('insertImage', reader.result);
                             }
@@ -860,7 +863,7 @@ document.addEventListener("DOMContentLoaded", function() {
         displayError("Exported notes!")
     });
 
-    importFile.addEventListener('change', function () {
+    importFileConfirm.addEventListener('click', function () {
         let fileread = new FileReader()
         fileread.addEventListener(
             "load",
@@ -883,7 +886,7 @@ document.addEventListener("DOMContentLoaded", function() {
             false,
         );
 
-        fileread.readAsText(importFile.files[0])
+        fileread.readAsText(uploadThing.files[0])
     })
 
     removeBox.addEventListener("click", () => {
