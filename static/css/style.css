@@ -414,7 +414,7 @@ body {
 }
 
 .pell-button {
-  background-color: var(--button);
+  background-color: var(--note-button);
   border: 1px var(--border-color) solid;
   min-width: 35px;
   max-width: 35px;
@@ -422,6 +422,10 @@ body {
   margin-left: 1px;
   margin-right: 1px;
   border-radius: 10px;
+}
+
+button:hover {
+  background-color: var(--note-button-hover);
 }
 
 .pell-actionbar {
@@ -678,7 +682,7 @@ body {
     border-color: var(--hover-theme-color)
 }
 
-.inoutdiv button {
+.clickButton {
     background-color: var(--theme-color);
     color: white;
     margin-right: 5px;
@@ -691,7 +695,7 @@ body {
     transition: 0.125s;
 }
 
-.inoutdiv button:hover {
+.clickButton:hover {
     background-color: var(--hover-theme-color);
 }
 
@@ -907,30 +911,16 @@ body {
 }
 
 .mainDiv .feature {
-    max-width: calc(100% - 12vh - 12vh - 3.5vh);
+    max-width: 85%;
     margin-bottom: 10px;
-    margin-left: 12vh;
-    margin-right: 12vh;
+    margin-left: 7.5%;
+    margin-right: 7.5%;
     border: none;
     border-radius: 12px;
 
     font-size: 17px;
     padding: 15px 10px 30px;
     overflow-x: auto;
-}
-
-@media only screen and (max-width: 750px) {
-    .mainDiv .feature {
-        width: 80%;
-        margin-left: 7.5%;
-    }
-}
-
-@media only screen and (max-width: 750px) {
-    .mainDiv .feature {
-        width: 80%;
-        margin-left: 7.5%;
-    }
 }
 
 .mainDiv .green {

@@ -71,6 +71,40 @@ let indiv = false
 let mobile = false
 let selectLatestNote = false
 
+async function getKey() {
+    let password = localStorage.getItem("DONOTSHARE-password")
+    let cryptoKey = await window.crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits", "deriveKey"])
+    let salt = new TextEncoder().encode("I love Burgernotes!")
+    return await window.crypto.subtle.deriveKey({
+        name: "PBKDF2",
+        salt,
+        iterations: 100000,
+        hash: "SHA-512"
+    }, cryptoKey, {name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
+}
+
+function encrypt(text) {
+    getKey()
+        .then((key) => {
+            let iv = window.crypto.getRandomValues(new Uint8Array(12))
+            window.crypto.subtle.encrypt({
+                name: "AES-GCM",
+                iv: iv
+            }, key, new TextEncoder().encode(text))
+                .then((encrypted) => {
+                    return btoa(JSON.stringify({
+                        encrypted: encrypted,
+                        iv: iv
+                    }))
+                })
+        })
+}
+
+function decrypt(encrypted) {
+    getKey()
+        .then((key) => {
+        })
+}
 
 function handleGesture() {
     if (indiv) {
