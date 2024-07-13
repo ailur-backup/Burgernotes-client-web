@@ -109,11 +109,12 @@ signupButton.addEventListener("click", () => {
                         localStorage.setItem("DONOTSHARE-password", await hashwasm.sha512(password))
 
                         window.location.href = "/app/"
-                    }
-                    else if (response.status === 409) {
+                    } else if (response.status === 409) {
                         statusBox.innerText = "Username already taken!"
                         showElements(true)
-                    }
+                    } else if (response.status === 429) {
+                        statusBox.innerText = "Please don't sign up to new accounts that quickly. If you are using a VPN, please turn it off!"
+                        showElements(true)
                     else {
                         statusBox.innerText = "Something went wrong! (error code: " + response.status + ")"
                         showElements(true)
