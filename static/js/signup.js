@@ -115,7 +115,7 @@ signupButton.addEventListener("click", () => {
                     } else if (response.status === 429) {
                         statusBox.innerText = "Please don't sign up to new accounts that quickly. If you are using a VPN, please turn it off!"
                         showElements(true)
-                    else {
+                    } else {
                         statusBox.innerText = "Something went wrong! (error code: " + response.status + ")"
                         showElements(true)
                     }
