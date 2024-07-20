@@ -89,7 +89,7 @@ signupButton.addEventListener("click", () => {
         }
 
         showElements(false)
-        statusBox.innerText = "Beginning proof-of-work challenge..."
+        statusBox.innerText = "Computing PoW Challenge... (this may take up to 5 minutes at worst, 3 seconds at best)"
 
         /*
          * Compiled version of:
