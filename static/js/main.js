@@ -1,11 +1,6 @@
 // @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-3.0
 
-if (localStorage.getItem("DONOTSHARE-secretkey") === null) {
-    window.location.replace("/login")
-    document.body.innerHTML = "Redirecting..."
-    throw new Error();
-}
-if (localStorage.getItem("DONOTSHARE-password") === null) {
+if (localStorage.getItem("DONOTSHARE-secretkey") === null || localStorage.getItem("DONOTSHARE-password") === null) {
     window.location.replace("/login")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
@@ -17,7 +12,10 @@ if (remote == null) {
     remote = "https://notes.hectabit.org"
 }
 
-function formatBytes(a, b = 2) { if (!+a) return "0 Bytes"; const c = 0 > b ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1000)); return `${parseFloat((a / Math.pow(1000, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]}` }
+function formatBytes(a, b = 2) {
+    if (!+a) return "0 Bytes"; const c = 0 > b ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1000));
+    return `${parseFloat((a / Math.pow(1000, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]}`
+}
 
 let secretkey = localStorage.getItem("DONOTSHARE-secretkey")
 let password = localStorage.getItem("DONOTSHARE-password")
@@ -61,7 +59,6 @@ let textPlusBox = document.getElementById('textPlusBox');
 let textMinusBox = document.getElementById('textMinusBox');
 let wordCountBox = document.getElementById('wordCountBox');
 let removeBox = document.getElementById("removeBox")
-let importFile = document.getElementById("importFile")
 let importFileConfirm = document.getElementById("importFileConfirm")
 
 let selectedNote = 0
@@ -71,39 +68,61 @@ let indiv = false
 let mobile = false
 let selectLatestNote = false
 
+function arrayBufferToBase64(buffer) {
+    const uint8Array = new Uint8Array(buffer);
+    return btoa(String.fromCharCode.apply(null, uint8Array))
+}
+
+function base64ToArrayBuffer(base64) {
+    const binaryString = atob(base64);
+    const length = binaryString.length;
+    const buffer = new ArrayBuffer(length);
+    const uint8Array = new Uint8Array(buffer);
+    for (let i = 0; i < length; i++) {
+        uint8Array[i] = binaryString.charCodeAt(i);
+    }
+    return buffer;
+}
+
 async function getKey() {
     let password = localStorage.getItem("DONOTSHARE-password")
-    let cryptoKey = await window.crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits", "deriveKey"])
     let salt = new TextEncoder().encode("I love Burgernotes!")
+    let cryptoKey = await window.crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits", "deriveKey"])
     return await window.crypto.subtle.deriveKey({
         name: "PBKDF2",
         salt,
-        iterations: 100000,
+        iterations: 1,
         hash: "SHA-512"
     }, cryptoKey, {name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
 }
 
-function encrypt(text) {
-    getKey()
-        .then((key) => {
-            let iv = window.crypto.getRandomValues(new Uint8Array(12))
-            window.crypto.subtle.encrypt({
-                name: "AES-GCM",
-                iv: iv
-            }, key, new TextEncoder().encode(text))
-                .then((encrypted) => {
-                    return btoa(JSON.stringify({
-                        encrypted: encrypted,
-                        iv: iv
-                    }))
-                })
-        })
+async function encrypt(text) {
+    let cryptoKey = await getKey()
+    let iv = window.crypto.getRandomValues(new Uint8Array(12))
+    let encrypted = await window.crypto.subtle.encrypt({
+        name: "AES-GCM",
+        iv: iv
+    }, cryptoKey, new TextEncoder().encode(text))
+    return btoa(JSON.stringify({
+        encrypted: arrayBufferToBase64(encrypted),
+        iv: arrayBufferToBase64(iv)
+    }))
 }
 
-function decrypt(encrypted) {
-    getKey()
-        .then((key) => {
-        })
+async function decrypt(encrypted) {
+    if (encrypted === "") {
+        return ""
+    } else {
+        let cryptoKey = await getKey()
+        let jsonData = JSON.parse(atob(encrypted))
+        let encryptedData = base64ToArrayBuffer(jsonData.encrypted)
+        let iv = base64ToArrayBuffer(jsonData.iv)
+        let decrypted = await window.crypto.subtle.decrypt({
+            name: "AES-GCM",
+            iv: iv
+        }, cryptoKey, encryptedData)
+        return new TextDecoder().decode(decrypted)
+    }
 }
 
 function handleGesture() {
@@ -136,7 +155,9 @@ function handleGesture() {
 document.addEventListener("DOMContentLoaded", function() {
     pell.init({
         element: pellAttacher,
-        onChange: html => console.log(html),
+        onChange: function(html) {
+            // Having a nice day? This does nothing.
+        },
         defaultParagraphSeparator: 'br',
         styleWithCSS: false,
         classes: {
@@ -502,7 +523,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     } else {
                         closeErrorButton.classList.remove("hidden")
                         const data = await response.json()
-                        console.log(data)
                         displayError(data["error"])
                     }
                 }
@@ -638,8 +658,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 async function doStuff() {
                     let responseData = await response.json()
 
-                    let bytes = CryptoJS.AES.decrypt(responseData["content"], password);
-                    let cleanedHTML = bytes.toString(CryptoJS.enc.Utf8).replace(/<(?!\/?(h1|h2|br|img|blockquote|ol|li|b|i|u|strike|p|pre|ul|hr|a)\b)[^>]*>/gi, '')
+                    let htmlNote
+                    try {
+                        htmlNote = await decrypt(responseData["content"])
+                    } catch (e) {
+                        console.log(e)
+                        console.log(responseData)
+                    }
+
+                    console.log(htmlNote)
+                    let cleanedHTML = htmlNote.replace(/<(?!\/?(h1|h2|br|img|blockquote|ol|li|b|i|u|strike|p|pre|ul|hr|a)\b)[^>]*>/gi, '(potential XSS tag was here)')
                     noteBox.innerHTML = cleanedHTML.replace("\n", "<br>")
 
                     updateWordCount()
@@ -647,21 +675,19 @@ document.addEventListener("DOMContentLoaded", function() {
                     noteBox.addEventListener("input", () => {
                         updateWordCount()
                         clearTimeout(timer);
-                        timer = setTimeout(() => {
-                            let preEncryptedTitle = noteBox.innerText
+                        timer = setTimeout(async () => {
+                            let preEncryptedTitle = "New note"
 
-                            if (noteBox.innerText.substring(0, noteBox.innerText.indexOf("\n")) !== "") {
-                                preEncryptedTitle = noteBox.innerText.substring(0, noteBox.innerText.indexOf("\n"));
+                            if (noteBox.innerText !== "") {
+                                preEncryptedTitle = new RegExp('(.+?)(?=\n)|[\s\S]*?(\S+)(?=\n)').exec(noteBox.innerText)[0]
                             }
 
                             preEncryptedTitle = truncateString(preEncryptedTitle, 15)
                             document.getElementById(nameithink).innerText = preEncryptedTitle
 
-                            let encryptedText = CryptoJS.AES.encrypt(noteBox.innerHTML, password).toString();
-                            let encryptedTitle = CryptoJS.AES.encrypt(preEncryptedTitle, password).toString();
-
-                            console.log(encryptedTitle)
-                            console.log(encryptedText)
+                            console.log(noteBox.innerHTML)
+                            let encryptedText = await encrypt(noteBox.innerHTML)
+                            let encryptedTitle = await encrypt(preEncryptedTitle)
 
                             if (selectedNote === nameithink) {
                                 fetch(remote + "/api/editnote", {
@@ -694,7 +720,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function updateNotes() {
-        console.log("Notes updated")
         fetch(remote + "/api/listnotes", {
             method: "POST",
             body: JSON.stringify({
@@ -720,15 +745,17 @@ document.addEventListener("DOMContentLoaded", function() {
                     for (let i in responseData) {
                         noteData = responseData[i]
 
-                        let bytes = CryptoJS.AES.decrypt(noteData["title"], password);
-                        noteData["title"] = bytes.toString(CryptoJS.enc.Utf8)
+                        try {
+                            noteData["title"] = await decrypt(noteData["title"])
+                        } catch (e) {
+                            location.href = "/migrate"
+                        }
 
                         if (noteData["id"] > highestID) {
                             highestID = noteData["id"]
                         }
 
                         decryptedResponseData.push(noteData)
-                        console.log(noteData)
                     }
 
                     document.querySelectorAll(".noteButton").forEach((el) => el.remove());
@@ -739,11 +766,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         noteButton.classList.add("noteButton")
                         notesDiv.append(noteButton)
 
-                        console.log(noteData["title"])
-
                         if (noteData["title"] === "") {
-                            console.log(noteData["title"])
-                            console.log("case")
                             noteData["title"] = "New note"
                         }
 
@@ -787,10 +810,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     updateNotes()
 
-    newNote.addEventListener("click", () => {
+    newNote.addEventListener("click", async () => {
         let noteName = "New note"
         selectLatestNote = true
-        console.log(selectLatestNote)
 
         // create fake item
         document.querySelectorAll(".noteButton").forEach((el) => el.classList.remove("selected"));
@@ -802,7 +824,8 @@ document.addEventListener("DOMContentLoaded", function() {
         noteButton.classList.add("selected")
         noteBox.click()
 
-        let encryptedName = CryptoJS.AES.encrypt(noteName, password).toString(CryptoJS.enc.Utf8);
+        let encryptedName
+        encryptedName = await encrypt(noteName)
 
         fetch(remote + "/api/newnote", {
             method: "POST",
@@ -851,22 +874,20 @@ document.addEventListener("DOMContentLoaded", function() {
         for (let i in responseData) {
             exportNotes.innerText = "Decrypting " + i + "/" + noteCount
 
-            let bytes = CryptoJS.AES.decrypt(responseData[i]["title"], password);
-            responseData[i]["title"] = bytes.toString(CryptoJS.enc.Utf8)
-
-            let bytesd = CryptoJS.AES.decrypt(responseData[i]["content"], password);
-            responseData[i]["content"] = bytesd.toString(CryptoJS.enc.Utf8)
+            try {
+                responseData[i]["title"] = await decrypt(responseData[i]["title"])
+                responseData[i]["content"] = await decrypt(responseData[i]["content"])
+            } catch (e) {
+                location.href = "/migrate"
+            }
         }
         return responseData
     }
 
     async function importNotes(plaintextNotes) {
         for (let i in plaintextNotes) {
-            let originalTitle = plaintextNotes[i]["title"];
-            plaintextNotes[i]["title"] = CryptoJS.AES.encrypt(originalTitle, password).toString();
-
-            let originalContent = plaintextNotes[i]["content"];
-            plaintextNotes[i]["content"] = CryptoJS.AES.encrypt(originalContent, password).toString();
+            plaintextNotes[i]["title"] = await encrypt(plaintextNotes[i]["title"])
+            plaintextNotes[i]["content"] = await encrypt(plaintextNotes[i]["content"])
         }
         let importNotesFetch = await fetch(remote + "/api/importnotes", {
             method: "POST",
@@ -948,7 +969,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     if (firstNewVersion()) {
-        displayError("What's new in Burgernotes 2.0?\nRestyled client\nAdded changing passwords\nAdded importing notes")
+        displayError("What's new in Burgernotes 2.0?\nRestyled client\nAdded changing passwords\nAdded importing notes\nChange the use of CryptoJS to Native AES GCM\nUse Argon2ID for hashing rather than the SHA family\nAdded a Proof-Of-Work CAPTCHA during signup\nMade the signup and login statuses more descriptive\nFixed various bugs and issues\nAdded markdown notes\nAdded support for uploading photos\nImproved privacy policy to be clearer about what is and isn't added\nRemoved some useless uses of cookies and replaced with localStorage\nFixed the privacy policy not redirecting correctly\nAdded a list of native clients\nMade the client support LibreJS and therefore GNU Icecat")
     }
 
     checknetwork()

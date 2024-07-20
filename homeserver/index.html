@@ -14,14 +14,58 @@
 <body>
     <img src="/static/img/background.jpg" class="background" alt="">
     <div class="inoutdiv">
-        <h2>Alternative servers</h2>
-        <p>Enter your custom homeserver URL <a href="/">What does this mean?</a></p>
+        <noscript>
+            <style>
+                .checkMark {
+                    width: inherit !important;
+                    height: inherit !important;
+                    display: block !important;
+                    position: fixed !important;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(calc(-50% - 125px), calc(-50% - 16px));
+                }
 
-        <span id="inputNameBox" style="margin-right: 5px;color: var(--text-color);">Server URL:</span><input type="text" placeholder="https://example.org" id="homeserverBox"><br>
-        <button id="changeButton">Change</button><button class="nonimportant" id="backButton">Cancel</button><br><br>
+                .noContent {
+                    display: inherit;
+                }
 
-        <p id="statusBox">Loading...</p>
-        <p>Please put in the URL in standard format; https://, http://, etc.</p>
+                .content {
+                    display: none;
+                }
+
+                .checkMark:checked ~ .content {
+                    display: inherit !important;
+                }
+
+                .checkMark:checked ~ .noContent {
+                    display: none !important;
+                }
+
+                .checkMark:checked {
+                    display: none !important;
+                }
+            </style>
+        </noscript>
+        <input type="checkbox" class="checkMark">
+        <div class="noContent">
+            <h2 style="display: block !important;">Your web browser is unsupported</h2>
+            <p>Please enable JavaScript in your web browser to continue</p>
+            <p style="margin-bottom: 135px;">False alarm? Click the     checkmark to ignore this warning.</p>
+        </div>
+        <div class="content">
+            <h2>Alternative servers</h2>
+            <p>Enter your custom homeserver URL</p>
+            <div class="inputContainer" id="inputContainer">
+                <div class="vAlign"><span id="inputNameBox">URL:</span></div>
+                <input type="text" placeholder="https://example.org" id="homeserverBox"><br>
+            </div>
+            <p>Please put in the URL in standard format; https://, http://, etc.</p>
+            <button id="changeButton" class="clickButton">Change</button>
+            <button class="clickButton nonimportant" id="backButton">Cancel</button><br><br>
+            <p>A homeserver is the server that your notes and account are stored on.</p>
+            <p id="statusBox">Loading...</p>
+        </div>
     </div>
 
     <script type="text/javascript" src="/static/js/homeserver.js"></script>

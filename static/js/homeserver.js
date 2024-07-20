@@ -19,10 +19,12 @@ function showElements(yesorno) {
     if (!yesorno) {
         homeserverBox.classList.add("hidden")
         changeButton.classList.add("hidden")
+        inputContainer.classList.add("hidden")
     }
     else {
         homeserverBox.classList.remove("hidden")
         changeButton.classList.remove("hidden")
+        inputContainer.classList.remove("hidden")
     }
 }
 

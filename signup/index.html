@@ -8,23 +8,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="/static/css/style.css" />
     <script src="/static/js/hash-wasm.js"></script>
+    <script src="/static/js/wasm_exec.js"></script>
     <link rel="icon" href="/static/svg/favicon.svg">
 </head>
 
 <body>
     <img src="/static/img/background.jpg" class="background" alt="">
     <div class="inoutdiv">
-        <h2>Create a Burgernotes Account</h2>
-        <p>Get started by picking a username and password</p>
-        <p style="color: #b3261e; font-size: 14px; margin-bottom: 2px; margin-top: 1px;" id="statusBox"></p>
-        <span id="inputNameBox" style="margin-right: 10px;color: var(--text-color);">Username:</span>
-        <input id="usernameBox" type="text" placeholder="Username">
-        <span id="inputNameBox" style="margin-right: 13px;color: var(--text-color);">Password: </span>
-        <input id="passwordBox" type="password" placeholder="Password"><br>
-        <button class="clickButton" id="signupButton">Create account</button><button id="opButton" class="clickButton nonimportant">Already have an account</button><br><br>
-        <div style="display: flex;"><p class="hidden" id="homeserver">Your homeserver is loading... </p><div style="display: flex;flex-direction: column;justify-content: center;"><a class="hidden" href="/homeserver">Change</a></div></div>
-        <a class="iconbutton" title="Change homeserver" href="/homeserver/"><img src="/static/svg/server.svg"></a>
-        <a href="/privacy/">Privacy &amp; Terms</a>
+        <noscript>
+            <style>
+                .checkMark {
+                    width: inherit !important;
+                    height: inherit !important;
+                    display: block !important;
+                    position: fixed !important;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(calc(-50% - 125px), calc(-50% - 16px));
+                }
+
+                .noContent {
+                    display: inherit;
+                }
+
+                .content {
+                    display: none;
+                }
+
+                .checkMark:checked ~ .content {
+                    display: inherit !important;
+                }
+
+                .checkMark:checked ~ .noContent {
+                    display: none !important;
+                }
+
+                .checkMark:checked {
+                    display: none !important;
+                }
+            </style>
+        </noscript>
+        <input type="checkbox" class="checkMark">
+        <div class="noContent">
+            <h2 style="display: block !important;">Your web browser is unsupported</h2>
+            <p>Please enable JavaScript in your web browser to continue</p>
+            <p style="margin-bottom: 135px;">False alarm? Click the     checkmark to ignore this warning.</p>
+        </div>
+        <div class="content">
+            <h2>Create a Burgernotes Account</h2>
+            <p>Get started by picking a username and password</p>
+            <p style="color: #b3261e; font-size: 14px; margin-bottom: 2px; margin-top: 1px;" id="statusBox"></p>
+            <table id="inputContainer">
+                <tr>
+                    <td><span id="inputNameBox">Username:</span></td>
+                    <td class="inputBox"><input id="usernameBox" type="text" placeholder="Username"></td>
+                </tr>
+                <tr>
+                    <td><span id="inputPasswordBox">Password: </span></td>
+                    <td class="inputBox"><input id="passwordBox" type="password" placeholder="Password"><br></td>
+                </tr>
+            </table>
+            <br>
+            <button class="clickButton" id="signupButton">Create account</button><button id="opButton" class="clickButton nonimportant">Already have an account</button><br><br>
+            <div style="display: flex;"><p class="hidden" id="homeserver">Your homeserver is loading... </p><div style="display: flex;flex-direction: column;justify-content: center;"><a class="hidden" href="/homeserver">Change</a></div></div>
+            <a class="iconbutton" title="Change homeserver" href="/homeserver/"><img src="/static/svg/server.svg" alt="Homeservers"></a>
+            <a href="/privacy/">Privacy &amp; Terms</a>
+        </div>
     </div>
-    <script type="text/javascript" src="/static/js/signup.js"></script>
+    <script src="/static/js/signup.js"></script>
 </body>

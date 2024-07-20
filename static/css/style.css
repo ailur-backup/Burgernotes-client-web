@@ -12,7 +12,7 @@
     --note-theme-color: #CDE1EC;
     --hover-theme-color: #4990e7;
     --nonimporant-theme-color: #EBEBEB;
-    --hover-nonimportant-theme-color: #dbdbdb; 
+    --hover-nonimportant-theme-color: #dbdbdb;
     --nonimportant-text-color: #000;
     --portal-background-color: #FAFAFA;
     --theme-text-color: #ffffff;
@@ -41,7 +41,7 @@
         --note-theme-color: #293B53;
         --hover-theme-color: #4990e7;
         --nonimporant-theme-color: #4A4A4A;
-        --hover-nonimportant-theme-color: #595959; 
+        --hover-nonimportant-theme-color: #595959;
         --nonimportant-text-color: #fff;
         --portal-background-color: #242424;
         --theme-text-color: #ffffff;
@@ -321,10 +321,10 @@ body {
 .notesBar .loadingStuff {
     border: none;
     background:
-    linear-gradient(0.25turn, transparent, var(--contrast2), transparent),
-    linear-gradient(var(--contrast), var(--contrast)),
-    radial-gradient(38px circle at 19px 19px, #eee 50%, transparent 51%),
-    linear-gradient(var(--contrast), var(--contrast));
+            linear-gradient(0.25turn, transparent, var(--contrast2), transparent),
+            linear-gradient(var(--contrast), var(--contrast)),
+            radial-gradient(38px circle at 19px 19px, #eee 50%, transparent 51%),
+            linear-gradient(var(--contrast), var(--contrast));
     background-repeat: no-repeat;
     background-size: 200% 200%, 100% 200%, 50% 50%, 140% 12%;
     background-position: -200% 0, 0 0, 0 76%, 16% 78%;
@@ -408,32 +408,32 @@ body {
 }
 
 .pell-content {
-  width: 100%;
-  height: calc(100% - 20px);
-  overflow-y: scroll;
+    width: 100%;
+    height: calc(100% - 20px);
+    overflow-y: scroll;
 }
 
 .pell-button {
-  background-color: var(--note-button);
-  border: 1px var(--border-color) solid;
-  min-width: 35px;
-  max-width: 35px;
-  height: 35px;
-  margin-left: 1px;
-  margin-right: 1px;
-  border-radius: 10px;
+    background-color: var(--note-button);
+    border: 1px var(--border-color) solid;
+    min-width: 35px;
+    max-width: 35px;
+    height: 35px;
+    margin-left: 1px;
+    margin-right: 1px;
+    border-radius: 10px;
 }
 
 button:hover {
-  background-color: var(--note-button-hover);
+    background-color: var(--note-button-hover);
 }
 
 .pell-actionbar {
-  display: flex;
-  margin-bottom: 5px;
-  overflow-x: auto;
-  position: fixed;
-  top: 8px;
+    display: flex;
+    margin-bottom: 5px;
+    overflow-x: auto;
+    position: fixed;
+    top: 8px;
 }
 
 @media only screen and (max-width: 860px) {
@@ -652,11 +652,18 @@ button:hover {
     transform: translate(-50%, -50%);
     position: fixed;
     min-width: 585px;
-    height: 270px;
-    max-height: 270px;
+    min-height: 270px;
     border-radius: 16px;
     padding: 35px;
     background-color: var(--portal-background-color);
+}
+
+.noContent {
+    display: none;
+}
+
+.inoutdiv .checkMark {
+    display: none;
 }
 
 .inoutdiv h2 {
@@ -664,10 +671,25 @@ button:hover {
     font-optical-sizing: auto;
 }
 
-.inoutdiv input {
-    width: calc(100% - 120px);
-    height: 30px;
+.inoutdiv .inputBox {
+    width: 100%
+}
+
+.inoutdiv .inputContainer {
+    display: flex;
+    width: 100%;
+    margin-right: 30px;
     margin-bottom: 10px;
+}
+
+.inoutdiv table {
+    margin-right: 30px;
+}
+
+.inoutdiv input {
+    width: 100%;
+    margin-left: 10px;
+    height: 30px;
     padding-left: 10px;
     padding-right: 10px;
 
@@ -703,7 +725,7 @@ button:hover {
     .inoutdiv button {
         transition: none !important;
     }
-}  
+}
 
 .inoutdiv .nonimportant {
     background-color: var(--nonimporant-theme-color);
@@ -848,7 +870,7 @@ button:hover {
 }
 
 .startDiv {
-    
+
 }
 
 .startDiv h1 {
@@ -903,7 +925,7 @@ button:hover {
     .mainDiv a {
         transition: none !important;
     }
-}  
+}
 
 .mainDiv .burgerText {
     width: 75%;

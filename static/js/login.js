@@ -12,6 +12,7 @@ if (remote == null) {
     remote = "https://notes.hectabit.org"
 }
 
+let inputContainer = document.getElementById("inputContainer")
 let usernameBox = document.getElementById("usernameBox")
 let passwordBox = document.getElementById("passwordBox")
 let statusBox = document.getElementById("statusBox")
@@ -20,53 +21,16 @@ let inputNameBox = document.getElementById("inputNameBox")
 let backButton = document.getElementById("backButton")
 let opButton = document.getElementById("opButton")
 
-async function loginFetch(username, password, changePass, newPass) {
-    if (localStorage.getItem("legacy") !== true) {
-        return await fetch(remote + "/api/login", {
-            method: "POST",
-            body: JSON.stringify({
-                username: username,
-                password: password,
-            }),
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8",
-                "X-Burgernotes-Version": "200"
-            }
-        })
-    } else {
-        let passwordChange, newPassChecked
-        if (changePass) {
-            passwordChange = "yes"
-            newPassChecked = newPass
-        } else {
-            passwordChange = "no"
-            newPassChecked = password
-        }
-        return await fetch(remote + "/api/login", {
-            method: "POST",
-            body: JSON.stringify({
-                username: username,
-                password: password,
-                passwordchange: passwordChange,
-                newpass: newPassChecked
-            }),
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8",
-            }
-        })
-    }
-}
-
-async function addLegacyPassword(secretKey, password) {
-    return await fetch(remote + "/api/v2/addlegacypassword", {
+async function loginFetch(username, password, modern) {
+    return await fetch(remote + "/api/login", {
         method: "POST",
         body: JSON.stringify({
-            secretKey: secretKey,
-            legacyPassword: password,
+            username: username,
+            password: password,
+            modern: modern
         }),
         headers: {
             "Content-Type": "application/json; charset=UTF-8",
-            "X-Burgernotes-Version": "200"
         }
     })
 }
@@ -80,24 +44,23 @@ async function migrateLegacyPassword(secretKey, password) {
         }),
         headers: {
             "Content-Type": "application/json; charset=UTF-8",
-            "X-Burgernotes-Version": "200"
         }
     })
 }
 
-async function hashpassold(pass) {
+async function hashPass(pass) {
     return await hashwasm.argon2id({
         password: pass,
-        salt: await hashwasm.sha512(pass),
+        salt: new TextEncoder().encode("I munch Burgers!!"),
         parallelism: 1,
-        iterations: 256,
-        memorySize: 512,
+        iterations: 32,
+        memorySize: 19264,
         hashLength: 32,
-        outputType: "encoded"
+        outputType: "hex"
     })
 }
 
-async function hashpass(pass) {
+async function hashPassLegacy(pass) {
     let key = pass
     for (let i = 0; i < 128; i++) {
         key = await hashwasm.sha3(key)
@@ -111,35 +74,39 @@ inputNameBox.innerText = "Username:"
 let currentInputType = 0
 
 function showInput(inputType) {
-    if (inputType === 0) {
-        usernameBox.classList.remove("hidden")
-        passwordBox.classList.add("hidden")
-        backButton.classList.add("hidden")
-        opButton.classList.remove("hidden")
-        inputNameBox.innerText = "Username:"
-        statusBox.innerText = "Sign in with your Burgernotes account"
-        currentInputType = 0
-    } else if (inputType === 1) {
-        usernameBox.classList.add("hidden")
-        passwordBox.classList.remove("hidden")
-        backButton.classList.remove("hidden")
-        opButton.classList.add("hidden")
-        inputNameBox.innerText = "Password:"
-        currentInputType = 1
-    } else if (inputType === 2) {
-        usernameBox.classList.add("hidden")
-        passwordBox.classList.add("hidden")
-        signupButton.classList.add("hidden")
-        backButton.classList.add("hidden")
-        inputNameBox.classList.add("hidden")
-        opButton.classList.add("hidden")
-        inputNameBox.innerText = "Password:"
-        currentInputType = 2
+    switch (inputType) {
+        case 0:
+            usernameBox.classList.remove("hidden")
+            passwordBox.classList.add("hidden")
+            backButton.classList.add("hidden")
+            opButton.classList.remove("hidden")
+            inputContainer.classList.remove("hidden")
+            inputNameBox.innerText = "Username:"
+            statusBox.innerText = "Sign in with your Burgernotes account"
+            currentInputType = 0
+            break
+        case 1:
+            usernameBox.classList.add("hidden")
+            passwordBox.classList.remove("hidden")
+            backButton.classList.remove("hidden")
+            inputContainer.classList.remove("hidden")
+            opButton.classList.add("hidden")
+            inputNameBox.innerText = "Password:"
+            currentInputType = 1
+            break
+        case 2:
+            inputContainer.classList.add("hidden")
+            signupButton.classList.add("hidden")
+            backButton.classList.add("hidden")
+            inputNameBox.classList.add("hidden")
+            opButton.classList.add("hidden")
+            inputNameBox.innerText = "Password:"
+            currentInputType = 2
     }
 }
 
-function showElements(yesorno) {
-    if (!yesorno) {
+function showElements(show) {
+    if (!show) {
         usernameBox.classList.add("hidden")
         passwordBox.classList.add("hidden")
         signupButton.classList.add("hidden")
@@ -186,39 +153,61 @@ signupButton.addEventListener("click", () => {
 
             showInput(2)
             showElements(true)
-            statusBox.innerText = "Signing in..."
+            statusBox.innerText = "Hashing password..."
 
-            const hashedPass = await hashpass(password)
-            const login = await loginFetch(username, hashedPass, false, "")
+            const hashedPass = await hashPass(password)
+            const login = await loginFetch(username, hashedPass, true)
             const loginData = await login.json()
             if (login.status === 401) {
-                // Trying hashpassold
-                const loginOld = await loginFetch(username, await hashpassold(password), true, hashedPass)
-                const loginDataOld = await loginOld.json()
-                if (loginOld.status === 401) {
-                    statusBox.innerText = "Username or password incorrect!"
-                    showInput(1)
-                    showElements(true)
-                } else if (loginOld.status === 200) {
-                    localStorage.setItem("DONOTSHARE-secretkey", loginDataOld["key"])
-                    localStorage.setItem("DONOTSHARE-password", await hashwasm.sha512(password))
-                    if (loginDataOld["legacyPasswordNeeded"] === true) {
-                        await addLegacyPassword(username, await hashpass(await hashpassold(password)))
+                if (loginData["migrated"] !== true) {
+                    statusBox.innerText = "Migrating to Burgernotes 2.0..."
+                    const loginOld = await loginFetch(username, await hashPassLegacy(password), false)
+                    const loginDataOld = await loginOld.json()
+                    if (loginOld.status === 401) {
+                        statusBox.innerText = "Username or password incorrect!"
+                        showInput(1)
+                        showElements(true)
+                    } else if (loginOld.status === 200) {
+                        statusBox.innerText = "Setting up encryption keys..."
+                        localStorage.setItem("DONOTSHARE-secretkey", loginDataOld["key"])
+                        localStorage.setItem("DONOTSHARE-password", await hashwasm.argon2id({
+                            password: password,
+                            salt: new TextEncoder().encode("I love Burgernotes!"),
+                            parallelism: 1,
+                            iterations: 32,
+                            memorySize: 19264,
+                            hashLength: 32,
+                            outputType: "hex"
+                        }))
+                        await migrateLegacyPassword(loginDataOld["key"], hashedPass)
+                        statusBox.innerText = "Welcome back!"
+                        await new Promise(r => setTimeout(r, 200))
+                        window.location.href = "/app/"
+                    } else {
+                        statusBox.innerText = loginDataOld["error"]
+                        showInput(1)
+                        showElements(true)
                     }
-                    await migrateLegacyPassword(loginDataOld["key"], hashedPass)
-                    window.location.replace("/app/")
                 } else {
-                    statusBox.innerText = loginDataOld["error"]
+                    statusBox.innerText = "Username or password incorrect!"
                     showInput(1)
                     showElements(true)
                 }
             } else if (login.status === 200) {
+                statusBox.innerText = "Setting up encryption keys..."
                 localStorage.setItem("DONOTSHARE-secretkey", loginData["key"])
-                localStorage.setItem("DONOTSHARE-password", await hashwasm.sha512(password))
-                if (loginData["legacyPasswordNeeded"] === true) {
-                    await addLegacyPassword(username, await hashpass(await hashpassold(password)))
-                }
-                window.location.replace("/app/")
+                localStorage.setItem("DONOTSHARE-password", await hashwasm.argon2id({
+                    password: password,
+                    salt: new TextEncoder().encode("I love Burgernotes!"),
+                    parallelism: 1,
+                    iterations: 32,
+                    memorySize: 19264,
+                    hashLength: 32,
+                    outputType: "hex"
+                }))
+                statusBox.innerText = "Welcome back!"
+                await new Promise(r => setTimeout(r, 200))
+                window.location.href = "/app/"
             } else {
                 statusBox.innerText = loginData["error"]
                 showInput(1)
