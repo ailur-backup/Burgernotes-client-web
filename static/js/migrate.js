@@ -16,14 +16,12 @@ let notesPlainText = ""
 let information
 let backButton
 let titleBox
-let fileInput
 let inputTypeGlobal = 0
 
 document.addEventListener("DOMContentLoaded", function() {
     information = document.getElementById("information")
     backButton = document.getElementById("backButton")
     titleBox = document.getElementById("title")
-    fileInput = document.getElementById("fileInput")
 })
 
 function showInput(inputType) {
