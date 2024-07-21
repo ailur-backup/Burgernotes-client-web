@@ -41,6 +41,7 @@ async function migrateLegacyPassword(secretKey, password) {
         body: JSON.stringify({
             secretKey: secretKey,
             newPassword: password,
+            migration: true
         }),
         headers: {
             "Content-Type": "application/json; charset=UTF-8",
@@ -179,10 +180,17 @@ signupButton.addEventListener("click", () => {
                             hashLength: 32,
                             outputType: "hex"
                         }))
-                        await migrateLegacyPassword(loginDataOld["key"], hashedPass)
-                        statusBox.innerText = "Welcome back!"
-                        await new Promise(r => setTimeout(r, 200))
-                        window.location.href = "/app/"
+                        statusBox.innerText = "Migrating password..."
+                        let status = await migrateLegacyPassword(loginDataOld["key"], hashedPass)
+                        if (status.status === 200) {
+                            statusBox.innerText = "Welcome back!"
+                            await new Promise(r => setTimeout(r, 200))
+                            window.location.href = "/app/"
+                        } else {
+                            statusBox.innerText = (await status.json())["error"]
+                            showInput(1)
+                            showElements(true)
+                        }
                     } else {
                         statusBox.innerText = loginDataOld["error"]
                         showInput(1)

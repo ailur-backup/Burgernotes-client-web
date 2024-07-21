@@ -416,11 +416,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     async function hashpass(pass) {
-        let key = pass
-        for (let i = 0; i < 128; i++) {
-            key = await hashwasm.sha3(key)
-        }
-        return key
+        return await hashwasm.argon2id({
+            password: pass,
+            salt: new TextEncoder().encode("I munch Burgers!!"),
+            parallelism: 1,
+            iterations: 32,
+            memorySize: 19264,
+            hashLength: 32,
+            outputType: "hex"
+        })
     }
 
     changePasswordButton.addEventListener("click", () => {
@@ -435,7 +439,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     method: "POST",
                     body: JSON.stringify({
                         secretKey: secretkey,
-                        newPassword: await hashpass(oldPass)
+                        newPassword: await hashpass(oldPass),
+                        migration: false
                     }),
                     headers: {
                         "Content-Type": "application/json; charset=UTF-8",
@@ -466,7 +471,15 @@ document.addEventListener("DOMContentLoaded", function() {
             await waitForConfirm()
             const oldPass = errorInput.value
             errorInput.classList.add("hidden")
-            if (await hashwasm.sha512(oldPass) !== password) {
+            if (await hashwasm.argon2id({
+                password: password,
+                salt: new TextEncoder().encode("I love Burgernotes!"),
+                parallelism: 1,
+                iterations: 32,
+                memorySize: 19264,
+                hashLength: 32,
+                outputType: "hex"
+            }) !== password) {
                 displayError("Incorrect password!")
             } else {
                 errorInput.value = ""
@@ -496,7 +509,15 @@ document.addEventListener("DOMContentLoaded", function() {
                     if (response.status === 200) {
                         let notes = await exportNotes()
                         let passwordBackup = password
-                        password = await hashwasm.sha512(newPass)
+                        password = await hashwasm.argon2id({
+                            password: password,
+                            salt: new TextEncoder().encode("I love Burgernotes!"),
+                            parallelism: 1,
+                            iterations: 32,
+                            memorySize: 19264,
+                            hashLength: 32,
+                            outputType: "hex"
+                        })
                         localStorage.setItem("DONOTSHARE-password", password)
                         let purgeNotes = await fetch(remote + "/api/purgenotes", {
                             method: "POST",
