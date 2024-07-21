@@ -156,6 +156,9 @@ signupButton.addEventListener("click", () => {
                     } else if (response.status === 429) {
                         statusBox.innerText = "Please don't sign up to new accounts that quickly. If you are using a VPN, please turn it off!"
                         showElements(true)
+                    } else if (response.status === 409) {
+                        statusBox.innerText = "Pure bad luck... your PoW challenge was accepted, but someone else used the same PoW challenge as you. Please try again. (error: " + responseData["error"] + ")"
+                        showElements(true)
                     } else if (response.status === 500) {
                         statusBox.innerText = responseData["error"]
                         showElements(true)
