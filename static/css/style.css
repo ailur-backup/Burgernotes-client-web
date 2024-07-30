@@ -250,6 +250,7 @@ body {
 }
 
 .topBar .usernameBox {
+    padding: 5px;
     cursor: pointer;
     filter: invert(var(--invertdm));
     height: 41px;
@@ -414,6 +415,7 @@ body {
 }
 
 .pell-button {
+    color: var(--text-color);
     background-color: var(--note-button);
     border: 1px var(--border-color) solid;
     min-width: 35px;
