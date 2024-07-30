@@ -15,7 +15,7 @@ if (secretKey === null || password === null) {
 }
 
 if (remote == null) {
-    localStorage.setItem("homeserverURL", "https://notes.hectabit.org")
+    localStorage.setItem("SETTING-homeServer", "https://notes.hectabit.org")
     remote = "https://notes.hectabit.org"
 }
 

@@ -50,7 +50,7 @@ changeButton.addEventListener("click", () => {
                         if (parseInt(version["versionnum"]) < parseInt(fetchClientVersion)) {
                             localStorage.setItem("legacy", "true")
                         }
-                        localStorage.setItem("homeserverURL", remote)
+                        localStorage.setItem("SETTING-homeServer", remote)
 
                         if (document.referrer !== "") {
                           window.location.href = document.referrer;
@@ -72,7 +72,7 @@ changeButton.addEventListener("click", () => {
                             let homeserverInt = parseFloat(homeserverFloat) * 100
                             if (homeserverInt < 200) {
                                 localStorage.setItem("legacy", "true")
-                                localStorage.setItem("homeserverURL", remote)
+                                localStorage.setItem("SETTING-homeServer", remote)
                                 if (document.referrer !== "") {
                                     window.location.href = document.referrer;
                                 }
@@ -81,7 +81,7 @@ changeButton.addEventListener("click", () => {
                                 }
                             } else if (homeserverInt > 200) {
                                 localStorage.setItem("legacy", "false")
-                                localStorage.setItem("homeserverURL", remote)
+                                localStorage.setItem("SETTING-homeServer", remote)
                                 if (document.referrer !== "") {
                                     window.location.href = document.referrer;
                                 }
