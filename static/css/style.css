@@ -384,7 +384,7 @@ body {
     color: var(--text-color);
     background-color: rgba(0, 0, 0, 0);
     width: calc(100% - 200px);
-    height: calc(100% - 50px - 30px);
+    height: calc(100% - 40px);
     font-family: "Inter", sans-serif;
     margin: 10px;
     outline: none;
@@ -393,7 +393,7 @@ body {
 
 .noteBox.mobile {
     margin: 15px 0 0;
-    height: calc(100% - 50px);
+    height: calc(100% - 75px);
 }
 
 .noteBoxText {
@@ -439,6 +439,9 @@ button:hover {
 @media only screen and (max-width: 860px) {
     .pell-actionbar {
         position: inherit;
+    }
+    .noteBox {
+        height: calc(100% - 50px - 30px);
     }
 }
 
