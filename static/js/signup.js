@@ -151,7 +151,7 @@ signupButton.addEventListener("click", () => {
                     await new Promise(r => setTimeout(r, 200))
                     window.location.href = "/app/"
                 } else if (response.status === 409) {
-                    if (responseData["error"] === "Stamp already spent" {
+                    if (responseData["error"] === "Stamp already spent") {
                         statusBox.innerText = "Pure bad luck... your PoW challenge was accepted, but someone else used the same PoW challenge as you. Please try again. (error: Stamp already spent)"
                     } else {
                         statusBox.innerText = "Username already taken!"
