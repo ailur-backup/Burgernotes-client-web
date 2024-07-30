@@ -689,7 +689,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     console.log(htmlNote)
                     let cleanedHTML = htmlNote.replace(/<(?!\/?(h1|h2|br|img|blockquote|ol|li|b|i|u|strike|p|pre|ul|hr|a)\b)[^>]*>/gi, '(potential XSS tag was here)')
-                    noteBox.innerHTML = cleanedHTML.replace("\n", "<br>")
+                    noteBox.innerHTML = cleanedHTML.replaceAll("\n", "<br>")
 
                     updateWordCount()
 
