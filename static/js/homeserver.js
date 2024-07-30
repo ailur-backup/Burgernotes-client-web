@@ -5,9 +5,9 @@ let statusBox = document.getElementById("statusBox")
 let changeButton = document.getElementById("changeButton")
 let backButton = document.getElementById("backButton")
 
-let remote = localStorage.getItem("homeserverURL")
+let remote = localStorage.getItem("SETTING-homeServer")
 if (remote == null) {
-    localStorage.setItem("homeserverURL", "https://notes.hectabit.org")
+    localStorage.setItem("SETTING-homeServer", "https://notes.hectabit.org")
     remote = "https://notes.hectabit.org"
 }
 

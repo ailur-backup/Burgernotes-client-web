@@ -18,41 +18,41 @@
     <p>Welcome to the Burgernotes privacy policy! Burgernotes is <a
              href="https://concord.hectabit.org/hectabit/burgernotes">free & open source</a> software licensed under the <a
             href="https://www.gnu.org/licenses/agpl-3.0.en.html">GNU AGPL-3.0</a>.</p>
-    <p>In this document, the terms "we" and "us" refer to the Hectabit Project, an open source initiative and the creator of Burgernotes. The terms "you" and "the user" refer the the reader of this privacy policy and all users of Burgernotes. "This website" and "this service" refer to Burgernotes, an online website you are currently using.</p>
+    <p>In this document, the terms "we" and "us" refer to the Hectabit Project, an open source initiative and the creator of Burgernotes. The terms "you" and "the user" refer to the reader of this privacy policy and all users of Burgernotes. "This website" and "this service" refer to Burgernotes, an online website you are currently using.</p>
     <h2 class="w300">Information collected when signing up</h2>
     <p>When signing up for an account, we collect and store the following information:</p>
     <ul>
-        <li>Username, and your password hashed</li>
-        <p>This is used to authenticate you into our service when you log in</p>
-        <li>Date of account creation</li>
-        <p>This is used so that we can see inactive accounts and suspend them</p>
-        <li>Web browser "User Agent"</li>
-        <p>This is used so you are able to recognise your devices signing into your account</p>
+        <li class="w900">Username, and your password hashed</li>
+        <li>This is used to authenticate you into our service when you log in</li>
+        <li class="w900">Date of account creation</li>
+        <li>This is used so that we can see inactive accounts and suspend them</li>
+        <li class="w900">Web browser "User Agent"</li>
+        <li>This is used, so you are able to recognise your devices signing in to your account</li>
     </ul>
     <h2 class="w300">Information collected when logging in</h2>
     <p>When logging back in to your account, we collect and store the following information:</p>
     <ul>
-        <li>Web browser "User agent"</li>
-        <p>This is used so you are able to recognise your devices signing into your account</p>
+        <li class="w900">Web browser "User agent"</li>
+        <li>This is used, so you are able to recognise your devices signing in to your account</li>
     </ul>
     <h2 class="w300">Information we collect while using our services</h2>
     <p>When you create a note, we collect and use this information:</p>
     <ul>
-        <li>Encrypted note content and title</li>
-        <p>This is used so that you may retrieve the note later</p>
-        <li>Note creator</li>
-        <p>This is used so that we can make sure your note is not given to anyone else</p>
-        <li>Note creation date</li>
-        <p>This is used so that your notes are listed by age if no edited date exists</p>
-        <li>Note last edited date</li>
-        <p>This is used so that your notes are listed by age</p>
+        <li class="w900">Encrypted note content and title</li>
+        <li>This is used so that you may retrieve the note later</li>
+        <li class="w900">Note creator</li>
+        <li>This is used so that we can make sure your note is not given to anyone else</li>
+        <li class="w900">Note creation date</li>
+        <li>This is used so that your notes are listed by age if no edited date exists</li>
+        <li class="w900">Note last edited date</li>
+        <li>This is used so that your notes are listed by age</li>
     </ul>
     <p>When you edit a note, we collect and use this information:</p>
     <ul>
-        <li>Encrypted note content and title</li>
-        <p>This is used so that you may retrieve the note later</p>
-        <li>Note last edited date</li>
-        <p>This is used so that your notes are listed by age</p>
+        <li class="w900">Encrypted note content and title</li>
+        <li>This is used so that you may retrieve the note later</li>
+        <li class="w900">Note last edited date</li>
+        <li>This is used so that your notes are listed by age</li>
     </ul>
     <h2 class="w300">How we use your data</h2>
     <p>We use your data to make our services work. We don't share your information with third-parties.</p>
@@ -61,38 +61,37 @@
         (Advanced Encryption Standard - Cipher Block Chaining) 256-bit encryption.</p>
     <p>We can only see:</p>
     <ul>
-        <li>Note creation date</li>
-        <p>This is used so that your notes are listed by age if no edited date exists</p>
-        <li>Note last edited date</li>
-        <p>This is used so that your notes are listed by age</p>
-        <li>Note creator</li>
-        <p>This is used	so that we can make sure your note is not given to anyone else</p>
+        <li class="w900">Note creation date</li>
+        <li>This is used so that your notes are listed by age if no edited date exists</li>
+        <li class="w900">Note last edited date</li>
+        <li>This is used so that your notes are listed by age</li>
+        <li class="w900">Note creator</li>
+        <li>This is used	so that we can make sure your note is not given to anyone else</li>
     </ul>
     <p><b>Not</b> note content or title.</p>
     <h2 class="w300">Use of cookies</h2>
-    <p>Burgernotes does not use cookies in the conventional sense. Burgernotes places infomation into localStorage, a type of blob storage similar to cookies, but not accessible to third-party websites or the server.</p>
-    <p>This ensures that a malicious server or third-party websites cannot tell your infomation.</p>
+    <p>Burgernotes does not use cookies in the conventional sense. Burgernotes places information into localStorage, a type of blob storage similar to cookies, but not accessible to third-party websites or the server.</p>
+    <p>This ensures that a malicious server or third-party websites cannot tell your information.</p>
     <ul>
-        <li>DONOTSHARE-secretkey</li>
-        <p>This is used by the client to send to the server in order to identify you as... you.</p>
-        <p>This contains no useful infomation and is simply a string of random bytes. If this is shared, you may simply remove the offending secretKey from your session list, by clicking "X" on the device you have logged in on to create this key.</p>
-        <li>DONOTSHARE-password</li>
-        <p>This is used by the aformentioned AES to encrypt and decrypt your notes. It never leaves your device.</p>
-        <p>This is derived from your password and is therefore sensitive and should NEVER, EVER be shared. If you have done so, change your password as soon as possible.</p>
-        <li>SETTING-fontsize</li>
-        <p>This is used to determine the size of your font. It is not sensitive infomation and can be freely shared, though it never leaves your device.</p>
-        <li>FIRSTVISIT</li>
-        <p>This is used to determine if the user guide should be played, showing on a mobile device how touch gestures are used. It is not sensitive infomation and can be freely shared, though it never leaves your device.</p>
-        <li>NEWVERSION<li>
-        <p>This determines if you have seen the "What's New?" dialouge displayed in each new version. It is not sensitive infomation and can be freely shared, though it never leaves your device.</p>
-        <li>homeserver</li>
-        <p>This determines which server Burgernotes should connect to. It is not sensitive infomation and can be freely shared, though it never leaves your device.</li>
+        <li class="w900">PRIVATE-secretKey</li>
+        <li>This is used by the client to send to the server in order to identify you as... you.</li>
+        <li>This contains no useful information and is simply a string of random bytes. If this is shared, you may simply remove the offending secretKey from your session list, by clicking "X" on the device you have logged in on to create this key.</li>
+        <li class="w900">PRIVATE-cryptoKey</li>
+        <li>This is used by the aforementioned AES to encrypt and decrypt your notes. It never leaves your device.</li>
+        <li>This is derived from your password and is therefore sensitive and should NEVER, EVER be shared. If you have done so, change your password as soon as possible.</li>
+        <li class="w900">SETTING-fontsize</li>
+        <li>This is used to determine the size of your font. It is not sensitive information and can be freely shared, though it never leaves your device.</li>
+        <li class="w900">SETTING-newVersion<li>
+        <li>This determines if you have seen the "What's New?" dialog displayed in each new version. It is not sensitive information and can be freely shared, though it never leaves your device.</li>
+        <li class="w900">SETTING-homeServer</li>
+        <li>This determines which server Burgernotes should connect to. It is not sensitive information and can be freely shared, though it never leaves your device.</li>
+    </ul>
     <h2 class="w300">We don't sell your data</h2>
     <p>We don't sell or share your data to advertisers or third-parties, and no such thing exists on this website - it is entirely self-contained. Not even an external font service is used.</p>
     <h2 class="w300">Liability</h2>
     <p>We take no responsibility for the use of Burgernotes, or any external instances provided by third-parties. We
         refuse liability for any inappropriate or illegal use of Burgernotes, as it is not within our power to prevent it.</p>
-    <p>This is a summerisation of the below paragraph, found in AGPL-3.0, as linked above.</p>
+    <p>This is a summarization of the below paragraph, found in AGPL-3.0, as linked above.</p>
     <p>IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
     WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS
     THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY
@@ -103,7 +102,7 @@
     EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
     SUCH DAMAGES.</p>
     <p>Burgernotes comes with ABSOLUTELY NO WARRANTY, to the extent permitted by applicable law.</p>
-    <p>Burgernotes is compatible with the UK GDPR and the Californian Data Protection Regulation. We do not knowingly serve citizens in the European Union, and those who do so do so at their own risk. The only violating law of the EU GDPR is that it is no longer hosted in an EU country after the events of Brexit.</p>
+    <p>Burgernotes is compatible with the UK GDPR and the Californian Data Protection Regulation. We do not knowingly serve citizens in the European Union, and those who do so at their own risk. The only violating law of the EU GDPR is that it is no longer hosted in an EU country after the events of Brexit.</p>
     <br>
     <button class="clickButton" onclick="back()">Take me back where I was!</button>
     <br><br>

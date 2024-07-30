@@ -1,12 +1,19 @@
 // @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-3.0
 
-if (localStorage.getItem("DONOTSHARE-secretkey") === null || localStorage.getItem("DONOTSHARE-password") === null) {
+let secretKey = localStorage.getItem("PRIVATE-secretKey")
+let password = localStorage.getItem("PRIVATE-cryptoKey")
+let fontSize = localStorage.getItem("SETTING-fontsize")
+let remote = localStorage.getItem("SETTING-homeServer")
+
+if (secretKey === null || password === null) {
     window.location.replace("/login")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
+} else if (fontSize === null) {
+    localStorage.setItem("SETTING-fontsize", "16")
+    fontSize = 16
 }
 
-let remote = localStorage.getItem("homeserverURL")
 if (remote == null) {
     localStorage.setItem("homeserverURL", "https://notes.hectabit.org")
     remote = "https://notes.hectabit.org"
@@ -16,10 +23,6 @@ function formatBytes(a, b = 2) {
     if (!+a) return "0 Bytes"; const c = 0 > b ? 0 : b, d = Math.floor(Math.log(a) / Math.log(1000));
     return `${parseFloat((a / Math.pow(1000, d)).toFixed(c))} ${["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"][d]}`
 }
-
-let secretkey = localStorage.getItem("DONOTSHARE-secretkey")
-let password = localStorage.getItem("DONOTSHARE-password")
-let currentFontSize = 16
 
 let offlineMode = false
 let backButton = document.getElementById("backButton")
@@ -86,7 +89,6 @@ function base64ToArrayBuffer(base64) {
 }
 
 async function getKey() {
-    let password = localStorage.getItem("DONOTSHARE-password")
     let salt = new TextEncoder().encode("I love Burgernotes!")
     let cryptoKey = await window.crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits", "deriveKey"])
     return await window.crypto.subtle.deriveKey({
@@ -268,22 +270,15 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     function updateFont() {
-        currentFontSize = localStorage.getItem("SETTING-fontsize")
-        noteBox.style.fontSize = currentFontSize + "px"
-        textSizeBox.innerText = currentFontSize + "px"
+        noteBox.style.fontSize = fontSize + "px"
+        textSizeBox.innerText = fontSize + "px"
     }
 
     async function checknetwork() {
-        let loggedInEndpoint
-        if (localStorage.getItem("legacy") === "true") {
-            loggedInEndpoint = "userinfo"
-        } else {
-            loggedInEndpoint = "loggedin"
-        }
-        fetch(remote + "/api/" + loggedInEndpoint, {
+        fetch(remote + "/api/loggedin", {
             method: "POST",
             body: JSON.stringify({
-                secretKey: localStorage.getItem("DONOTSHARE-secretkey"),
+                secretKey: secretKey
             }),
             headers: {
                 "Content-Type": "application/json; charset=UTF-8"
@@ -315,19 +310,14 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
     }
 
-    if (localStorage.getItem("SETTING-fontsize") === null) {
-        localStorage.setItem("SETTING-fontsize", "16")
-        updateFont()
-    } else {
-        updateFont()
-    }
+    updateFont()
 
     textPlusBox.addEventListener("click", () => {
-        localStorage.setItem("SETTING-fontsize", String(Number(localStorage.getItem("SETTING-fontsize")) + Number(1)))
+        localStorage.setItem("SETTING-fontsize", String(Number(fontSize) + Number(1)))
         updateFont()
     });
     textMinusBox.addEventListener("click", () => {
-        localStorage.setItem("SETTING-fontsize", String(Number(localStorage.getItem("SETTING-fontsize")) - Number(1)))
+        localStorage.setItem("SETTING-fontsize", String(Number(fontSize) - Number(1)))
         updateFont()
     });
 
@@ -345,7 +335,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         fetch(remote + "/api/userinfo", {
             method: "POST",
             body: JSON.stringify({
-                secretKey: secretkey
+                secretKey: secretKey
             }),
             headers: {
                 "Content-Type": "application/json; charset=UTF-8"
@@ -386,7 +376,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             fetch(remote + "/api/deleteaccount", {
                 method: "POST",
                 body: JSON.stringify({
-                    secretKey: secretkey
+                    secretKey: secretKey
                 }),
                 headers: {
                     "Content-Type": "application/json; charset=UTF-8"
@@ -429,11 +419,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         async function fatalError(notes, passwordBackup) {
             displayError("Something went wrong! Your password change has failed. Attempting to revert changes...")
             password = passwordBackup
-            localStorage.setItem("DONOTSHARE-password", password)
+            localStorage.setItem("PRIVATE-cryptoKey", password)
             let changePasswordBackResponse = await fetch(remote + "/api/changepassword", {
                 method: "POST",
                 body: JSON.stringify({
-                    secretKey: secretkey,
+                    secretKey: secretKey,
                     newPassword: await hashpass(oldPass),
                     migration: false
                 }),
@@ -493,7 +483,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const response = await fetch(remote + "/api/changepassword", {
                     method: "POST",
                     body: JSON.stringify({
-                        secretKey: secretkey,
+                        secretKey: secretKey,
                         newPassword: await hashpass(newPass)
                     }),
                     headers: {
@@ -513,11 +503,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                         hashLength: 32,
                         outputType: "hex"
                     })
-                    localStorage.setItem("DONOTSHARE-password", password)
+                    localStorage.setItem("PRIVATE-cryptoKey", password)
                     let purgeNotes = await fetch(remote + "/api/purgenotes", {
                         method: "POST",
                         body: JSON.stringify({
-                            secretKey: secretkey
+                            secretKey: secretKey
                         }),
                         headers: {
                             "Content-Type": "application/json; charset=UTF-8"
@@ -555,7 +545,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         fetch(remote + "/api/sessions/list", {
             method: "POST",
             body: JSON.stringify({
-                secretKey: secretkey
+                secretKey: secretKey
             }),
             headers: {
                 "Content-Type": "application/json; charset=UTF-8"
@@ -594,7 +584,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         fetch(remote + "/api/sessions/remove", {
                             method: "POST",
                             body: JSON.stringify({
-                                secretKey: secretkey,
+                                secretKey: secretKey,
                                 sessionId: responseData[i]["id"]
                             }),
                             headers: {
@@ -644,7 +634,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         fetch(remote + "/api/readnote", {
             method: "POST",
             body: JSON.stringify({
-                secretKey: secretkey,
+                secretKey: secretKey,
                 noteId: nameithink,
             }),
             headers: {
@@ -701,7 +691,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             fetch(remote + "/api/editnote", {
                                 method: "POST",
                                 body: JSON.stringify({
-                                    secretKey: secretkey,
+                                    secretKey: secretKey,
                                     noteId: nameithink,
                                     content: encryptedText,
                                     title: encryptedTitle
@@ -729,7 +719,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             fetch(remote + "/api/listnotes", {
                 method: "POST",
                 body: JSON.stringify({
-                    secretKey: secretkey
+                    secretKey: secretKey
                 }),
                 headers: {
                     "Content-Type": "application/json; charset=UTF-8"
@@ -785,7 +775,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                                 fetch(remote + "/api/removenote", {
                                     method: "POST",
                                     body: JSON.stringify({
-                                        secretKey: secretkey,
+                                        secretKey: secretKey,
                                         noteId: noteData["id"]
                                     }),
                                     headers: {
@@ -835,7 +825,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         fetch(remote + "/api/newnote", {
             method: "POST",
             body: JSON.stringify({
-                secretKey: secretkey,
+                secretKey: secretKey,
                 noteName: encryptedName,
             }),
             headers: {
@@ -870,7 +860,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             let exportNotesFetch = await fetch(remote + "/api/exportnotes", {
                 method: "POST",
                 body: JSON.stringify({
-                    secretKey: secretkey
+                    secretKey: secretKey
                 }),
                 headers: {
                     "Content-Type": "application/json; charset=UTF-8"
@@ -901,7 +891,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         let importNotesFetch = await fetch(remote + "/api/importnotes", {
             method: "POST",
             body: JSON.stringify({
-                "secretKey": localStorage.getItem("DONOTSHARE-secretkey"),
+                "secretKey": secretKey,
                 "notes": JSON.stringify(plaintextNotes)
             }),
             headers: {
@@ -912,10 +902,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function firstNewVersion() {
-        if (localStorage.getItem("NEWVERSION") === "1.2") {
+        if (localStorage.getItem("SETTING-newVersion") === "2.0") {
             return false;
         } else {
-            localStorage.setItem("NEWVERSION", "1.2")
+            localStorage.setItem("SETTING-newVersion", "2.0")
             return true;
         }
     }
@@ -961,7 +951,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             fetch(remote + "/api/removenote", {
                 method: "POST",
                 body: JSON.stringify({
-                    secretKey: secretkey,
+                    secretKey: secretKey,
                     noteId: selectedNote
                 }),
                 headers: {

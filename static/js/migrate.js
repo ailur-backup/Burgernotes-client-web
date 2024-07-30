@@ -1,14 +1,16 @@
 // @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-3.0
 
-if (localStorage.getItem("DONOTSHARE-secretkey") === null || localStorage.getItem("DONOTSHARE-password") === null) {
+let secretKey = localStorage.getItem("PRIVATE-secretKey")
+let cryptoKey = localStorage.getItem("PRIVATE-cryptoKey")
+if (secretKey === null || cryptoKey === null) {
     window.location.replace("/login")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
 }
 
-let remote = localStorage.getItem("homeserverURL")
+let remote = localStorage.getItem("SETTING-homeServer")
 if (remote == null) {
-    localStorage.setItem("homeserverURL", "https://notes.hectabit.org")
+    localStorage.setItem("SETTING-homeServer", "https://notes.hectabit.org")
     remote = "https://notes.hectabit.org"
 }
 
@@ -44,7 +46,6 @@ function showInput(inputType) {
         case 3:
             information.innerText = "You have successfully migrated to new Burgernotes! Enjoy the more secure and feature-rich experience. Click continue to return to the app."
             titleBox.innerText = "Migration Complete"
-            fileInput.classList.remove("hidden")
             break
     }
 }
@@ -94,15 +95,14 @@ function back() {
 }
 
 async function getKey() {
-    let password = localStorage.getItem("DONOTSHARE-password")
     let salt = new TextEncoder().encode("I love Burgernotes!")
-    let cryptoKey = await window.crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, ["deriveBits", "deriveKey"])
+    let cryptoKeyFormatted = await window.crypto.subtle.importKey("raw", new TextEncoder().encode(cryptoKey), "PBKDF2", false, ["deriveBits", "deriveKey"])
     return await window.crypto.subtle.deriveKey({
         name: "PBKDF2",
         salt,
         iterations: 1,
         hash: "SHA-512"
-    }, cryptoKey, {name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
+    }, cryptoKeyFormatted, {name: "AES-GCM", length: 256}, true, ["encrypt", "decrypt"])
 }
 
 function arrayBufferToBase64(buffer) {
@@ -132,7 +132,7 @@ async function importNotes(plaintextNotes) {
         let purgeNotesFetch = await fetch(remote + "/api/purgenotes", {
             method: "POST",
             body: JSON.stringify({
-                "secretKey": localStorage.getItem("DONOTSHARE-secretkey"),
+                "secretKey": secretKey,
             }),
             headers: {
                 "Content-Type": "application/json; charset=UTF-8"
@@ -144,7 +144,7 @@ async function importNotes(plaintextNotes) {
         let importNotesFetch = await fetch(remote + "/api/importnotes", {
             method: "POST",
             body: JSON.stringify({
-                "secretKey": localStorage.getItem("DONOTSHARE-secretkey"),
+                "secretKey": secretKey,
                 "notes": JSON.stringify(plaintextNotes)
             }),
             headers: {
@@ -164,7 +164,7 @@ async function exportNotes() {
         let exportNotesFetch = await fetch(remote + "/api/exportnotes", {
             method: "POST",
             body: JSON.stringify({
-                secretKey: localStorage.getItem("DONOTSHARE-secretkey")
+                secretKey: secretKey
             }),
             headers: {
                 "Content-Type": "application/json; charset=UTF-8"

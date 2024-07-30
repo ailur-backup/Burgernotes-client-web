@@ -1,14 +1,14 @@
 // @license magnet:?xt=urn:btih:0b31508aeb0634b347b8270c7bee4d411b5d4109&dn=agpl-3.0.txt AGPL-3.0
 
-if (localStorage.getItem("DONOTSHARE-secretkey") !== null || localStorage.getItem("DONOTSHARE-password") !== null) {
+if (localStorage.getItem("PRIVATE-secretKey") !== null || localStorage.getItem("PRIVATE-cryptoKey") !== null) {
     window.location.replace("/app/")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
 }
 
-let remote = localStorage.getItem("homeserverURL")
+let remote = localStorage.getItem("SETTING-homeServer")
 if (remote == null) {
-    localStorage.setItem("homeserverURL", "https://notes.hectabit.org")
+    localStorage.setItem("SETTING-homeServer", "https://notes.hectabit.org")
     remote = "https://notes.hectabit.org"
 }
 
@@ -137,8 +137,8 @@ signupButton.addEventListener("click", () => {
                 let responseData = await response.json()
                 if (response.status === 200) {
                     statusBox.innerText = "Setting up encryption keys..."
-                    localStorage.setItem("DONOTSHARE-secretkey", responseData["key"])
-                    localStorage.setItem("DONOTSHARE-password", await hashwasm.argon2id({
+                    localStorage.setItem("PRIVATE-secretKey", responseData["key"])
+                    localStorage.setItem("PRIVATE-cryptoKey", await hashwasm.argon2id({
                         password: password,
                         salt: new TextEncoder().encode("I love Burgernotes!"),
                         parallelism: 1,
