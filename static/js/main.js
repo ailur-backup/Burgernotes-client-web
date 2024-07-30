@@ -21,6 +21,7 @@ let secretkey = localStorage.getItem("DONOTSHARE-secretkey")
 let password = localStorage.getItem("DONOTSHARE-password")
 let currentFontSize = 16
 
+let offlineMode = false
 let backButton = document.getElementById("backButton")
 let usernameBox = document.getElementById("usernameBox")
 let optionsCoverDiv = document.getElementById("optionsCoverDiv")
@@ -152,10 +153,10 @@ function handleGesture() {
 }
 
 // Init the note box
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function () {
     pell.init({
         element: pellAttacher,
-        onChange: function(html) {
+        onChange: function (html) {
             // Having a nice day? This does nothing.
         },
         defaultParagraphSeparator: 'br',
@@ -184,23 +185,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 name: 'uploadimage',
                 icon: '📁',
                 title: 'Upload image',
-                result: function result() {
-                    async function doStuff() {
-                        browseButton.classList.remove("hidden")
-                        displayError("Select an image to upload:")
-                        await waitForConfirm()
-                        browseButton.classList.add("hidden")
-                        let file = uploadThing.files[0]
-                        if (file) {
-                            let reader = new FileReader()
-                            reader.readAsDataURL(file)
-                            uploadThing.files = null
-                            reader.onload = function () {
-                                pell.exec('insertImage', reader.result);
-                            }
+                result: async function result() {
+                    browseButton.classList.remove("hidden")
+                    displayError("Select an image to upload:")
+                    await waitForConfirm()
+                    browseButton.classList.add("hidden")
+                    let file = uploadThing.files[0]
+                    if (file) {
+                        let reader = new FileReader()
+                        reader.readAsDataURL(file)
+                        uploadThing.files = null
+                        reader.onload = function () {
+                            pell.exec('insertImage', reader.result);
                         }
                     }
-                    doStuff();
                 }
             },
             "image",
@@ -292,22 +290,24 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         })
             .catch(() => {
+                offlineMode = true
                 noteBox.contentEditable = false
                 noteBox.innerHTML = "<h1>You are currently offline.</h1>"
                 displayError("Failed to connect to the server.\nPlease check your internet connection.")
             })
             .then((response) => response)
             .then((response) => {
-                if (response.status === 400) {
+                if (response.status === 400 || response.status === 401) {
+                    offlineMode = true
                     displayError("Something went wrong! Signing you out...")
                     closeErrorButton.classList.add("hidden")
-                    //usernameBox.innerText = ""
                     setTimeout(function () {
                         window.location.replace("/logout")
                     }, 2500);
                 } else if (response.status === 200) {
                     updateUserInfo()
                 } else {
+                    offlineMode = true
                     noteBox.readOnly = true
                     noteBox.innerHTML = "<h1>You are currently offline.</h1>"
                     displayError("Failed to connect to the server.\nPlease check your internet connection.")
@@ -351,25 +351,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 "Content-Type": "application/json; charset=UTF-8"
             }
         })
-            .then((response) => {
-                async function doStuff() {
-                    if (response.status === 500) {
-                        displayError("Something went wrong! Signing you out...")
-                        closeErrorButton.classList.add("hidden")
-                        setTimeout(function () {
-                            window.location.replace("/logout")
-                        }, 2500);
-                    } else {
-                        let responseData = await response.json()
-                        usernameThing.innerText = "Username: " + responseData["username"]
-                        storageThing.innerText = "You've used " + formatBytes(responseData["storageused"]) + " out of " + formatBytes(responseData["storagemax"])
-                        storageProgressThing.value = responseData["storageused"]
-                        storageProgressThing.max = responseData["storagemax"]
-                        noteCount = responseData["notecount"]
-                    }
+            .then(async (response) => {
+                if (response.status === 500 || response.status === 401) {
+                    displayError("Something went wrong! Signing you out...")
+                    closeErrorButton.classList.add("hidden")
+                    setTimeout(function () {
+                        window.location.replace("/logout")
+                    }, 2500);
+                } else {
+                    let responseData = await response.json()
+                    usernameThing.innerText = "Username: " + responseData["username"]
+                    storageThing.innerText = "You've used " + formatBytes(responseData["storageused"]) + " out of " + formatBytes(responseData["storagemax"])
+                    storageProgressThing.value = responseData["storageused"]
+                    storageProgressThing.max = responseData["storagemax"]
+                    noteCount = responseData["notecount"]
                 }
-
-                doStuff()
             });
     }
 
@@ -427,130 +423,126 @@ document.addEventListener("DOMContentLoaded", function() {
         })
     }
 
-    changePasswordButton.addEventListener("click", () => {
+    changePasswordButton.addEventListener("click", async () => {
         optionsDiv.classList.add("hidden")
 
-        async function doStuff() {
-            async function fatalError(notes, passwordBackup) {
-                displayError("Something went wrong! Your password change has failed. Attempting to revert changes...")
-                password = passwordBackup
-                localStorage.setItem("DONOTSHARE-password", password)
-                let changePasswordBackResponse = await fetch(remote + "/api/changepassword", {
+        async function fatalError(notes, passwordBackup) {
+            displayError("Something went wrong! Your password change has failed. Attempting to revert changes...")
+            password = passwordBackup
+            localStorage.setItem("DONOTSHARE-password", password)
+            let changePasswordBackResponse = await fetch(remote + "/api/changepassword", {
+                method: "POST",
+                body: JSON.stringify({
+                    secretKey: secretkey,
+                    newPassword: await hashpass(oldPass),
+                    migration: false
+                }),
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8",
+                    "X-Burgernotes-Version": "200"
+                }
+            })
+            if (changePasswordBackResponse.status === 200) {
+                let responseStatus = await importNotes(notes)
+                if (responseStatus === 500) {
+                    closeErrorButton.classList.remove("hidden")
+                    displayError("Failed to revert changes. Please delete this user account and sign-up again, then re-import the notes. Click Ok to download the notes to import later.")
+                    await waitForConfirm()
+                    downloadObjectAsJson(notes, "data")
+                } else {
+                    closeErrorButton.classList.remove("hidden")
+                    displayError("Password change failed! Changes have been reverted.")
+                    updateNotes()
+                }
+            } else {
+                displayError("Failed to revert changes. Please delete this user account and sign-up again, then re-import the notes. Click Ok to download the notes to import later.")
+                downloadObjectAsJson(notes, "data")
+            }
+        }
+
+        displayError("Confirm your current password to change it")
+        errorInput.type = "password"
+        errorInput.classList.remove("hidden")
+        await waitForConfirm()
+        const oldPass = errorInput.value
+        errorInput.classList.add("hidden")
+        if (await hashwasm.argon2id({
+            password: password,
+            salt: new TextEncoder().encode("I love Burgernotes!"),
+            parallelism: 1,
+            iterations: 32,
+            memorySize: 19264,
+            hashLength: 32,
+            outputType: "hex"
+        }) !== password) {
+            displayError("Incorrect password!")
+        } else {
+            errorInput.value = ""
+            displayError("Enter your new password")
+            errorInput.classList.remove("hidden")
+            await waitForConfirm()
+            errorInput.classList.add("hidden")
+            const newPass = errorInput.value
+            errorInput.type = "text"
+            errorInput.value = ""
+            if (newPass.length < 8) {
+                displayError("Password must be at least 8 characters!")
+            } else {
+                displayError("Changing your password. This process may take up to 5 minutes. Do NOT close the tab!")
+                closeErrorButton.classList.add("hidden")
+                const response = await fetch(remote + "/api/changepassword", {
                     method: "POST",
                     body: JSON.stringify({
                         secretKey: secretkey,
-                        newPassword: await hashpass(oldPass),
-                        migration: false
+                        newPassword: await hashpass(newPass)
                     }),
                     headers: {
                         "Content-Type": "application/json; charset=UTF-8",
                         "X-Burgernotes-Version": "200"
                     }
                 })
-                if (changePasswordBackResponse.status === 200) {
-                    let responseStatus = await importNotes(notes)
-                    if (responseStatus === 500) {
-                        closeErrorButton.classList.remove("hidden")
-                        displayError("Failed to revert changes. Please delete this user account and sign-up again, then re-import the notes. Click Ok to download the notes to import later.")
-                        await waitForConfirm()
-                        downloadObjectAsJson(notes, "data")
-                    } else {
-                        closeErrorButton.classList.remove("hidden")
-                        displayError("Password change failed! Changes have been reverted.")
-                        updateNotes()
-                    }
-                } else {
-                    displayError("Failed to revert changes. Please delete this user account and sign-up again, then re-import the notes. Click Ok to download the notes to import later.")
-                    downloadObjectAsJson(notes, "data")
-                }
-            }
-
-            displayError("Confirm your current password to change it")
-            errorInput.type = "password"
-            errorInput.classList.remove("hidden")
-            await waitForConfirm()
-            const oldPass = errorInput.value
-            errorInput.classList.add("hidden")
-            if (await hashwasm.argon2id({
-                password: password,
-                salt: new TextEncoder().encode("I love Burgernotes!"),
-                parallelism: 1,
-                iterations: 32,
-                memorySize: 19264,
-                hashLength: 32,
-                outputType: "hex"
-            }) !== password) {
-                displayError("Incorrect password!")
-            } else {
-                errorInput.value = ""
-                displayError("Enter your new password")
-                errorInput.classList.remove("hidden")
-                await waitForConfirm()
-                errorInput.classList.add("hidden")
-                const newPass = errorInput.value
-                errorInput.type = "text"
-                errorInput.value = ""
-                if (newPass.length < 8) {
-                    displayError("Password must be at least 8 characters!")
-                } else {
-                    displayError("Changing your password. This process may take up to 5 minutes. Do NOT close the tab!")
-                    closeErrorButton.classList.add("hidden")
-                    const response = await fetch(remote + "/api/changepassword", {
+                if (response.status === 200) {
+                    let notes = await exportNotes()
+                    let passwordBackup = password
+                    password = await hashwasm.argon2id({
+                        password: password,
+                        salt: new TextEncoder().encode("I love Burgernotes!"),
+                        parallelism: 1,
+                        iterations: 32,
+                        memorySize: 19264,
+                        hashLength: 32,
+                        outputType: "hex"
+                    })
+                    localStorage.setItem("DONOTSHARE-password", password)
+                    let purgeNotes = await fetch(remote + "/api/purgenotes", {
                         method: "POST",
                         body: JSON.stringify({
-                            secretKey: secretkey,
-                            newPassword: await hashpass(newPass)
+                            secretKey: secretkey
                         }),
                         headers: {
-                            "Content-Type": "application/json; charset=UTF-8",
-                            "X-Burgernotes-Version": "200"
+                            "Content-Type": "application/json; charset=UTF-8"
                         }
                     })
-                    if (response.status === 200) {
-                        let notes = await exportNotes()
-                        let passwordBackup = password
-                        password = await hashwasm.argon2id({
-                            password: password,
-                            salt: new TextEncoder().encode("I love Burgernotes!"),
-                            parallelism: 1,
-                            iterations: 32,
-                            memorySize: 19264,
-                            hashLength: 32,
-                            outputType: "hex"
-                        })
-                        localStorage.setItem("DONOTSHARE-password", password)
-                        let purgeNotes = await fetch(remote + "/api/purgenotes", {
-                            method: "POST",
-                            body: JSON.stringify({
-                                secretKey: secretkey
-                            }),
-                            headers: {
-                                "Content-Type": "application/json; charset=UTF-8"
-                            }
-                        })
-                        if (purgeNotes.status !== 200) {
+                    if (purgeNotes.status !== 200) {
+                        fatalError(notes, passwordBackup)
+                    } else {
+                        let responseStatus = await importNotes(notes)
+                        errorDiv.classList.add("hidden")
+                        if (responseStatus !== 200) {
                             fatalError(notes, passwordBackup)
                         } else {
-                            let responseStatus = await importNotes(notes)
-                            errorDiv.classList.add("hidden")
-                            if (responseStatus !== 200) {
-                                fatalError(notes, passwordBackup)
-                            } else {
-                                closeErrorButton.classList.remove("hidden")
-                                displayError("Password changed!")
-                                updateNotes()
-                            }
+                            closeErrorButton.classList.remove("hidden")
+                            displayError("Password changed!")
+                            updateNotes()
                         }
-                    } else {
-                        closeErrorButton.classList.remove("hidden")
-                        const data = await response.json()
-                        displayError(data["error"])
                     }
+                } else {
+                    closeErrorButton.classList.remove("hidden")
+                    const data = await response.json()
+                    displayError(data["error"])
                 }
             }
         }
-
-        doStuff()
     })
     importNotesButton.addEventListener("click", () => {
         optionsDiv.classList.add("hidden")
@@ -569,66 +561,62 @@ document.addEventListener("DOMContentLoaded", function() {
                 "Content-Type": "application/json; charset=UTF-8"
             }
         })
-            .then((response) => {
-                async function doStuff() {
-                    let responseData = await response.json()
-                    document.querySelectorAll(".burgerSession").forEach((el) => el.remove());
-                    let ua;
-                    for (let i in responseData) {
-                        let sessionElement = document.createElement("div")
-                        let sessionText = document.createElement("p")
-                        let sessionImage = document.createElement("img")
-                        let sessionRemoveButton = document.createElement("button")
-                        sessionText.classList.add("w300")
-                        if (responseData[i]["thisSession"] === true) {
-                            sessionText.innerText = "(current) " + responseData[i]["device"]
-                        } else {
-                            sessionText.innerText = responseData[i]["device"]
-                        }
-                        sessionText.title = responseData[i]["device"]
-                        sessionRemoveButton.innerText = "x"
-
-                        sessionImage.src = "/static/svg/device_other.svg"
-
-                        ua = responseData[i]["device"]
-
-                        if (ua.includes("NT") || ua.includes("Linux")) {
-                            sessionImage.src = "/static/svg/device_computer.svg"
-                        }
-                        if (ua.includes("iPhone" || ua.includes("Android") || ua.includes("iPod"))) {
-                            sessionImage.src = "/static/svg/device_smartphone.svg"
-                        }
-
-                        sessionRemoveButton.addEventListener("click", () => {
-                            fetch(remote + "/api/sessions/remove", {
-                                method: "POST",
-                                body: JSON.stringify({
-                                    secretKey: secretkey,
-                                    sessionId: responseData[i]["id"]
-                                }),
-                                headers: {
-                                    "Content-Type": "application/json; charset=UTF-8"
-                                }
-                            })
-                                .then(() => {
-                                    if (responseData[i]["thisSession"] === true) {
-                                        window.location.replace("/logout")
-                                    }
-                                });
-                            sessionElement.remove()
-                        });
-
-                        sessionElement.append(sessionImage)
-                        sessionElement.append(sessionText)
-                        sessionElement.append(sessionRemoveButton)
-
-                        sessionElement.classList.add("burgerSession")
-
-                        sessionDiv.append(sessionElement)
+            .then(async (response) => {
+                let responseData = await response.json()
+                document.querySelectorAll(".burgerSession").forEach((el) => el.remove());
+                let ua;
+                for (let i in responseData) {
+                    let sessionElement = document.createElement("div")
+                    let sessionText = document.createElement("p")
+                    let sessionImage = document.createElement("img")
+                    let sessionRemoveButton = document.createElement("button")
+                    sessionText.classList.add("w300")
+                    if (responseData[i]["thisSession"] === true) {
+                        sessionText.innerText = "(current) " + responseData[i]["device"]
+                    } else {
+                        sessionText.innerText = responseData[i]["device"]
                     }
-                }
+                    sessionText.title = responseData[i]["device"]
+                    sessionRemoveButton.innerText = "x"
 
-                doStuff()
+                    sessionImage.src = "/static/svg/device_other.svg"
+
+                    ua = responseData[i]["device"]
+
+                    if (ua.includes("NT") || ua.includes("Linux")) {
+                        sessionImage.src = "/static/svg/device_computer.svg"
+                    }
+                    if (ua.includes("iPhone" || ua.includes("Android") || ua.includes("iPod"))) {
+                        sessionImage.src = "/static/svg/device_smartphone.svg"
+                    }
+
+                    sessionRemoveButton.addEventListener("click", () => {
+                        fetch(remote + "/api/sessions/remove", {
+                            method: "POST",
+                            body: JSON.stringify({
+                                secretKey: secretkey,
+                                sessionId: responseData[i]["id"]
+                            }),
+                            headers: {
+                                "Content-Type": "application/json; charset=UTF-8"
+                            }
+                        })
+                            .then(() => {
+                                if (responseData[i]["thisSession"] === true) {
+                                    window.location.replace("/logout")
+                                }
+                            });
+                        sessionElement.remove()
+                    });
+
+                    sessionElement.append(sessionImage)
+                    sessionElement.append(sessionText)
+                    sessionElement.append(sessionRemoveButton)
+
+                    sessionElement.classList.add("burgerSession")
+
+                    sessionDiv.append(sessionElement)
+                }
             });
     });
     exitImportThing.addEventListener("click", () => {
@@ -668,7 +656,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 noteBox.innerHTML = ""
                 displayError("Something went wrong... Please try again later!")
             })
-            .then((response) => {
+            .then(async (response) => {
                 selectedNote = nameithink
                 if (mobile) {
                     handleGesture()
@@ -676,82 +664,78 @@ document.addEventListener("DOMContentLoaded", function() {
                 noteBox.contentEditable = true
                 noteBox.click()
 
-                async function doStuff() {
-                    let responseData = await response.json()
+                let responseData = await response.json()
 
-                    let htmlNote
-                    try {
-                        htmlNote = await decrypt(responseData["content"])
-                    } catch (e) {
-                        console.log(e)
-                        console.log(responseData)
-                    }
-
-                    console.log(htmlNote)
-                    let cleanedHTML = htmlNote.replace(/<(?!\/?(h1|h2|br|img|blockquote|ol|li|b|i|u|strike|p|pre|ul|hr|a)\b)[^>]*>/gi, '(potential XSS tag was here)')
-                    noteBox.innerHTML = cleanedHTML.replaceAll("\n", "<br>")
-
-                    updateWordCount()
-
-                    noteBox.addEventListener("input", () => {
-                        updateWordCount()
-                        clearTimeout(timer);
-                        timer = setTimeout(async () => {
-                            let preEncryptedTitle = "New note"
-
-                            if (noteBox.innerText !== "") {
-                                preEncryptedTitle = new RegExp('(.+?)(?=\n)|[\s\S]*?(\S+)(?=\n)').exec(noteBox.innerText)[0]
-                            }
-
-                            preEncryptedTitle = truncateString(preEncryptedTitle, 15)
-                            document.getElementById(nameithink).innerText = preEncryptedTitle
-
-                            console.log(noteBox.innerHTML)
-                            let encryptedText = await encrypt(noteBox.innerHTML)
-                            let encryptedTitle = await encrypt(preEncryptedTitle)
-
-                            if (selectedNote === nameithink) {
-                                fetch(remote + "/api/editnote", {
-                                    method: "POST",
-                                    body: JSON.stringify({
-                                        secretKey: secretkey,
-                                        noteId: nameithink,
-                                        content: encryptedText,
-                                        title: encryptedTitle
-                                    }),
-                                    headers: {
-                                        "Content-Type": "application/json; charset=UTF-8"
-                                    }
-                                })
-                                    .then((response) => {
-                                        if (response.status === 418) {
-                                            displayError("You've ran out of storage... Changes will not be saved until you free up storage!")
-                                        }
-                                    })
-                                    .catch(() => {
-                                        displayError("Failed to save changes, please try again later...")
-                                    })
-                            }
-                        }, waitTime);
-                    });
+                let htmlNote
+                try {
+                    htmlNote = await decrypt(responseData["content"])
+                } catch (e) {
+                    console.log(e)
+                    console.log(responseData)
                 }
 
-                doStuff()
+                console.log(htmlNote)
+                let cleanedHTML = htmlNote.replace(/<(?!\/?(h1|h2|br|img|blockquote|ol|li|b|i|u|strike|p|pre|ul|hr|a)\b)[^>]*>/gi, '(potential XSS tag was here)')
+                noteBox.innerHTML = cleanedHTML.replaceAll("\n", "<br>")
+
+                updateWordCount()
+
+                noteBox.addEventListener("input", () => {
+                    updateWordCount()
+                    clearTimeout(timer);
+                    timer = setTimeout(async () => {
+                        let preEncryptedTitle = "New note"
+
+                        if (noteBox.innerText !== "") {
+                            preEncryptedTitle = new RegExp('(.+?)(?=\n)|[\s\S]*?(\S+)(?=\n)').exec(noteBox.innerText)[0]
+                        }
+
+                        preEncryptedTitle = truncateString(preEncryptedTitle, 15)
+                        document.getElementById(nameithink).innerText = preEncryptedTitle
+
+                        console.log(noteBox.innerHTML)
+                        let encryptedText = await encrypt(noteBox.innerHTML)
+                        let encryptedTitle = await encrypt(preEncryptedTitle)
+
+                        if (selectedNote === nameithink) {
+                            fetch(remote + "/api/editnote", {
+                                method: "POST",
+                                body: JSON.stringify({
+                                    secretKey: secretkey,
+                                    noteId: nameithink,
+                                    content: encryptedText,
+                                    title: encryptedTitle
+                                }),
+                                headers: {
+                                    "Content-Type": "application/json; charset=UTF-8"
+                                }
+                            })
+                                .then((response) => {
+                                    if (response.status === 418) {
+                                        displayError("You've ran out of storage... Changes will not be saved until you free up storage!")
+                                    }
+                                })
+                                .catch(() => {
+                                    displayError("Failed to save changes, please try again later...")
+                                })
+                        }
+                    }, waitTime);
+                });
             });
     }
 
     function updateNotes() {
-        fetch(remote + "/api/listnotes", {
-            method: "POST",
-            body: JSON.stringify({
-                secretKey: secretkey
-            }),
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8"
-            }
-        })
-            .then((response) => {
-                async function doStuff() {
+        if (!offlineMode) {
+            fetch(remote + "/api/listnotes", {
+                method: "POST",
+                body: JSON.stringify({
+                    secretKey: secretkey
+                }),
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8"
+                }
+            })
+                .then(async (response) => {
                     noteBox.contentEditable = false
                     selectedNote = 0
                     noteBox.innerHTML = ""
@@ -769,7 +753,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         try {
                             noteData["title"] = await decrypt(noteData["title"])
                         } catch (e) {
-                            location.href = "/migrate"
+                            if (!offlineMode) {
+                                location.href = "/migrate"
+                            }
                         }
 
                         if (noteData["id"] > highestID) {
@@ -823,13 +809,11 @@ document.addEventListener("DOMContentLoaded", function() {
                         selectNote(highestID)
                         selectLatestNote = false
                     }
-                }
-
-                doStuff()
-            });
+                });
+        } else {
+            console.log("Currently offline, refusing to update notes.")
+        }
     }
-
-    updateNotes()
 
     newNote.addEventListener("click", async () => {
         let noteName = "New note"
@@ -882,27 +866,31 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     async function exportNotes() {
-        let exportNotesFetch = await fetch(remote + "/api/exportnotes", {
-            method: "POST",
-            body: JSON.stringify({
-                secretKey: secretkey
-            }),
-            headers: {
-                "Content-Type": "application/json; charset=UTF-8"
-            }
-        })
-        let responseData = await exportNotesFetch.json()
-        for (let i in responseData) {
-            exportNotes.innerText = "Decrypting " + i + "/" + noteCount
+        if (!offlineMode) {
+            let exportNotesFetch = await fetch(remote + "/api/exportnotes", {
+                method: "POST",
+                body: JSON.stringify({
+                    secretKey: secretkey
+                }),
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8"
+                }
+            })
+            let responseData = await exportNotesFetch.json()
+            for (let i in responseData) {
+                exportNotes.innerText = "Decrypting " + i + "/" + noteCount
 
-            try {
-                responseData[i]["title"] = await decrypt(responseData[i]["title"])
-                responseData[i]["content"] = await decrypt(responseData[i]["content"])
-            } catch (e) {
-                location.href = "/migrate"
+                try {
+                    responseData[i]["title"] = await decrypt(responseData[i]["title"])
+                    responseData[i]["content"] = await decrypt(responseData[i]["content"])
+                } catch (e) {
+                    location.href = "/migrate"
+                }
             }
+            return responseData
+        } else {
+            displayError("You can't export notes while offline!")
         }
-        return responseData
     }
 
     async function importNotes(plaintextNotes) {
@@ -993,6 +981,7 @@ document.addEventListener("DOMContentLoaded", function() {
         displayError("What's new in Burgernotes 2.0?\nRestyled client\nAdded changing passwords\nAdded importing notes\nChange the use of CryptoJS to Native AES GCM\nUse Argon2ID for hashing rather than the SHA family\nAdded a Proof-Of-Work CAPTCHA during signup\nMade the signup and login statuses more descriptive\nFixed various bugs and issues\nAdded markdown notes\nAdded support for uploading photos\nImproved privacy policy to be clearer about what is and isn't added\nRemoved some useless uses of cookies and replaced with localStorage\nFixed the privacy policy not redirecting correctly\nAdded a list of native clients\nMade the client support LibreJS and therefore GNU Icecat")
     }
 
-    checknetwork()
+    await checknetwork()
+    updateNotes()
 })
 // @license-end

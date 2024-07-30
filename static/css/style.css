@@ -593,6 +593,7 @@ button:hover {
     background-color: var(--nonimporant-theme-color);
     color: var(--nonimportant-text-color);
     transition: 0.125s;
+    margin-bottom: 0;
 }
 
 .optionsDiv .fontManipulator button:hover {
