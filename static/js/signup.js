@@ -151,13 +151,14 @@ signupButton.addEventListener("click", () => {
                     await new Promise(r => setTimeout(r, 200))
                     window.location.href = "/app/"
                 } else if (response.status === 409) {
-                    statusBox.innerText = "Username already taken!"
+                    if (responseData["error"] === "Stamp already spent" {
+                        statusBox.innerText = "Pure bad luck... your PoW challenge was accepted, but someone else used the same PoW challenge as you. Please try again. (error: Stamp already spent)"
+                    } else {
+                        statusBox.innerText = "Username already taken!"
+                    }
                     showElements(true)
                 } else if (response.status === 429) {
                     statusBox.innerText = "Please don't sign up to new accounts that quickly. If you are using a VPN, please turn it off!"
-                    showElements(true)
-                } else if (response.status === 409) {
-                    statusBox.innerText = "Pure bad luck... your PoW challenge was accepted, but someone else used the same PoW challenge as you. Please try again. (error: " + responseData["error"] + ")"
                     showElements(true)
                 } else if (response.status === 500) {
                     statusBox.innerText = responseData["error"]
