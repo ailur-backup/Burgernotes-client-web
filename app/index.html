@@ -46,7 +46,7 @@
             <div class="fontManipulator">
                 <div class="vcenter"><text>Font size</text></div>
                 <div class="vcenter textMinusBox"><button id="textMinusBox">-</button></div>
-                <div class="vcenter textSizeBox"><text style="background-color: rgba(0, 0, 0, 0) !important; transform: translateX(-3.5px)" id="textSizeBox">16px</text></div>
+                <div class="vcenter textSizeBox"><text style="background-color: rgba(0, 0, 0, 0) !important;" id="textSizeBox">16px</text></div>
                 <div class="vcenter"><button id="textPlusBox">+</button></div>
             </div>
             <div class="section"></div>
@@ -93,10 +93,12 @@
     <input type="file" id="uploadThing" class="hidden"> <!-- This is only ever .click()'d so it doesn't need to be styled -->
 
     <script>
-        for (let i = 0; i < 40; i++) {
-            notesDiv.appendChild(loadingStuff.cloneNode())
-        }
-        loadingStuff.remove()
+        document.addEventListener("DOMContentLoaded", function() {
+            for (let i = 0; i < 40; i++) {
+                notesDiv.appendChild(loadingStuff.cloneNode())
+            }
+            loadingStuff.remove()
+        })
     </script>
     <script src="/static/js/pell.js"></script>
     <script type="text/javascript" src="/static/js/main.js"></script>

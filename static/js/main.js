@@ -2,7 +2,7 @@
 
 let secretKey = localStorage.getItem("PRIVATE-secretKey")
 let password = localStorage.getItem("PRIVATE-cryptoKey")
-let fontSize = localStorage.getItem("SETTING-fontsize")
+let fontSize = Number(localStorage.getItem("SETTING-fontsize"))
 let remote = localStorage.getItem("SETTING-homeServer")
 
 if (secretKey === null || password === null) {
@@ -313,11 +313,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     updateFont()
 
     textPlusBox.addEventListener("click", () => {
-        localStorage.setItem("SETTING-fontsize", String(Number(fontSize) + Number(1)))
+        fontSize += 1
+        localStorage.setItem("SETTING-fontsize", String(fontSize))
         updateFont()
     });
     textMinusBox.addEventListener("click", () => {
-        localStorage.setItem("SETTING-fontsize", String(Number(fontSize) - Number(1)))
+        fontSize -= 1
+        localStorage.setItem("SETTING-fontsize", String(fontSize))
         updateFont()
     });
 
@@ -514,12 +516,12 @@ document.addEventListener("DOMContentLoaded", async function () {
                         }
                     })
                     if (purgeNotes.status !== 200) {
-                        fatalError(notes, passwordBackup)
+                        await fatalError(notes, passwordBackup)
                     } else {
                         let responseStatus = await importNotes(notes)
                         errorDiv.classList.add("hidden")
                         if (responseStatus !== 200) {
-                            fatalError(notes, passwordBackup)
+                            await fatalError(notes, passwordBackup)
                         } else {
                             closeErrorButton.classList.remove("hidden")
                             displayError("Password changed!")

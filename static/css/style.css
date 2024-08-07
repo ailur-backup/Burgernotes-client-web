@@ -253,7 +253,6 @@ body {
 .topBar .usernameBox {
     padding: 5px;
     cursor: pointer;
-    filter: invert(var(--invertdm));
     height: 41px;
     width: 41px;
     line-height: 41px;
@@ -271,6 +270,7 @@ body {
 }
 
 .topBar .usernameBox img {
+    filter: invert(var(--invertdm));
     height: 22px;
 }
 .notesBar {
@@ -374,7 +374,7 @@ body {
 }
 
 .notesBar .newNote img {
-    scale: 0.6;
+    scale: 0.5;
     filter: invert(var(--invertdm));
 }
 
