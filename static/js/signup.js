@@ -8,8 +8,8 @@ if (localStorage.getItem("PRIVATE-secretKey") !== null || localStorage.getItem("
 
 let remote = localStorage.getItem("SETTING-homeServer")
 if (remote == null) {
-    localStorage.setItem("SETTING-homeServer", "https://notes.canary.hectabit.org")
-    remote = "https://notes.canary.hectabit.org"
+    localStorage.setItem("SETTING-homeServer", "https://notes.hectabit.org")
+    remote = "https://notes.hectabit.org"
 }
 
 let usernameBox = document.getElementById("usernameBox")
