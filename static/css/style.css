@@ -146,6 +146,7 @@ body {
     margin: 0;
     background-color: var(--editor);
     font-family: "Inter", sans-serif;
+    color: var(--text-color);
 }
 
 .hiddenButton {
@@ -758,6 +759,7 @@ button:hover {
 
 .inoutdiv .iconbutton img {
     height: 20px;
+    filter: invert(var(--invertdm));
 }
 
 .inoutdiv .iconbutton:hover {

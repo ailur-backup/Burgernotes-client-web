@@ -35,7 +35,7 @@
 			<key>Precomposed</key>
 			<false/>
 			<key>URL</key>
-			<string>notes.hectabit.org/app</string>
+			<string>notes.canary.hectabit.org/app</string>
 		</dict>
 	</array>
 	<key>PayloadDescription</key>
