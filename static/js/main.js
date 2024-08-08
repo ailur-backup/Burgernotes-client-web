@@ -9,7 +9,7 @@ if (secretKey === null || password === null) {
     window.location.replace("/login")
     document.body.innerHTML = "Redirecting..."
     throw new Error();
-} else if (fontSize === null) {
+} else if (fontSize === 0) {
     localStorage.setItem("SETTING-fontsize", "16")
     fontSize = 16
 }
