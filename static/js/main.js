@@ -15,8 +15,8 @@ if (secretKey === null || password === null) {
 }
 
 if (remote == null) {
-    localStorage.setItem("SETTING-homeServer", "https://notes.hectabit.org")
-    remote = "https://notes.hectabit.org"
+    localStorage.setItem("SETTING-homeServer", "https://notes.ailur.dev")
+    remote = "https://notes.ailur.dev"
 }
 
 function formatBytes(a, b = 2) {

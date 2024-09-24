@@ -8,8 +8,8 @@ if (localStorage.getItem("PRIVATE-secretKey") !== null || localStorage.getItem("
 
 let remote = localStorage.getItem("SETTING-homeServer")
 if (remote == null) {
-    localStorage.setItem("SETTING-homeServer", "https://notes.hectabit.org")
-    remote = "https://notes.hectabit.org"
+    localStorage.setItem("SETTING-homeServer", "https://notes.ailur.dev")
+    remote = "https://notes.ailur.dev"
 }
 
 let inputContainer = document.getElementById("inputContainer")

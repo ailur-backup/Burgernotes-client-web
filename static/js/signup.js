@@ -8,8 +8,8 @@ if (localStorage.getItem("PRIVATE-secretKey") !== null || localStorage.getItem("
 
 let remote = localStorage.getItem("SETTING-homeServer")
 if (remote == null) {
-    localStorage.setItem("SETTING-homeServer", "https://notes.hectabit.org")
-    remote = "https://notes.hectabit.org"
+    localStorage.setItem("SETTING-homeServer", "https://notes.ailur.dev")
+    remote = "https://notes.ailur.dev"
 }
 
 let usernameBox = document.getElementById("usernameBox")
@@ -93,7 +93,7 @@ signupButton.addEventListener("click", () => {
 
     /*
      * Compiled version of:
-     * hashcat-wasm (https://concord.hectabit.org/hectabit/hashcat-wasm)
+     * hashcat-wasm (https://concord.ailur.dev/hectabit/hashcat-wasm)
      * (c) Arzumify
      * @license AGPL-3.0
      * Since this is my software, if you use it with proprietary servers, I will make sure you will walk across hot coals (just kidding, probably).
