@@ -19,7 +19,6 @@ let statusBox = document.getElementById("statusBox")
 let signupButton = document.getElementById("signupButton")
 let inputNameBox = document.getElementById("inputNameBox")
 let backButton = document.getElementById("backButton")
-let opButton = document.getElementById("opButton")
 
 async function loginFetch(username, password, modern) {
     return await fetch(remote + "/api/login", {
@@ -80,7 +79,6 @@ function showInput(inputType) {
             usernameBox.classList.remove("hidden")
             passwordBox.classList.add("hidden")
             backButton.classList.add("hidden")
-            opButton.classList.remove("hidden")
             inputContainer.classList.remove("hidden")
             inputNameBox.innerText = "Username:"
             statusBox.innerText = "Sign in with your Burgernotes account"
@@ -91,7 +89,6 @@ function showInput(inputType) {
             passwordBox.classList.remove("hidden")
             backButton.classList.remove("hidden")
             inputContainer.classList.remove("hidden")
-            opButton.classList.add("hidden")
             inputNameBox.innerText = "Password:"
             currentInputType = 1
             break
@@ -100,7 +97,6 @@ function showInput(inputType) {
             signupButton.classList.add("hidden")
             backButton.classList.add("hidden")
             inputNameBox.classList.add("hidden")
-            opButton.classList.add("hidden")
             inputNameBox.innerText = "Password:"
             currentInputType = 2
     }
@@ -127,10 +123,6 @@ function showElements(show) {
 
 document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("homeserver").innerText = "Your homeserver is: " + remote + ". "
-});
-
-opButton.addEventListener("click", () => {
-    window.location.href = "/signup"
 });
 
 signupButton.addEventListener("click", () => {

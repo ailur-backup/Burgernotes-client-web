@@ -969,11 +969,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     });
 
-    if (firstNewVersion()) {
-        displayError("What's new in Burgernotes 2.0?\nRestyled client\nAdded changing passwords\nAdded importing notes\nChange the use of CryptoJS to Native AES GCM\nUse Argon2ID for hashing rather than the SHA family\nAdded a Proof-Of-Work CAPTCHA during signup\nMade the signup and login statuses more descriptive\nFixed various bugs and issues\nAdded markdown notes\nAdded support for uploading photos\nImproved privacy policy to be clearer about what is and isn't added\nRemoved some useless uses of cookies and replaced with localStorage\nFixed the privacy policy not redirecting correctly\nAdded a list of native clients\nMade the client support LibreJS and therefore GNU Icecat")
-    }
+//    if (firstNewVersion()) {
+//        displayError("What's new in Burgernotes 2.0?\nRestyled client\nAdded changing passwords\nAdded importing notes\nChange the use of CryptoJS to Native AES GCM\nUse Argon2ID for hashing rather than the SHA family\nAdded a Proof-Of-Work CAPTCHA during signup\nMade the signup and login statuses more descriptive\nFixed various bugs and issues\nAdded markdown notes\nAdded support for uploading photos\nImproved privacy policy to be clearer about what is and isn't added\nRemoved some useless uses of cookies and replaced with localStorage\nFixed the privacy policy not redirecting correctly\nAdded a list of native clients\nMade the client support LibreJS and therefore GNU Icecat")
+//    }
 
     await checknetwork()
     updateNotes()
+      displayError("Burgernotes is shutting down on October 20th, please refer to <a href='/shutdown'>this FAQ</a> for more info.")
 })
 // @license-end
